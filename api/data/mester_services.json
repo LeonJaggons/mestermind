@@ -1,0 +1,1930 @@
+[
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Life Coaching",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Personal Training",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Wellness",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Installation",
+    "service": "Above Ground Swimming Pool Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Inspections & Environmental",
+    "subcategory": "General",
+    "service": "Air Quality and Environmental Testing",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Appliance Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Repair",
+    "service": "Appliance Repair or Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Specialty & Professional Services",
+    "subcategory": "General",
+    "service": "Architectural Services",
+    "requires_license": true,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Artificial Turf Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Inspections & Environmental",
+    "subcategory": "Removal",
+    "service": "Asbestos Removal",
+    "requires_license": true,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Masonry / Concrete / Stucco",
+    "subcategory": "Installation",
+    "service": "Asphalt Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Masonry / Concrete / Stucco",
+    "subcategory": "Repair",
+    "service": "Asphalt Repair and Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "Remodel",
+    "service": "Basement Finishing or Remodeling",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "Remodel",
+    "service": "Bathroom Remodel",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pest Control",
+    "subcategory": "General",
+    "service": "Bed Bug Extermination",
+    "requires_license": false,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Masonry / Concrete / Stucco",
+    "subcategory": "Repair",
+    "service": "Brick or Stone Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Installation",
+    "service": "Cabinet Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Finishing",
+    "service": "Cabinet Painting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Repair",
+    "service": "Cabinet Refinishing and Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "General",
+    "service": "Cabinetry",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Cleaning",
+    "service": "Carpet Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Installation",
+    "service": "Carpet Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Removal",
+    "service": "Carpet Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Repair",
+    "service": "Carpet Repair or Partial Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "HVAC (Heating / Cooling)",
+    "subcategory": "Installation",
+    "service": "Central Air Conditioning Installation or Replacement",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "HVAC (Heating / Cooling)",
+    "subcategory": "Repair",
+    "service": "Central Air Conditioning Repair or Maintenance",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Installation",
+    "service": "Circuit Breaker Panel or Fuse Box Installation",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Repair",
+    "service": "Circuit Breaker Panel or Fuse Box Repair",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Remodel",
+    "service": "Closet Remodel",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Installation",
+    "service": "Closet and Shelving System Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Cleaning",
+    "service": "Commercial Carpet Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "Cleaning",
+    "service": "Commercial Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Masonry / Concrete / Stucco",
+    "subcategory": "Installation",
+    "service": "Concrete Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Masonry / Concrete / Stucco",
+    "subcategory": "Removal",
+    "service": "Concrete Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Masonry / Concrete / Stucco",
+    "subcategory": "Repair",
+    "service": "Concrete Repair and Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Construction",
+    "service": "Construction Services",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Countertop Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Repair",
+    "service": "Countertop Repair or Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "General",
+    "service": "Custom Cabinet Building",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "General",
+    "service": "Custom Furniture Building",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Finishing",
+    "service": "Deck Staining and Sealing",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Remodel",
+    "service": "Deck or Porch Remodel or Addition",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Repair",
+    "service": "Deck or Porch Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Demolition Services",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Dishwasher Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "Installation",
+    "service": "Door Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "Repair",
+    "service": "Door Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Drywall Installation and Hanging",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Repair",
+    "service": "Drywall Repair and Texturing",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "HVAC (Heating / Cooling)",
+    "subcategory": "Cleaning",
+    "service": "Duct and Vent Cleaning",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "HVAC (Heating / Cooling)",
+    "subcategory": "Installation",
+    "service": "Duct and Vent Installation or Removal",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "HVAC (Heating / Cooling)",
+    "subcategory": "Repair",
+    "service": "Duct and Vent Repair",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Moving & Hauling",
+    "subcategory": "General",
+    "service": "Dumpster Rental",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Repair",
+    "service": "Electrical and Wiring Repair",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "General",
+    "service": "Emergency Plumbing",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Specialty & Professional Services",
+    "subcategory": "General",
+    "service": "Engraving",
+    "requires_license": false,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "General",
+    "service": "Epoxy Floor Coating",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Excavation Services",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Painting & Finishes",
+    "subcategory": "Finishing",
+    "service": "Exterior Painting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Fan Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Painting & Finishes",
+    "subcategory": "Finishing",
+    "service": "Faux Finishing or Painting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Painting & Finishes",
+    "subcategory": "Finishing",
+    "service": "Fence Painting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Fences, Gates & Railings",
+    "subcategory": "Installation",
+    "service": "Fence and Gate Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Fences, Gates & Railings",
+    "subcategory": "Repair",
+    "service": "Fence and Gate Repairs",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "General",
+    "service": "Finish Carpentry",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "Repair",
+    "service": "Fireplace and Chimney Cleaning or Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Fireplace and Chimney Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Assembly",
+    "service": "Fitness Equipment Assembly",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Cleaning",
+    "service": "Floor Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Installation",
+    "service": "Floor Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Finishing",
+    "service": "Floor Painting or Coating",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "General",
+    "service": "Floor Polishing",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Repair",
+    "service": "Floor Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Repair",
+    "service": "Foundation Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "General",
+    "service": "Framing Carpentry",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "General",
+    "service": "Full Service Lawn Care",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Assembly",
+    "service": "Furniture Assembly",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Furniture Delivery",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Moving & Hauling",
+    "subcategory": "Moving",
+    "service": "Furniture Moving and Heavy Lifting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Finishing",
+    "service": "Furniture Refinishing",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Repair",
+    "service": "Furniture Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "General",
+    "service": "Furniture Upholstery",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "Remodel",
+    "service": "Garage Addition or Remodel",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "Installation",
+    "service": "Garage Door Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "Repair",
+    "service": "Garage Door Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "Cleaning",
+    "service": "Garage, Basement or Attic Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Installation",
+    "service": "Garbage Disposal Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Repair",
+    "service": "Garbage Disposal Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "General",
+    "service": "Gardening",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Gas Line Installation",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Installation",
+    "service": "Gazebo Installation and Construction",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "General",
+    "service": "General Carpentry",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "General",
+    "service": "General Contracting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Installation",
+    "service": "Generator Installation",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Repair",
+    "service": "Generator Repair",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Roofing & Gutters",
+    "subcategory": "Cleaning",
+    "service": "Gutter Cleaning and Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Roofing & Gutters",
+    "subcategory": "Installation",
+    "service": "Gutter Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Roofing & Gutters",
+    "subcategory": "Repair",
+    "service": "Gutter Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Handyman",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Finishing",
+    "service": "Hardwood Floor Refinishing",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "HVAC (Heating / Cooling)",
+    "subcategory": "Installation",
+    "service": "Heating System Installation or Replacement",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "HVAC (Heating / Cooling)",
+    "subcategory": "Repair",
+    "service": "Heating System Repair or Maintenance",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Installation",
+    "service": "Holiday Lighting Installation and Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Inspections & Environmental",
+    "subcategory": "Inspection",
+    "service": "Home Inspection",
+    "requires_license": true,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "General",
+    "service": "Home Modification for Accessibility",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Organizing",
+    "service": "Home Organizing",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "Remodel",
+    "service": "Home Remodeling",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Security Systems",
+    "subcategory": "Repair",
+    "service": "Home Security System Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Security Systems",
+    "subcategory": "Installation",
+    "service": "Home Security and Alarms Install",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Specialty & Professional Services",
+    "subcategory": "General",
+    "service": "Home Staging",
+    "requires_license": false,
+    "is_specialty": true,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Installation",
+    "service": "Home Theater System Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Repair",
+    "service": "Home Theater System Repair or Service",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Roofing & Gutters",
+    "subcategory": "General",
+    "service": "Home Waterproofing",
+    "requires_license": false,
+    "is_specialty": true,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Moving",
+    "service": "Hot Tub Moving",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Cleaning",
+    "service": "Hot Tub and Spa Cleaning and Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Installation",
+    "service": "Hot Tub and Spa Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Repair",
+    "service": "Hot Tub and Spa Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "Cleaning",
+    "service": "House Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "House Sitting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Construction",
+    "service": "In-Ground Swimming Pool Construction",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Insulation Installation or Upgrade",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Specialty & Professional Services",
+    "subcategory": "Design",
+    "service": "Interior Design",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Painting & Finishes",
+    "subcategory": "Finishing",
+    "service": "Interior Painting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "Removal",
+    "service": "Junk Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "Remodel",
+    "service": "Kitchen Remodel",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "General",
+    "service": "Land Clearing",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "General",
+    "service": "Land Leveling and Grading",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Inspections & Environmental",
+    "subcategory": "General",
+    "service": "Land Surveying",
+    "requires_license": true,
+    "is_specialty": true,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "Repair",
+    "service": "Lawn Mower Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "General",
+    "service": "Lawn Mowing and Trimming",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Installation",
+    "service": "Lighting Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Moving & Hauling",
+    "subcategory": "Moving",
+    "service": "Local Moving (under 50 miles)",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation & Repair",
+    "service": "Lock Installation and Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Moving & Hauling",
+    "subcategory": "Moving",
+    "service": "Long Distance Moving",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Masonry / Concrete / Stucco",
+    "subcategory": "Construction",
+    "service": "Masonry Construction Services",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Specialty & Professional Services",
+    "subcategory": "General",
+    "service": "Metalwork",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Inspections & Environmental",
+    "subcategory": "Inspection",
+    "service": "Mold Inspection and Removal",
+    "requires_license": true,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "General",
+    "service": "Mulching",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Painting & Finishes",
+    "subcategory": "Finishing",
+    "service": "Muralist",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "Construction",
+    "service": "New Home Construction",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "Removal",
+    "service": "Odor Removal",
+    "requires_license": false,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Moving & Hauling",
+    "subcategory": "Moving",
+    "service": "Office Moving",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "Design",
+    "service": "Outdoor Landscaping and Design",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "General",
+    "service": "Outdoor Mosquito Control Services",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "General",
+    "service": "Outdoor Pesticide Application",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Moving & Hauling",
+    "subcategory": "General",
+    "service": "Packing and Unpacking",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Painting & Finishes",
+    "subcategory": "Removal",
+    "service": "Paint Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Patio Cover and Awning Services",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "Remodel",
+    "service": "Patio Remodel or Addition",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Pest Control",
+    "subcategory": "General",
+    "service": "Pest Control Services",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pest Control",
+    "subcategory": "Inspection",
+    "service": "Pest Inspection",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Moving & Hauling",
+    "subcategory": "Moving",
+    "service": "Piano Moving",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Picture Hanging and Art Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Painting & Finishes",
+    "subcategory": "General",
+    "service": "Plastering",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Assembly",
+    "service": "Play Equipment Construction and Assembly",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Repair",
+    "service": "Plumbing Drain Repair",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Inspection",
+    "service": "Plumbing Inspection",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Installation",
+    "service": "Plumbing Pipe Installation or Replacement",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Repair",
+    "service": "Plumbing Pipe Repair",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Moving & Hauling",
+    "subcategory": "Moving",
+    "service": "Pool Table Moving",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Repair",
+    "service": "Pool Table Repair Services",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Painting & Finishes",
+    "subcategory": "Removal",
+    "service": "Popcorn Texture Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Specialty & Professional Services",
+    "subcategory": "General",
+    "service": "Powder Coating",
+    "requires_license": false,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "General",
+    "service": "Pressure Washing",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Specialty & Professional Services",
+    "subcategory": "General",
+    "service": "Property Management",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Inspections & Environmental",
+    "subcategory": "General",
+    "service": "Radon Mitigation",
+    "requires_license": true,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Installation",
+    "service": "Railing Installation or Remodel",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Real Estate Agent Services",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Real Estate Appraisal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pest Control",
+    "subcategory": "Removal",
+    "service": "Rodent and Animal Removal",
+    "requires_license": false,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Roofing & Gutters",
+    "subcategory": "Cleaning",
+    "service": "Roof Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Roofing & Gutters",
+    "subcategory": "Inspection",
+    "service": "Roof Inspection",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Roofing & Gutters",
+    "subcategory": "Installation",
+    "service": "Roof Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Roofing & Gutters",
+    "subcategory": "Repair",
+    "service": "Roof Repair or Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "Remodel",
+    "service": "Room Remodel",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "Cleaning",
+    "service": "Rug Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "General",
+    "service": "Satellite Dish Services",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "Installation",
+    "service": "Screen Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Installation",
+    "service": "Septic System Installation or Replacement",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Repair",
+    "service": "Septic System Repair, Maintenance or Inspection",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Installation",
+    "service": "Shower and Bathtub Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Repair",
+    "service": "Shower and Bathtub Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Removal",
+    "service": "Shrub Trimming and Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation",
+    "service": "Siding Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Removal",
+    "service": "Siding Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Repair",
+    "service": "Siding Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Installation",
+    "service": "Sink or Faucet Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Repair",
+    "service": "Sink or Faucet Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Installation & Repair",
+    "service": "Smart Home Installation or Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Other",
+    "subcategory": "General",
+    "service": "Snow Plowing",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "Installation",
+    "service": "Sod Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "Cleaning",
+    "service": "Solar Panel Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Other",
+    "subcategory": "Installation & Repair",
+    "service": "Solar Panel Installation and Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Roofing & Gutters",
+    "subcategory": "General",
+    "service": "Sound Proofing",
+    "requires_license": false,
+    "is_specialty": true,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "Installation",
+    "service": "Sprinkler and Irrigation System Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "Repair",
+    "service": "Sprinkler and Irrigation System Repair and Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Remodeling & General Contracting",
+    "subcategory": "Installation & Repair",
+    "service": "Stair Installation, Remodel, or Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Specialty & Professional Services",
+    "subcategory": "General",
+    "service": "Structural Engineering Services",
+    "requires_license": true,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Masonry / Concrete / Stucco",
+    "subcategory": "General",
+    "service": "Stucco Application",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Masonry / Concrete / Stucco",
+    "subcategory": "Repair",
+    "service": "Stucco Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Installation",
+    "service": "Sump Pump Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Cleaning",
+    "service": "Swimming Pool Cleaning, Maintenance, and Inspection",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Inspection",
+    "service": "Swimming Pool Inspection",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Removal",
+    "service": "Swimming Pool Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Repair",
+    "service": "Swimming Pool Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Installation",
+    "service": "Switch and Outlet Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Repair",
+    "service": "Switch and Outlet Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "General",
+    "service": "TV Mounting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Repair",
+    "service": "TV Repair Services",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pest Control",
+    "subcategory": "General",
+    "service": "Termite Control Services",
+    "requires_license": true,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pest Control",
+    "subcategory": "Inspection",
+    "service": "Termite Inspection",
+    "requires_license": true,
+    "is_specialty": true,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Installation & Repair",
+    "service": "Thermostat Installation or Repair",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Installation",
+    "service": "Tile Installation and Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Repair",
+    "service": "Tile Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Flooring",
+    "subcategory": "Cleaning",
+    "service": "Tile and Grout Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Installation",
+    "service": "Toilet Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Repair",
+    "service": "Toilet Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "General",
+    "service": "Tree Planting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "Removal",
+    "service": "Tree Stump Grinding and Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Removal",
+    "service": "Tree Trimming and Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "outdoor"
+  },
+  {
+    "category": "Carpentry & Woodwork",
+    "subcategory": "Installation",
+    "service": "Trim or Molding Installation",
+    "requires_license": true,
+    "is_specialty": true,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "Cleaning",
+    "service": "Upholstery and Furniture Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Painting & Finishes",
+    "subcategory": "Installation & Repair",
+    "service": "Wallpaper Installation or Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Painting & Finishes",
+    "subcategory": "Removal",
+    "service": "Wallpaper Removal",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Cleaning & Maintenance",
+    "subcategory": "General",
+    "service": "Water Damage Cleanup and Restoration",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Installation",
+    "service": "Water Feature Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Pools / Spas / Water Features",
+    "subcategory": "Repair",
+    "service": "Water Feature Repair and Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Installation",
+    "service": "Water Heater Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Repair",
+    "service": "Water Heater Repair or Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Repair",
+    "service": "Water Treatment Repair or Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "Installation",
+    "service": "Water Treatment System Installation or Replacement",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Specialty & Professional Services",
+    "subcategory": "General",
+    "service": "Weatherization",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Outdoor & Landscaping",
+    "subcategory": "General",
+    "service": "Weeding",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Plumbing & Water Systems",
+    "subcategory": "General",
+    "service": "Well System Work",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "Cleaning",
+    "service": "Window Cleaning",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "Installation",
+    "service": "Window Installation",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "Repair",
+    "service": "Window Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "General",
+    "service": "Window Tinting",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Windows & Doors",
+    "subcategory": "Installation & Repair",
+    "service": "Window Treatment Installation or Repair",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "HVAC (Heating / Cooling)",
+    "subcategory": "Repair",
+    "service": "Window, Wall, or Portable AC Repair or Maintenance",
+    "requires_license": false,
+    "is_specialty": false,
+    "indoor_outdoor": "indoor"
+  },
+  {
+    "category": "Electrical & Smart Home",
+    "subcategory": "Installation",
+    "service": "Wiring Installation",
+    "requires_license": true,
+    "is_specialty": false,
+    "indoor_outdoor": "both"
+  }
+]

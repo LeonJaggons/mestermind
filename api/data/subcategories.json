@@ -1,0 +1,767 @@
+[
+  {
+    "id": "sub_001",
+    "category_id": "cat_001",
+    "name": "General",
+    "description": "General services within other",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 1
+  },
+  {
+    "id": "sub_002",
+    "category_id": "cat_002",
+    "name": "Installation",
+    "description": "Installation services within pools / spas / water features",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 2
+  },
+  {
+    "id": "sub_003",
+    "category_id": "cat_003",
+    "name": "General",
+    "description": "General services within inspections & environmental",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 3
+  },
+  {
+    "id": "sub_004",
+    "category_id": "cat_001",
+    "name": "Installation",
+    "description": "Installation services within other",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 4
+  },
+  {
+    "id": "sub_005",
+    "category_id": "cat_001",
+    "name": "Repair",
+    "description": "Repair services within other",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 5
+  },
+  {
+    "id": "sub_006",
+    "category_id": "cat_004",
+    "name": "General",
+    "description": "General services within specialty & professional services",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 6
+  },
+  {
+    "id": "sub_007",
+    "category_id": "cat_003",
+    "name": "Removal",
+    "description": "Removal services within inspections & environmental",
+    "icon": "removal",
+    "is_active": true,
+    "sort_order": 7
+  },
+  {
+    "id": "sub_008",
+    "category_id": "cat_005",
+    "name": "Installation",
+    "description": "Installation services within masonry / concrete / stucco",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 8
+  },
+  {
+    "id": "sub_009",
+    "category_id": "cat_005",
+    "name": "Repair",
+    "description": "Repair services within masonry / concrete / stucco",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 9
+  },
+  {
+    "id": "sub_010",
+    "category_id": "cat_006",
+    "name": "Remodel",
+    "description": "Remodel services within remodeling & general contracting",
+    "icon": "remodel",
+    "is_active": true,
+    "sort_order": 10
+  },
+  {
+    "id": "sub_011",
+    "category_id": "cat_007",
+    "name": "General",
+    "description": "General services within pest control",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 11
+  },
+  {
+    "id": "sub_012",
+    "category_id": "cat_008",
+    "name": "Installation",
+    "description": "Installation services within carpentry & woodwork",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 12
+  },
+  {
+    "id": "sub_013",
+    "category_id": "cat_008",
+    "name": "Finishing",
+    "description": "Finishing services within carpentry & woodwork",
+    "icon": "finishing",
+    "is_active": true,
+    "sort_order": 13
+  },
+  {
+    "id": "sub_014",
+    "category_id": "cat_008",
+    "name": "Repair",
+    "description": "Repair services within carpentry & woodwork",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 14
+  },
+  {
+    "id": "sub_015",
+    "category_id": "cat_008",
+    "name": "General",
+    "description": "General services within carpentry & woodwork",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 15
+  },
+  {
+    "id": "sub_016",
+    "category_id": "cat_009",
+    "name": "Cleaning",
+    "description": "Cleaning services within flooring",
+    "icon": "cleaning",
+    "is_active": true,
+    "sort_order": 16
+  },
+  {
+    "id": "sub_017",
+    "category_id": "cat_009",
+    "name": "Installation",
+    "description": "Installation services within flooring",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 17
+  },
+  {
+    "id": "sub_018",
+    "category_id": "cat_009",
+    "name": "Removal",
+    "description": "Removal services within flooring",
+    "icon": "removal",
+    "is_active": true,
+    "sort_order": 18
+  },
+  {
+    "id": "sub_019",
+    "category_id": "cat_009",
+    "name": "Repair",
+    "description": "Repair services within flooring",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 19
+  },
+  {
+    "id": "sub_020",
+    "category_id": "cat_010",
+    "name": "Installation",
+    "description": "Installation services within hvac (heating / cooling)",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 20
+  },
+  {
+    "id": "sub_021",
+    "category_id": "cat_010",
+    "name": "Repair",
+    "description": "Repair services within hvac (heating / cooling)",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 21
+  },
+  {
+    "id": "sub_022",
+    "category_id": "cat_011",
+    "name": "Installation",
+    "description": "Installation services within electrical & smart home",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 22
+  },
+  {
+    "id": "sub_023",
+    "category_id": "cat_011",
+    "name": "Repair",
+    "description": "Repair services within electrical & smart home",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 23
+  },
+  {
+    "id": "sub_024",
+    "category_id": "cat_008",
+    "name": "Remodel",
+    "description": "Remodel services within carpentry & woodwork",
+    "icon": "remodel",
+    "is_active": true,
+    "sort_order": 24
+  },
+  {
+    "id": "sub_025",
+    "category_id": "cat_012",
+    "name": "Cleaning",
+    "description": "Cleaning services within cleaning & maintenance",
+    "icon": "cleaning",
+    "is_active": true,
+    "sort_order": 25
+  },
+  {
+    "id": "sub_026",
+    "category_id": "cat_005",
+    "name": "Removal",
+    "description": "Removal services within masonry / concrete / stucco",
+    "icon": "removal",
+    "is_active": true,
+    "sort_order": 26
+  },
+  {
+    "id": "sub_027",
+    "category_id": "cat_001",
+    "name": "Construction",
+    "description": "Construction services within other",
+    "icon": "construction",
+    "is_active": true,
+    "sort_order": 27
+  },
+  {
+    "id": "sub_028",
+    "category_id": "cat_013",
+    "name": "Installation",
+    "description": "Installation services within windows & doors",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 28
+  },
+  {
+    "id": "sub_029",
+    "category_id": "cat_013",
+    "name": "Repair",
+    "description": "Repair services within windows & doors",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 29
+  },
+  {
+    "id": "sub_030",
+    "category_id": "cat_010",
+    "name": "Cleaning",
+    "description": "Cleaning services within hvac (heating / cooling)",
+    "icon": "cleaning",
+    "is_active": true,
+    "sort_order": 30
+  },
+  {
+    "id": "sub_031",
+    "category_id": "cat_014",
+    "name": "General",
+    "description": "General services within moving & hauling",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 31
+  },
+  {
+    "id": "sub_032",
+    "category_id": "cat_015",
+    "name": "General",
+    "description": "General services within plumbing & water systems",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 32
+  },
+  {
+    "id": "sub_033",
+    "category_id": "cat_009",
+    "name": "General",
+    "description": "General services within flooring",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 33
+  },
+  {
+    "id": "sub_034",
+    "category_id": "cat_016",
+    "name": "Finishing",
+    "description": "Finishing services within painting & finishes",
+    "icon": "finishing",
+    "is_active": true,
+    "sort_order": 34
+  },
+  {
+    "id": "sub_035",
+    "category_id": "cat_017",
+    "name": "Installation",
+    "description": "Installation services within fences, gates & railings",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 35
+  },
+  {
+    "id": "sub_036",
+    "category_id": "cat_017",
+    "name": "Repair",
+    "description": "Repair services within fences, gates & railings",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 36
+  },
+  {
+    "id": "sub_037",
+    "category_id": "cat_012",
+    "name": "Repair",
+    "description": "Repair services within cleaning & maintenance",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 37
+  },
+  {
+    "id": "sub_038",
+    "category_id": "cat_001",
+    "name": "Assembly",
+    "description": "Assembly services within other",
+    "icon": "assembly",
+    "is_active": true,
+    "sort_order": 38
+  },
+  {
+    "id": "sub_039",
+    "category_id": "cat_009",
+    "name": "Finishing",
+    "description": "Finishing services within flooring",
+    "icon": "finishing",
+    "is_active": true,
+    "sort_order": 39
+  },
+  {
+    "id": "sub_040",
+    "category_id": "cat_018",
+    "name": "General",
+    "description": "General services within outdoor & landscaping",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 40
+  },
+  {
+    "id": "sub_041",
+    "category_id": "cat_014",
+    "name": "Moving",
+    "description": "Moving services within moving & hauling",
+    "icon": "moving",
+    "is_active": true,
+    "sort_order": 41
+  },
+  {
+    "id": "sub_042",
+    "category_id": "cat_001",
+    "name": "Finishing",
+    "description": "Finishing services within other",
+    "icon": "finishing",
+    "is_active": true,
+    "sort_order": 42
+  },
+  {
+    "id": "sub_043",
+    "category_id": "cat_012",
+    "name": "General",
+    "description": "General services within cleaning & maintenance",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 43
+  },
+  {
+    "id": "sub_044",
+    "category_id": "cat_015",
+    "name": "Installation",
+    "description": "Installation services within plumbing & water systems",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 44
+  },
+  {
+    "id": "sub_045",
+    "category_id": "cat_015",
+    "name": "Repair",
+    "description": "Repair services within plumbing & water systems",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 45
+  },
+  {
+    "id": "sub_046",
+    "category_id": "cat_006",
+    "name": "General",
+    "description": "General services within remodeling & general contracting",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 46
+  },
+  {
+    "id": "sub_047",
+    "category_id": "cat_019",
+    "name": "Cleaning",
+    "description": "Cleaning services within roofing & gutters",
+    "icon": "cleaning",
+    "is_active": true,
+    "sort_order": 47
+  },
+  {
+    "id": "sub_048",
+    "category_id": "cat_019",
+    "name": "Installation",
+    "description": "Installation services within roofing & gutters",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 48
+  },
+  {
+    "id": "sub_049",
+    "category_id": "cat_019",
+    "name": "Repair",
+    "description": "Repair services within roofing & gutters",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 49
+  },
+  {
+    "id": "sub_050",
+    "category_id": "cat_003",
+    "name": "Inspection",
+    "description": "Inspection services within inspections & environmental",
+    "icon": "inspection",
+    "is_active": true,
+    "sort_order": 50
+  },
+  {
+    "id": "sub_051",
+    "category_id": "cat_001",
+    "name": "Organizing",
+    "description": "Organizing services within other",
+    "icon": "organizing",
+    "is_active": true,
+    "sort_order": 51
+  },
+  {
+    "id": "sub_052",
+    "category_id": "cat_020",
+    "name": "Repair",
+    "description": "Repair services within security systems",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 52
+  },
+  {
+    "id": "sub_053",
+    "category_id": "cat_020",
+    "name": "Installation",
+    "description": "Installation services within security systems",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 53
+  },
+  {
+    "id": "sub_054",
+    "category_id": "cat_019",
+    "name": "General",
+    "description": "General services within roofing & gutters",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 54
+  },
+  {
+    "id": "sub_055",
+    "category_id": "cat_002",
+    "name": "Moving",
+    "description": "Moving services within pools / spas / water features",
+    "icon": "moving",
+    "is_active": true,
+    "sort_order": 55
+  },
+  {
+    "id": "sub_056",
+    "category_id": "cat_002",
+    "name": "Cleaning",
+    "description": "Cleaning services within pools / spas / water features",
+    "icon": "cleaning",
+    "is_active": true,
+    "sort_order": 56
+  },
+  {
+    "id": "sub_057",
+    "category_id": "cat_002",
+    "name": "Repair",
+    "description": "Repair services within pools / spas / water features",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 57
+  },
+  {
+    "id": "sub_058",
+    "category_id": "cat_002",
+    "name": "Construction",
+    "description": "Construction services within pools / spas / water features",
+    "icon": "construction",
+    "is_active": true,
+    "sort_order": 58
+  },
+  {
+    "id": "sub_059",
+    "category_id": "cat_004",
+    "name": "Design",
+    "description": "Design services within specialty & professional services",
+    "icon": "design",
+    "is_active": true,
+    "sort_order": 59
+  },
+  {
+    "id": "sub_060",
+    "category_id": "cat_012",
+    "name": "Removal",
+    "description": "Removal services within cleaning & maintenance",
+    "icon": "removal",
+    "is_active": true,
+    "sort_order": 60
+  },
+  {
+    "id": "sub_061",
+    "category_id": "cat_018",
+    "name": "Repair",
+    "description": "Repair services within outdoor & landscaping",
+    "icon": "repair",
+    "is_active": true,
+    "sort_order": 61
+  },
+  {
+    "id": "sub_062",
+    "category_id": "cat_001",
+    "name": "Installation & Repair",
+    "description": "Installation & Repair services within other",
+    "icon": "installation-&-repair",
+    "is_active": true,
+    "sort_order": 62
+  },
+  {
+    "id": "sub_063",
+    "category_id": "cat_005",
+    "name": "Construction",
+    "description": "Construction services within masonry / concrete / stucco",
+    "icon": "construction",
+    "is_active": true,
+    "sort_order": 63
+  },
+  {
+    "id": "sub_064",
+    "category_id": "cat_006",
+    "name": "Construction",
+    "description": "Construction services within remodeling & general contracting",
+    "icon": "construction",
+    "is_active": true,
+    "sort_order": 64
+  },
+  {
+    "id": "sub_065",
+    "category_id": "cat_013",
+    "name": "Design",
+    "description": "Design services within windows & doors",
+    "icon": "design",
+    "is_active": true,
+    "sort_order": 65
+  },
+  {
+    "id": "sub_066",
+    "category_id": "cat_013",
+    "name": "General",
+    "description": "General services within windows & doors",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 66
+  },
+  {
+    "id": "sub_067",
+    "category_id": "cat_016",
+    "name": "Removal",
+    "description": "Removal services within painting & finishes",
+    "icon": "removal",
+    "is_active": true,
+    "sort_order": 67
+  },
+  {
+    "id": "sub_068",
+    "category_id": "cat_007",
+    "name": "Inspection",
+    "description": "Inspection services within pest control",
+    "icon": "inspection",
+    "is_active": true,
+    "sort_order": 68
+  },
+  {
+    "id": "sub_069",
+    "category_id": "cat_016",
+    "name": "General",
+    "description": "General services within painting & finishes",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 69
+  },
+  {
+    "id": "sub_070",
+    "category_id": "cat_015",
+    "name": "Inspection",
+    "description": "Inspection services within plumbing & water systems",
+    "icon": "inspection",
+    "is_active": true,
+    "sort_order": 70
+  },
+  {
+    "id": "sub_071",
+    "category_id": "cat_007",
+    "name": "Removal",
+    "description": "Removal services within pest control",
+    "icon": "removal",
+    "is_active": true,
+    "sort_order": 71
+  },
+  {
+    "id": "sub_072",
+    "category_id": "cat_019",
+    "name": "Inspection",
+    "description": "Inspection services within roofing & gutters",
+    "icon": "inspection",
+    "is_active": true,
+    "sort_order": 72
+  },
+  {
+    "id": "sub_073",
+    "category_id": "cat_011",
+    "name": "General",
+    "description": "General services within electrical & smart home",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 73
+  },
+  {
+    "id": "sub_074",
+    "category_id": "cat_008",
+    "name": "Removal",
+    "description": "Removal services within carpentry & woodwork",
+    "icon": "removal",
+    "is_active": true,
+    "sort_order": 74
+  },
+  {
+    "id": "sub_075",
+    "category_id": "cat_001",
+    "name": "Removal",
+    "description": "Removal services within other",
+    "icon": "removal",
+    "is_active": true,
+    "sort_order": 75
+  },
+  {
+    "id": "sub_076",
+    "category_id": "cat_011",
+    "name": "Installation & Repair",
+    "description": "Installation & Repair services within electrical & smart home",
+    "icon": "installation-&-repair",
+    "is_active": true,
+    "sort_order": 76
+  },
+  {
+    "id": "sub_077",
+    "category_id": "cat_018",
+    "name": "Installation",
+    "description": "Installation services within outdoor & landscaping",
+    "icon": "installation",
+    "is_active": true,
+    "sort_order": 77
+  },
+  {
+    "id": "sub_078",
+    "category_id": "cat_006",
+    "name": "Installation & Repair",
+    "description": "Installation & Repair services within remodeling & general contracting",
+    "icon": "installation-&-repair",
+    "is_active": true,
+    "sort_order": 78
+  },
+  {
+    "id": "sub_079",
+    "category_id": "cat_005",
+    "name": "General",
+    "description": "General services within masonry / concrete / stucco",
+    "icon": "general",
+    "is_active": true,
+    "sort_order": 79
+  },
+  {
+    "id": "sub_080",
+    "category_id": "cat_002",
+    "name": "Inspection",
+    "description": "Inspection services within pools / spas / water features",
+    "icon": "inspection",
+    "is_active": true,
+    "sort_order": 80
+  },
+  {
+    "id": "sub_081",
+    "category_id": "cat_002",
+    "name": "Removal",
+    "description": "Removal services within pools / spas / water features",
+    "icon": "removal",
+    "is_active": true,
+    "sort_order": 81
+  },
+  {
+    "id": "sub_082",
+    "category_id": "cat_018",
+    "name": "Removal",
+    "description": "Removal services within outdoor & landscaping",
+    "icon": "removal",
+    "is_active": true,
+    "sort_order": 82
+  },
+  {
+    "id": "sub_083",
+    "category_id": "cat_016",
+    "name": "Installation & Repair",
+    "description": "Installation & Repair services within painting & finishes",
+    "icon": "installation-&-repair",
+    "is_active": true,
+    "sort_order": 83
+  },
+  {
+    "id": "sub_084",
+    "category_id": "cat_013",
+    "name": "Cleaning",
+    "description": "Cleaning services within windows & doors",
+    "icon": "cleaning",
+    "is_active": true,
+    "sort_order": 84
+  },
+  {
+    "id": "sub_085",
+    "category_id": "cat_013",
+    "name": "Installation & Repair",
+    "description": "Installation & Repair services within windows & doors",
+    "icon": "installation-&-repair",
+    "is_active": true,
+    "sort_order": 85
+  }
+]

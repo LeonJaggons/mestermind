@@ -1,0 +1,32 @@
+# FastAPI and ASGI server - Python 3.13 compatible versions
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+
+# Data validation and serialization - Use latest versions for Python 3.13
+pydantic==2.10.0
+
+# Environment variables
+python-dotenv==1.0.1
+
+# HTTP client for external APIs
+httpx==0.28.1
+
+# Database
+sqlalchemy==2.0.43
+alembic==1.16.5
+psycopg2-binary==2.9.10  # PostgreSQL - Python 3.13 compatible
+
+# Authentication (optional - uncomment if needed)
+# python-jose[cryptography]==3.3.0
+# passlib[bcrypt]==1.7.4
+# python-multipart==0.0.6
+
+# Testing (optional - uncomment if needed)
+# pytest==7.4.3
+# pytest-asyncio==0.21.1
+# httpx==0.25.2
+
+# Development tools (optional - uncomment if needed)
+# black==23.11.0
+# isort==5.12.0
+# flake8==6.1.0
