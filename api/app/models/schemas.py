@@ -292,3 +292,149 @@ class QuestionResponse(QuestionBase):
 # Update forward references
 QuestionSetResponse.model_rebuild()
 QuestionResponse.model_rebuild()
+
+
+# -----------------------------
+# Location schemas (Hungary)
+# -----------------------------
+
+class CountyBase(BaseModel):
+    name: str
+    code: Optional[str] = None
+    is_active: bool = True
+    sort_order: int = 0
+
+
+class CountyCreate(CountyBase):
+    pass
+
+
+class CountyUpdate(BaseModel):
+    name: Optional[str] = None
+    code: Optional[str] = None
+    is_active: Optional[bool] = None
+    sort_order: Optional[int] = None
+
+
+class CountyResponse(CountyBase):
+    id: str
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class CityBase(BaseModel):
+    name: str
+    is_capital: bool = False
+    is_active: bool = True
+    sort_order: int = 0
+
+
+class CityCreate(CityBase):
+    county_id: str
+
+
+class CityUpdate(BaseModel):
+    name: Optional[str] = None
+    is_capital: Optional[bool] = None
+    is_active: Optional[bool] = None
+    sort_order: Optional[int] = None
+    county_id: Optional[str] = None
+
+
+class CityResponse(CityBase):
+    id: str
+    county_id: str
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class DistrictBase(BaseModel):
+    name: str
+    code: Optional[str] = None
+    number: Optional[int] = None
+    is_active: bool = True
+    sort_order: int = 0
+
+
+class DistrictCreate(DistrictBase):
+    city_id: str
+
+
+class DistrictUpdate(BaseModel):
+    name: Optional[str] = None
+    code: Optional[str] = None
+    number: Optional[int] = None
+    is_active: Optional[bool] = None
+    sort_order: Optional[int] = None
+    city_id: Optional[str] = None
+
+
+class DistrictResponse(DistrictBase):
+    id: str
+    city_id: str
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class PostalCodeBase(BaseModel):
+    code: str
+    is_po_box: bool = False
+    is_active: bool = True
+    sort_order: int = 0
+
+
+class PostalCodeCreate(PostalCodeBase):
+    city_id: str
+    district_id: Optional[str] = None
+
+
+class PostalCodeUpdate(BaseModel):
+    code: Optional[str] = None
+    is_po_box: Optional[bool] = None
+    is_active: Optional[bool] = None
+    sort_order: Optional[int] = None
+    city_id: Optional[str] = None
+    district_id: Optional[str] = None
+
+
+class PostalCodeResponse(PostalCodeBase):
+    id: str
+    city_id: str
+    district_id: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+# -----------------------------
+# Geo normalization schemas
+# -----------------------------
+
+class GeoNormalizeRequest(BaseModel):
+    """Geo normalization request model"""
+    query: Optional[str] = None
+    place_id: Optional[str] = None
+    type: Optional[str] = Field(None, pattern="^(city|district|postal_code)$")
+
+
+class GeoNormalizeResponse(BaseModel):
+    """Geo normalization response model"""
+    place_id: str
+    type: str
+    name: str
+    city_id: str
+    district_id: Optional[str] = None
+    postal_code: Optional[str] = None
+    lat: Optional[float] = None
+    lon: Optional[float] = None

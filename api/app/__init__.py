@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import create_tables
-from app.routes import categories_router, health_router, services_router, question_sets_router, questions_router
+from app.routes import categories_router, health_router, services_router, question_sets_router, questions_router, geo_router
 
 
 @asynccontextmanager
@@ -50,3 +50,4 @@ app.include_router(categories_router)
 app.include_router(services_router)
 app.include_router(question_sets_router)
 app.include_router(questions_router)
+app.include_router(geo_router)

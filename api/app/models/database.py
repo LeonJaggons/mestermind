@@ -145,3 +145,82 @@ class Question(Base):
 
     # Relationships
     question_set: Mapped["QuestionSet"] = relationship("QuestionSet", back_populates="questions")
+
+
+# -----------------------------
+# Location models (Hungary)
+# -----------------------------
+
+
+class County(Base):
+    """Hungarian county (megye)"""
+    __tablename__ = "counties"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(120), nullable=False, unique=True, index=True)
+    code: Mapped[Optional[str]] = mapped_column(String(10), nullable=True, unique=True)  # Optional administrative code
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), onupdate=text('now()'))
+
+    # Relationships
+    cities: Mapped[List["City"]] = relationship("City", back_populates="county", cascade="all, delete-orphan")
+
+
+class City(Base):
+    """City/municipality within a county. Includes Budapest as a special case."""
+    __tablename__ = "cities"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    county_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("counties.id"), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(150), nullable=False, index=True)
+    is_capital: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), onupdate=text('now()'))
+
+    # Relationships
+    county: Mapped["County"] = relationship("County", back_populates="cities")
+    districts: Mapped[List["District"]] = relationship("District", back_populates="city", cascade="all, delete-orphan")
+    postal_codes: Mapped[List["PostalCode"]] = relationship("PostalCode", back_populates="city", cascade="all, delete-orphan")
+
+
+class District(Base):
+    """Administrative district within certain cities (notably Budapest I-XXIII)."""
+    __tablename__ = "districts"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    city_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("cities.id"), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)  # e.g., "I. kerület"
+    code: Mapped[Optional[str]] = mapped_column(String(10), nullable=True, index=True)  # e.g., "I", "02", "XV"
+    number: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # numeric form if available
+    common_names: Mapped[Optional[List[str]]] = mapped_column(JSON, nullable=True)  # e.g., ["Zugló", "Zuglói"] for 14th district
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), onupdate=text('now()'))
+
+    # Relationships
+    city: Mapped["City"] = relationship("City", back_populates="districts")
+    postal_codes: Mapped[List["PostalCode"]] = relationship("PostalCode", back_populates="district", cascade="all, delete-orphan")
+
+
+class PostalCode(Base):
+    """Hungarian 4-digit postal codes, optionally associated to a district."""
+    __tablename__ = "postal_codes"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    city_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("cities.id"), nullable=False, index=True)
+    district_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("districts.id"), nullable=True, index=True)
+    code: Mapped[str] = mapped_column(String(10), nullable=False, index=True)  # 4-digit code, keep string for safety
+    is_po_box: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), onupdate=text('now()'))
+
+    # Relationships
+    city: Mapped["City"] = relationship("City", back_populates="postal_codes")
+    district: Mapped[Optional["District"]] = relationship("District", back_populates="postal_codes")
