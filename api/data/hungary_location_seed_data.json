@@ -5,7 +5,10 @@
     "scope": "Major counties, major cities, Budapest districts, and representative postal codes (non-exhaustive).",
     "notes": [
       "This structure mirrors your SQLAlchemy models.",
-      "Postal codes are a small, representative subset for each city; expand as needed."
+      "Postal codes are a small, representative subset for each city; expand as needed.",
+      "Coordinates for cities refreshed 2025-09-29T12:39:50Z. Sources: Wikipedia pages for each city (retrieved 2025-09-29).",
+      "County coordinates set to county seat city coordinates (per Wikipedia county-seat mapping), refreshed 2025-09-29T12:48:00Z.",
+      "Budapest district coordinates set to district centroids/infobox coordinates (approx.), refreshed 2025-09-29T12:48:00Z."
     ]
   },
   "counties": [
@@ -16,7 +19,9 @@
       "is_active": true,
       "sort_order": 1,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 46.07083,
+      "lon": 18.23306
     },
     {
       "id": "4e1b4212-7867-4f79-bf47-ab5577dd8292",
@@ -25,7 +30,9 @@
       "is_active": true,
       "sort_order": 2,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 46.9075,
+      "lon": 19.69167
     },
     {
       "id": "0bdadbc3-36ee-4872-acc9-f3afb333dcc9",
@@ -34,7 +41,9 @@
       "is_active": true,
       "sort_order": 3,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 46.679,
+      "lon": 21.091
     },
     {
       "id": "d04bf925-d828-4c4a-93c5-2882e452833d",
@@ -43,7 +52,9 @@
       "is_active": true,
       "sort_order": 4,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 48.10417,
+      "lon": 20.79167
     },
     {
       "id": "cd4ad10a-45d2-4484-9181-723b7d397536",
@@ -61,7 +72,9 @@
       "is_active": true,
       "sort_order": 6,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 46.253,
+      "lon": 20.1414
     },
     {
       "id": "a9c95bde-282a-4c54-9344-98e3ce058ee2",
@@ -70,7 +83,9 @@
       "is_active": true,
       "sort_order": 7,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.18877,
+      "lon": 18.41384
     },
     {
       "id": "c7b950d3-4c4d-4ae7-a149-08ecc4ee425a",
@@ -79,7 +94,9 @@
       "is_active": true,
       "sort_order": 8,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.6842,
+      "lon": 17.6344
     },
     {
       "id": "1542e085-a644-4454-a647-46a3cabced87",
@@ -88,7 +105,9 @@
       "is_active": true,
       "sort_order": 9,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.53167,
+      "lon": 21.62444
     },
     {
       "id": "60685517-6ffa-4a54-b6ca-eca34cf53f20",
@@ -97,7 +116,9 @@
       "is_active": true,
       "sort_order": 10,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.9025,
+      "lon": 20.3772
     },
     {
       "id": "a64f4e7d-d28f-48bf-b330-2a51a3b57098",
@@ -106,7 +127,9 @@
       "is_active": true,
       "sort_order": 11,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.17467,
+      "lon": 20.19649
     },
     {
       "id": "74fe9eec-c518-4800-a7d5-958ecb68906a",
@@ -115,7 +138,9 @@
       "is_active": true,
       "sort_order": 12,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.58616,
+      "lon": 18.39485
     },
     {
       "id": "62c09ee5-841f-42d5-b780-d702706ccace",
@@ -124,7 +149,9 @@
       "is_active": true,
       "sort_order": 13,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 48.104042,
+      "lon": 19.807456
     },
     {
       "id": "f0a34a55-0aba-4d94-9cea-f427d3289435",
@@ -133,7 +160,9 @@
       "is_active": true,
       "sort_order": 14,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.4979,
+      "lon": 19.0402
     },
     {
       "id": "b4b245ef-4e8d-4cc3-bf8f-f43e526e40fe",
@@ -142,7 +171,9 @@
       "is_active": true,
       "sort_order": 15,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 46.36383,
+      "lon": 17.78225
     },
     {
       "id": "403885b9-7c2b-4c26-8cf0-0b29ff87fbc1",
@@ -151,7 +182,9 @@
       "is_active": true,
       "sort_order": 16,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.95306,
+      "lon": 21.72713
     },
     {
       "id": "68a4acdc-46a9-4f7d-ba39-eee2f63a7ec7",
@@ -160,7 +193,9 @@
       "is_active": true,
       "sort_order": 17,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 46.35597,
+      "lon": 18.70382
     },
     {
       "id": "04254847-6f5f-41bf-913d-80c3476b1d90",
@@ -169,7 +204,9 @@
       "is_active": true,
       "sort_order": 18,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.23512,
+      "lon": 16.62191
     },
     {
       "id": "0ae364e2-83ec-4e14-bebb-1531383bf521",
@@ -178,7 +215,9 @@
       "is_active": true,
       "sort_order": 19,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.09296,
+      "lon": 17.91377
     },
     {
       "id": "e737ec6a-4995-4d3b-8e76-4264002c028c",
@@ -187,7 +226,9 @@
       "is_active": true,
       "sort_order": 20,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 46.84538,
+      "lon": 16.84721
     }
   ],
   "cities": [
@@ -198,6 +239,8 @@
       "is_capital": true,
       "is_active": true,
       "sort_order": 1,
+      "lat": 47.4979,
+      "lon": 19.0402,
       "created_at": "2025-09-29T08:07:25.382393Z",
       "updated_at": null
     },
@@ -209,7 +252,9 @@
       "is_active": true,
       "sort_order": 2,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 47.53167,
+      "lon": 21.62444
     },
     {
       "id": "fed2b721-8126-44e2-afa6-8e8f34f023ef",
@@ -218,6 +263,8 @@
       "is_capital": false,
       "is_active": true,
       "sort_order": 3,
+      "lat": 46.253,
+      "lon": 20.1414,
       "created_at": "2025-09-29T08:07:25.382393Z",
       "updated_at": null
     },
@@ -229,7 +276,9 @@
       "is_active": true,
       "sort_order": 4,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 48.10417,
+      "lon": 20.79167
     },
     {
       "id": "5b6ecdd8-7fb1-4c48-bfc5-199ed4e945d1",
@@ -239,7 +288,9 @@
       "is_active": true,
       "sort_order": 5,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 46.07083,
+      "lon": 18.23306
     },
     {
       "id": "e2ea39a0-9917-45ac-9e8d-e3a93a4bde93",
@@ -249,7 +300,9 @@
       "is_active": true,
       "sort_order": 6,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 47.6842,
+      "lon": 17.6344
     },
     {
       "id": "f8b721dc-475c-42a5-9631-a843a1479b44",
@@ -259,7 +312,9 @@
       "is_active": true,
       "sort_order": 7,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 47.95306,
+      "lon": 21.72713
     },
     {
       "id": "e2277e0e-349f-4b66-b68d-7ecb87558163",
@@ -269,7 +324,9 @@
       "is_active": true,
       "sort_order": 8,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 46.9075,
+      "lon": 19.69167
     },
     {
       "id": "c52b4e1c-9355-4672-bfb2-c58fd3b91278",
@@ -279,7 +336,9 @@
       "is_active": true,
       "sort_order": 9,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 47.18877,
+      "lon": 18.41384
     },
     {
       "id": "6eed569e-a6fd-4844-ac6c-92e1e76246f9",
@@ -289,7 +348,9 @@
       "is_active": true,
       "sort_order": 10,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 47.23512,
+      "lon": 16.62191
     },
     {
       "id": "3bdcd2b1-0b0f-485e-8e1e-e236b02f11ea",
@@ -299,7 +360,9 @@
       "is_active": true,
       "sort_order": 11,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 47.17467,
+      "lon": 20.19649
     },
     {
       "id": "41dd0376-c4ed-45be-ae32-1addfee497f1",
@@ -309,7 +372,9 @@
       "is_active": true,
       "sort_order": 12,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 47.58616,
+      "lon": 18.39485
     },
     {
       "id": "fadf59b0-c05d-4795-b7e5-0c8f0eebd593",
@@ -319,7 +384,9 @@
       "is_active": true,
       "sort_order": 13,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 48.104042,
+      "lon": 19.807456
     },
     {
       "id": "38f2ae72-8bf2-4e4d-a3b8-507a72072fb2",
@@ -329,7 +396,9 @@
       "is_active": true,
       "sort_order": 14,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 46.36383,
+      "lon": 17.78225
     },
     {
       "id": "3e197c55-b6a8-4241-a416-d0291224c008",
@@ -339,7 +408,9 @@
       "is_active": true,
       "sort_order": 15,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 46.679,
+      "lon": 21.091
     },
     {
       "id": "3772a8e6-ae75-45d6-8835-fbd852d96377",
@@ -348,6 +419,8 @@
       "is_capital": false,
       "is_active": true,
       "sort_order": 16,
+      "lat": 47.9025,
+      "lon": 20.3772,
       "created_at": "2025-09-29T08:07:25.382393Z",
       "updated_at": null
     },
@@ -359,7 +432,9 @@
       "is_active": true,
       "sort_order": 17,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 46.84538,
+      "lon": 16.84721
     },
     {
       "id": "efb27da6-5f51-489c-b9c3-a07e96016601",
@@ -369,7 +444,9 @@
       "is_active": true,
       "sort_order": 18,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 47.09296,
+      "lon": 17.91377
     },
     {
       "id": "b9c77f90-1802-4c52-92d9-8c4e389ea3b7",
@@ -379,7 +456,9 @@
       "is_active": true,
       "sort_order": 19,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 47.37833,
+      "lon": 18.92194
     },
     {
       "id": "6da285c1-7ae9-4016-a270-34e4fe355890",
@@ -389,7 +468,9 @@
       "is_active": true,
       "sort_order": 20,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 47.68489,
+      "lon": 16.58305
     },
     {
       "id": "bd6782ee-63be-42c9-86d9-671e35b7c5d1",
@@ -399,7 +480,9 @@
       "is_active": true,
       "sort_order": 21,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 46.98065,
+      "lon": 18.91268
     },
     {
       "id": "b61717f7-30e7-48e5-8610-5e219ba9e202",
@@ -409,7 +492,9 @@
       "is_active": true,
       "sort_order": 22,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 46.43039,
+      "lon": 20.31881
     },
     {
       "id": "4d874147-876f-45b5-97c2-880d140ac44f",
@@ -419,7 +504,9 @@
       "is_active": true,
       "sort_order": 23,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 46.45583,
+      "lon": 16.99735
     },
     {
       "id": "2b7ef3a0-4a0a-45ac-991e-7ca966adb20e",
@@ -429,7 +516,9 @@
       "is_active": true,
       "sort_order": 24,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:39:50Z",
+      "lat": 46.35597,
+      "lon": 18.70382
     }
   ],
   "districts": [
@@ -439,11 +528,17 @@
       "name": "I. kerület",
       "code": "I",
       "number": 1,
-      "common_names": ["Budai Vár", "Várnegyed", "Tabán"],
+      "common_names": [
+        "Budai Vár",
+        "Várnegyed",
+        "Tabán"
+      ],
       "is_active": true,
       "sort_order": 1,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.49705,
+      "lon": 19.03961
     },
     {
       "id": "c5bf88e8-f407-4694-be8a-fa67f93a8e13",
@@ -451,11 +546,17 @@
       "name": "II. kerület",
       "code": "II",
       "number": 2,
-      "common_names": ["Rózsadomb", "Pasarét", "Hűvösvölgy"],
+      "common_names": [
+        "Rózsadomb",
+        "Pasarét",
+        "Hűvösvölgy"
+      ],
       "is_active": true,
       "sort_order": 2,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.5178,
+      "lon": 19.0129
     },
     {
       "id": "2eec0f72-7756-49ab-bcb6-3eaef82dd47e",
@@ -463,11 +564,17 @@
       "name": "III. kerület",
       "code": "III",
       "number": 3,
-      "common_names": ["Óbuda", "Békásmegyer", "Aquincum"],
+      "common_names": [
+        "Óbuda",
+        "Békásmegyer",
+        "Aquincum"
+      ],
       "is_active": true,
       "sort_order": 3,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.56,
+      "lon": 19.0465
     },
     {
       "id": "33c53147-4eed-4a75-a33a-f46fe1b88728",
@@ -475,11 +582,16 @@
       "name": "IV. kerület",
       "code": "IV",
       "number": 4,
-      "common_names": ["Újpest", "Újpest-Városkapu"],
+      "common_names": [
+        "Újpest",
+        "Újpest-Városkapu"
+      ],
       "is_active": true,
       "sort_order": 4,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.559,
+      "lon": 19.079
     },
     {
       "id": "a282c9ec-d3fb-4779-8fa7-487a2cc0973d",
@@ -487,11 +599,17 @@
       "name": "V. kerület",
       "code": "V",
       "number": 5,
-      "common_names": ["Belváros", "Lipótváros", "Széchenyi lánchíd"],
+      "common_names": [
+        "Belváros",
+        "Lipótváros",
+        "Széchenyi lánchíd"
+      ],
       "is_active": true,
       "sort_order": 5,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.4979,
+      "lon": 19.053
     },
     {
       "id": "829c1c8e-24ba-4b37-b7b0-4a5d781e0cde",
@@ -499,11 +617,17 @@
       "name": "VI. kerület",
       "code": "VI",
       "number": 6,
-      "common_names": ["Terézváros", "Nagy körút", "Andrássy út"],
+      "common_names": [
+        "Terézváros",
+        "Nagy körút",
+        "Andrássy út"
+      ],
       "is_active": true,
       "sort_order": 6,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.5035,
+      "lon": 19.0643
     },
     {
       "id": "a5b604ab-aa6f-407a-8e1c-30f9a32cf0d8",
@@ -511,11 +635,17 @@
       "name": "VII. kerület",
       "code": "VII",
       "number": 7,
-      "common_names": ["Erzsebétváros", "Zsidónegyed", "Károlyi kert"],
+      "common_names": [
+        "Erzsebétváros",
+        "Zsidónegyed",
+        "Károlyi kert"
+      ],
       "is_active": true,
       "sort_order": 7,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.4989,
+      "lon": 19.0715
     },
     {
       "id": "8b2a00b0-727d-4acb-a5be-720e9932d2ae",
@@ -523,11 +653,17 @@
       "name": "VIII. kerület",
       "code": "VIII",
       "number": 8,
-      "common_names": ["Józsefváros", "Palotáváros", "Orczy negyed"],
+      "common_names": [
+        "Józsefváros",
+        "Palotáváros",
+        "Orczy negyed"
+      ],
       "is_active": true,
       "sort_order": 8,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.4899,
+      "lon": 19.0773
     },
     {
       "id": "4809d819-890b-442a-aaa4-c3ede155e4a4",
@@ -535,11 +671,17 @@
       "name": "IX. kerület",
       "code": "IX",
       "number": 9,
-      "common_names": ["Ferencváros", "Franzén", "Csárda"],
+      "common_names": [
+        "Ferencváros",
+        "Franzén",
+        "Csárda"
+      ],
       "is_active": true,
       "sort_order": 9,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.4767,
+      "lon": 19.0707
     },
     {
       "id": "bbf04c76-e96e-42cd-bfe2-fb80d44cf7c0",
@@ -547,11 +689,16 @@
       "name": "X. kerület",
       "code": "X",
       "number": 10,
-      "common_names": ["Kőbánya", "Kispest-Kőbánya"],
+      "common_names": [
+        "Kőbánya",
+        "Kispest-Kőbánya"
+      ],
       "is_active": true,
       "sort_order": 10,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.4875,
+      "lon": 19.1418
     },
     {
       "id": "2e0cd403-121b-408c-86de-1f874f568ad7",
@@ -559,11 +706,18 @@
       "name": "XI. kerület",
       "code": "XI",
       "number": 11,
-      "common_names": ["Újbuda", "Sasad", "Géllert hegy", "Fenékpuszta"],
+      "common_names": [
+        "Újbuda",
+        "Sasad",
+        "Géllert hegy",
+        "Fenékpuszta"
+      ],
       "is_active": true,
       "sort_order": 11,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.4737,
+      "lon": 19.0285
     },
     {
       "id": "0ff57c11-9236-4e94-b1f0-64f5d5f4dc10",
@@ -571,11 +725,17 @@
       "name": "XII. kerület",
       "code": "XII",
       "number": 12,
-      "common_names": ["Hegyvidék", "Budakészi", "Svabhegy"],
+      "common_names": [
+        "Hegyvidék",
+        "Budakészi",
+        "Svabhegy"
+      ],
       "is_active": true,
       "sort_order": 12,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.4955,
+      "lon": 19.0127
     },
     {
       "id": "1edc619e-bf5f-43dc-aad9-ef311581a289",
@@ -583,11 +743,17 @@
       "name": "XIII. kerület",
       "code": "XIII",
       "number": 13,
-      "common_names": ["Angyalföld", "Újlipotváros", "Vizafogó"],
+      "common_names": [
+        "Angyalföld",
+        "Újlipotváros",
+        "Vizafogó"
+      ],
       "is_active": true,
       "sort_order": 13,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.5313,
+      "lon": 19.0708
     },
     {
       "id": "13b0bfa3-b67c-446e-ba07-df1427cef0ff",
@@ -595,11 +761,18 @@
       "name": "XIV. kerület",
       "code": "XIV",
       "number": 14,
-      "common_names": ["Zugló", "Hősök tere", "Városliget", "Széchenyi fürdő"],
+      "common_names": [
+        "Zugló",
+        "Hősök tere",
+        "Városliget",
+        "Széchenyi fürdő"
+      ],
       "is_active": true,
       "sort_order": 14,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.5147,
+      "lon": 19.1063
     },
     {
       "id": "6ec8aa96-ba8a-435d-b3dc-e5a5f5b4bda3",
@@ -607,11 +780,17 @@
       "name": "XV. kerület",
       "code": "XV",
       "number": 15,
-      "common_names": ["Rákospalota", "Pestszentlőrinc", "Pestimre"],
+      "common_names": [
+        "Rákospalota",
+        "Pestszentlőrinc",
+        "Pestimre"
+      ],
       "is_active": true,
       "sort_order": 15,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.558,
+      "lon": 19.118
     },
     {
       "id": "1f49354b-f79e-4c82-9fb3-35356c65e072",
@@ -622,7 +801,9 @@
       "is_active": true,
       "sort_order": 16,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.514,
+      "lon": 19.17
     },
     {
       "id": "628c61cb-751d-45d6-9ced-3f559fa4b722",
@@ -633,7 +814,9 @@
       "is_active": true,
       "sort_order": 17,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.488,
+      "lon": 19.256
     },
     {
       "id": "4c6f0a3b-76b7-4bb0-bea3-cd8e3959e978",
@@ -644,7 +827,9 @@
       "is_active": true,
       "sort_order": 18,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.442,
+      "lon": 19.183
     },
     {
       "id": "df75690a-481d-4051-9a91-eb975fbd60be",
@@ -655,7 +840,9 @@
       "is_active": true,
       "sort_order": 19,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.459,
+      "lon": 19.149
     },
     {
       "id": "be7009b2-b0ac-4ddb-a71d-6ac823cba13b",
@@ -666,7 +853,9 @@
       "is_active": true,
       "sort_order": 20,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.4376,
+      "lon": 19.1162
     },
     {
       "id": "39c63f9c-c710-4deb-9f0b-760872c70861",
@@ -674,11 +863,16 @@
       "name": "XXI. kerület",
       "code": "XXI",
       "number": 21,
-      "common_names": ["Csepel", "Csepel-sziget"],
+      "common_names": [
+        "Csepel",
+        "Csepel-sziget"
+      ],
       "is_active": true,
       "sort_order": 21,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.427,
+      "lon": 19.07
     },
     {
       "id": "556637e4-364f-4a2f-96c4-d7fb3e4320ed",
@@ -686,11 +880,17 @@
       "name": "XXII. kerület",
       "code": "XXII",
       "number": 22,
-      "common_names": ["Budafok", "Tétény", "Nagytétény"],
+      "common_names": [
+        "Budafok",
+        "Tétény",
+        "Nagytétény"
+      ],
       "is_active": true,
       "sort_order": 22,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.43,
+      "lon": 18.999
     },
     {
       "id": "7111fd54-3559-4a6d-8bd7-c4d09151aa71",
@@ -701,7 +901,9 @@
       "is_active": true,
       "sort_order": 23,
       "created_at": "2025-09-29T08:07:25.382393Z",
-      "updated_at": null
+      "updated_at": "2025-09-29T12:48:00Z",
+      "lat": 47.396389,
+      "lon": 19.131111
     }
   ],
   "postal_codes": [

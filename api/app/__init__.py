@@ -6,7 +6,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import create_tables
-from app.routes import categories_router, health_router, services_router, question_sets_router, questions_router, geo_router
+from app.routes import categories_router, health_router, services_router, question_sets_router, questions_router, geo_router, search_router, onboarding_router
+from app.routes.requests import router as requests_router
 
 
 @asynccontextmanager
@@ -40,8 +41,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allow all origins for development
     allow_credentials=False,  # Set to False when using wildcard origins
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["*"]
 )
 
 # Include routers
@@ -51,3 +52,6 @@ app.include_router(services_router)
 app.include_router(question_sets_router)
 app.include_router(questions_router)
 app.include_router(geo_router)
+app.include_router(requests_router)
+app.include_router(search_router)
+app.include_router(onboarding_router)

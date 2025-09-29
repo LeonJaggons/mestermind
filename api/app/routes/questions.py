@@ -4,7 +4,9 @@ Question routes for Mestermind API
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
+from datetime import datetime
+import uuid
 from app.core.database import get_db
 from app.models import (
     Question,
@@ -17,6 +19,36 @@ from app.models import (
 
 router = APIRouter(prefix="/questions", tags=["questions"])
 
+
+def _build_default_timeline_question(question_set_id: str, sort_order_base: int = 10000) -> Dict[str, Any]:
+    """Synthetic default timeline question for per-set listing responses."""
+    return {
+        "id": str(uuid.uuid4()),
+        "question_set_id": str(question_set_id),
+        "key": "timeline",
+        "label": "What's your timeline?",
+        "description": None,
+        "question_type": QuestionType.SELECT,
+        "is_required": False,
+        "is_active": True,
+        "sort_order": sort_order_base,
+        "options": {
+            "choices": [
+                "Urgent — need a pro right away\nWithin 48 hours",
+                "Ready to hire, but not in a hurry\nWithin 7 days",
+                "Still researching\nNo timeline in mind",
+            ]
+        },
+        "min_value": None,
+        "max_value": None,
+        "min_length": None,
+        "max_length": None,
+        "conditional_rules": None,
+        "allowed_file_types": None,
+        "max_file_size": None,
+        "created_at": datetime.utcnow(),
+        "updated_at": None,
+    }
 
 @router.get("/", response_model=List[QuestionResponse])
 async def get_questions(
@@ -70,7 +102,33 @@ async def get_questions(
             "created_at": question.created_at,
             "updated_at": question.updated_at
         }
-        result.append(QuestionResponse(**question_data))
+        result.append(QuestionResponse(**question_data))  # type: ignore[call-arg]
+    
+    # If filtering by a specific set, also append default timeline question at the end
+    if question_set_id is not None:
+        # Build dict and coerce to QuestionResponse via field names aligning
+        default_q = _build_default_timeline_question(str(question_set_id))
+        result.append(QuestionResponse(  # type: ignore[call-arg]
+            id=default_q["id"],
+            question_set_id=default_q["question_set_id"],
+            key=default_q["key"],
+            label=default_q["label"],
+            description=default_q["description"],
+            question_type=default_q["question_type"],
+            is_required=default_q["is_required"],
+            is_active=default_q["is_active"],
+            sort_order=default_q["sort_order"],
+            options=default_q["options"],
+            min_value=default_q["min_value"],
+            max_value=default_q["max_value"],
+            min_length=default_q["min_length"],
+            max_length=default_q["max_length"],
+            conditional_rules=default_q["conditional_rules"],
+            allowed_file_types=default_q["allowed_file_types"],
+            max_file_size=default_q["max_file_size"],
+            created_at=default_q["created_at"],
+            updated_at=default_q["updated_at"],
+        ))
     
     return result
 
@@ -103,7 +161,7 @@ async def get_question(question_id: str, db: Session = Depends(get_db)):
         "created_at": question.created_at,
         "updated_at": question.updated_at
     }
-    return QuestionResponse(**question_data)
+    return QuestionResponse(**question_data)  # type: ignore[call-arg]
 
 
 @router.post("/", response_model=QuestionResponse)
@@ -168,7 +226,7 @@ async def create_question(question: QuestionCreate, db: Session = Depends(get_db
         "created_at": db_question.created_at,
         "updated_at": db_question.updated_at
     }
-    return QuestionResponse(**question_data)
+    return QuestionResponse(**question_data)  # type: ignore[call-arg]
 
 
 @router.put("/{question_id}", response_model=QuestionResponse)
@@ -236,7 +294,7 @@ async def update_question(question_id: str, question_update: QuestionUpdate, db:
         "created_at": db_question.created_at,
         "updated_at": db_question.updated_at
     }
-    return QuestionResponse(**question_data)
+    return QuestionResponse(**question_data)  # type: ignore[call-arg]
 
 
 @router.delete("/{question_id}")
@@ -288,7 +346,31 @@ async def get_questions_by_question_set(question_set_id: str, db: Session = Depe
             "created_at": question.created_at,
             "updated_at": question.updated_at
         }
-        result.append(QuestionResponse(**question_data))
+        result.append(QuestionResponse(**question_data))  # type: ignore[call-arg]
+    
+    # Append default timeline question at the end
+    default_q = _build_default_timeline_question(str(question_set_id))
+    result.append(QuestionResponse(  # type: ignore[call-arg]
+        id=default_q["id"],
+        question_set_id=default_q["question_set_id"],
+        key=default_q["key"],
+        label=default_q["label"],
+        description=default_q["description"],
+        question_type=default_q["question_type"],
+        is_required=default_q["is_required"],
+        is_active=default_q["is_active"],
+        sort_order=default_q["sort_order"],
+        options=default_q["options"],
+        min_value=default_q["min_value"],
+        max_value=default_q["max_value"],
+        min_length=default_q["min_length"],
+        max_length=default_q["max_length"],
+        conditional_rules=default_q["conditional_rules"],
+        allowed_file_types=default_q["allowed_file_types"],
+        max_file_size=default_q["max_file_size"],
+        created_at=default_q["created_at"],
+        updated_at=default_q["updated_at"],
+    ))
     
     return result
 

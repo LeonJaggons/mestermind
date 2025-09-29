@@ -7,9 +7,10 @@ import unicodedata
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from sqlalchemy import or_, text
 
 from app.core.database import get_db
-from app.models import City, County, District, PostalCode, GeoNormalizeRequest, GeoNormalizeResponse
+from app.models import City, County, District, GeoNormalizeRequest, GeoNormalizeResponse
 
 
 router = APIRouter(prefix="/v1/geo", tags=["geo"])
@@ -35,8 +36,6 @@ def _base_match_score(q_norm: str, name_norm: str) -> int:
 
 
 def _type_weight(result_type: str) -> float:
-    if result_type == "postal_code":
-        return 1.0
     if result_type == "district":
         return 0.9
     return 0.8  # city
@@ -44,12 +43,13 @@ def _type_weight(result_type: str) -> float:
 
 @router.get("/search")
 async def geo_search(
-    q: str = Query(..., min_length=1, description="Free-text query for city, district or postal code"),
+    q: str = Query(..., min_length=1, description="Free-text query for city or district; Budapest ZIP infers district"),
     limit: int = Query(10, ge=1, le=50, description="Max number of results")
     , db: Session = Depends(get_db)
 ):
     """
-    Typeahead over cities, districts (Budapest), and postal codes.
+    Typeahead over cities and districts (Budapest).
+    If the query is a 4-digit Budapest postal code (1XYZ), infer the district (XY) and return that as the top suggestion.
     Response is a ranked union list with a common shape.
     """
     q_like = f"%{q}%"
@@ -68,7 +68,6 @@ async def geo_search(
     )
 
     # Districts - search in name and common_names via JSONB ILIKE
-    from sqlalchemy import or_, text
     district_rows = (
         db.query(District, City, County)
         .join(City, District.city_id == City.id)
@@ -87,20 +86,27 @@ async def geo_search(
         .all()
     )
 
-    # Postal codes (match beginning or contains for convenience)
-    postal_query = (
-        db.query(PostalCode, City, County)
-        .join(City, PostalCode.city_id == City.id)
-        .join(County, City.county_id == County.id)
-        .filter(PostalCode.is_active == True)  # noqa: E712
-    )
-    if q_is_numeric:
-        postal_query = postal_query.filter(PostalCode.code.ilike(f"{q}%"))
-    else:
-        postal_query = postal_query.filter(PostalCode.code.ilike(q_like))
-    postal_rows = (
-        postal_query.order_by(PostalCode.sort_order, PostalCode.code).limit(limit).all()
-    )
+    # If Budapest postal code (1XYZ), infer district: XY -> 01..23
+    inferred_district = None
+    if q_is_numeric and len(q.strip()) == 4 and q.strip()[0] == "1":
+        try:
+            district_num = int(q.strip()[1:3])
+            if 1 <= district_num <= 23:
+                # Find Budapest city and the district with matching number
+                budapest = db.query(City, County).join(County, City.county_id == County.id).filter(func.lower(City.name) == "budapest").first()
+                if budapest:
+                    bud_city, bud_county = budapest  # type: ignore
+                    d_row = (
+                        db.query(District)
+                        .filter(District.city_id == bud_city.id)
+                        .filter(District.is_active == True)  # noqa: E712
+                        .filter(District.number == district_num)
+                        .first()
+                    )
+                    if d_row:
+                        inferred_district = (d_row, bud_city, bud_county)
+        except ValueError:
+            inferred_district = None
 
     results = []
 
@@ -136,25 +142,18 @@ async def geo_search(
             "score": score
         })
 
-    for pc, city, county in postal_rows:
-        # For postal code, ranking favors startswith
-        code = pc.code  # type: ignore
-        if code.startswith(q):
-            base = 95
-        elif q in code:
-            base = 70
-        else:
-            base = 0
-        score = int(base * _type_weight("postal_code"))
+    if inferred_district:
+        d, city, county = inferred_district
+        # Prefer inferred district at top with high score
         results.append({
-            "id": str(pc.id),
-            "type": "postal_code",
-            "name": code,
+            "id": str(d.id),
+            "type": "district",
+            "name": d.name,  # type: ignore
             "county_name": county.name,  # type: ignore
             "city_name": city.name,  # type: ignore
-            "postal_code": code,
-            "district_code": None,
-            "score": score
+            "postal_code": None,
+            "district_code": d.code,  # type: ignore
+            "score": 100
         })
 
     # Sort by score desc, then by name asc
@@ -175,24 +174,11 @@ async def geo_normalize(payload: GeoNormalizeRequest, db: Session = Depends(get_
       - Exact city name match (normalized).
     Returns 422 if no unique match.
     """
-    # Resolve by explicit id+type
+    # Resolve by explicit id+type (postal codes not supported)
     if payload.place_id and payload.type:
         pid = payload.place_id
         if payload.type == "postal_code":
-            pc = db.query(PostalCode, City).join(City, PostalCode.city_id == City.id).filter(PostalCode.id == pid).first()
-            if not pc:
-                raise_fastapi_422()
-            pc_row, city = pc  # type: ignore
-            return GeoNormalizeResponse(
-                place_id=str(pc_row.id),
-                type="postal_code",
-                name=pc_row.code,  # type: ignore
-                city_id=str(city.id),
-                district_id=str(pc_row.district_id) if pc_row.district_id else None,
-                postal_code=pc_row.code,  # type: ignore
-                lat=None,
-                lon=None
-            )
+            raise_fastapi_422()
         if payload.type == "district":
             row = db.query(District, City).join(City, District.city_id == City.id).filter(District.id == pid).first()
             if not row:
@@ -219,8 +205,8 @@ async def geo_normalize(payload: GeoNormalizeRequest, db: Session = Depends(get_
                 city_id=str(city_row.id),  # type: ignore
                 district_id=None,
                 postal_code=None,
-                lat=None,
-                lon=None
+                lat=getattr(city_row, "lat", None),
+                lon=getattr(city_row, "lon", None)
             )
         raise_fastapi_422()
 
@@ -230,21 +216,33 @@ async def geo_normalize(payload: GeoNormalizeRequest, db: Session = Depends(get_
         raise_fastapi_422()
     q_norm = _normalize(q)
 
-    # Postal code exact
-    if q.isdigit():
-        pc = db.query(PostalCode, City).join(City, PostalCode.city_id == City.id).filter(PostalCode.code == q).first()
-        if pc:
-            pc_row, city = pc
-            return GeoNormalizeResponse(
-                place_id=str(pc_row.id),
-                type="postal_code",
-                name=pc_row.code,  # type: ignore
-                city_id=str(city.id),
-                district_id=str(pc_row.district_id) if pc_row.district_id else None,
-                postal_code=pc_row.code,  # type: ignore
-                lat=None,
-                lon=None
-            )
+    # If Budapest postal code exact, normalize to the district
+    if q.isdigit() and len(q) == 4 and q[0] == "1":
+        try:
+            district_num = int(q[1:3])
+            if 1 <= district_num <= 23:
+                budapest = db.query(City).filter(func.lower(City.name) == "budapest").first()
+                if budapest:
+                    d_row = (
+                        db.query(District)
+                        .filter(District.city_id == budapest.id)
+                        .filter(District.is_active == True)  # noqa: E712
+                        .filter(District.number == district_num)
+                        .first()
+                    )
+                    if d_row:
+                        return GeoNormalizeResponse(
+                            place_id=str(d_row.id),
+                            type="district",
+                            name=d_row.name,  # type: ignore
+                            city_id=str(budapest.id),
+                            district_id=str(d_row.id),
+                            postal_code=None,
+                            lat=None,
+                            lon=None
+                        )
+        except ValueError:
+            pass
 
     # District exact - allow exact match on name or common_names (case-insensitive)
     district = (
@@ -287,8 +285,8 @@ async def geo_normalize(payload: GeoNormalizeRequest, db: Session = Depends(get_
             city_id=str(city.id),
             district_id=None,
             postal_code=None,
-            lat=None,
-            lon=None
+            lat=getattr(city, "lat", None),
+            lon=getattr(city, "lon", None)
         )
 
     # No unique resolution

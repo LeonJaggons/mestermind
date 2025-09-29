@@ -289,6 +289,41 @@ class QuestionResponse(QuestionBase):
         from_attributes = True
 
 
+# -----------------------------
+# Request schemas
+# -----------------------------
+class RequestBase(BaseModel):
+    service_id: str
+    question_set_id: str
+    place_id: Optional[str] = None
+    answers: Optional[Dict[str, Any]] = None
+    current_step: int = 0
+
+
+class RequestCreate(RequestBase):
+    pass
+
+
+class RequestUpdate(BaseModel):
+    answers: Optional[Dict[str, Any]] = None
+    current_step: Optional[int] = None
+    status: Optional[str] = None
+
+
+class RequestResponse(BaseModel):
+    id: str
+    service_id: str
+    question_set_id: str
+    place_id: Optional[str]
+    current_step: int
+    answers: Optional[Dict[str, Any]]
+    status: str
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
 # Update forward references
 QuestionSetResponse.model_rebuild()
 QuestionResponse.model_rebuild()
@@ -425,7 +460,7 @@ class GeoNormalizeRequest(BaseModel):
     """Geo normalization request model"""
     query: Optional[str] = None
     place_id: Optional[str] = None
-    type: Optional[str] = Field(None, pattern="^(city|district|postal_code)$")
+    type: Optional[str] = Field(None, pattern="^(city|district)$")
 
 
 class GeoNormalizeResponse(BaseModel):
@@ -435,6 +470,195 @@ class GeoNormalizeResponse(BaseModel):
     name: str
     city_id: str
     district_id: Optional[str] = None
-    postal_code: Optional[str] = None
     lat: Optional[float] = None
     lon: Optional[float] = None
+
+
+# -----------------------------
+# Mester schemas
+# -----------------------------
+
+
+class MesterBase(BaseModel):
+    full_name: str
+    slug: str
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    bio: Optional[str] = None
+    skills: Optional[List[str]] = None
+    tags: Optional[List[str]] = None
+    languages: Optional[List[str]] = None
+    years_experience: Optional[int] = None
+    is_verified: bool = False
+    is_active: bool = True
+    home_city_id: Optional[str] = None
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+
+
+class MesterCreate(MesterBase):
+    pass
+
+
+class MesterUpdate(BaseModel):
+    full_name: Optional[str] = None
+    slug: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    bio: Optional[str] = None
+    skills: Optional[List[str]] = None
+    tags: Optional[List[str]] = None
+    languages: Optional[List[str]] = None
+    years_experience: Optional[int] = None
+    is_verified: Optional[bool] = None
+    is_active: Optional[bool] = None
+    home_city_id: Optional[str] = None
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+
+
+class MesterResponse(MesterBase):
+    id: str
+    rating_avg: Optional[float] = None
+    review_count: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class MesterServiceBase(BaseModel):
+    service_id: str
+    price_hour_min: Optional[int] = None
+    price_hour_max: Optional[int] = None
+    pricing_notes: Optional[str] = None
+    is_active: bool = True
+
+
+class MesterServiceCreate(MesterServiceBase):
+    mester_id: str
+
+
+class MesterServiceUpdate(BaseModel):
+    price_hour_min: Optional[int] = None
+    price_hour_max: Optional[int] = None
+    pricing_notes: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class MesterServiceResponse(MesterServiceBase):
+    id: str
+    mester_id: str
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class MesterCoverageAreaBase(BaseModel):
+    city_id: Optional[str] = None
+    district_id: Optional[str] = None
+    postal_code_id: Optional[str] = None
+    radius_km: Optional[float] = None
+    priority: int = 0
+
+
+class MesterCoverageAreaCreate(MesterCoverageAreaBase):
+    mester_id: str
+
+
+class MesterCoverageAreaUpdate(BaseModel):
+    city_id: Optional[str] = None
+    district_id: Optional[str] = None
+    postal_code_id: Optional[str] = None
+    radius_km: Optional[float] = None
+    priority: Optional[int] = None
+
+
+class MesterCoverageAreaResponse(MesterCoverageAreaBase):
+    id: str
+    mester_id: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class MesterReviewBase(BaseModel):
+    rating: int = Field(..., ge=1, le=5)
+    comment: Optional[str] = None
+    author_name: Optional[str] = None
+    is_public: bool = True
+
+
+class MesterReviewCreate(MesterReviewBase):
+    mester_id: str
+
+
+class MesterReviewUpdate(BaseModel):
+    rating: Optional[int] = Field(None, ge=1, le=5)
+    comment: Optional[str] = None
+    author_name: Optional[str] = None
+    is_public: Optional[bool] = None
+
+
+class MesterReviewResponse(MesterReviewBase):
+    id: str
+    mester_id: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# -----------------------------
+# Search pros schemas
+# -----------------------------
+
+
+class SearchProsItem(BaseModel):
+    mester: MesterResponse
+    services: List[MesterServiceResponse]
+    distance_km: Optional[float] = None
+    score: float
+
+
+class SearchProsResponse(BaseModel):
+    items: List[SearchProsItem]
+    next_cursor: Optional[str] = None
+
+
+# -----------------------------
+# Onboarding draft schemas
+# -----------------------------
+
+
+class OnboardingDraftBase(BaseModel):
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    data: Optional[Dict[str, Any]] = None
+    current_step: int = 0
+
+
+class OnboardingDraftCreate(OnboardingDraftBase):
+    pass
+
+
+class OnboardingDraftUpdate(BaseModel):
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    data: Optional[Dict[str, Any]] = None
+    current_step: Optional[int] = None
+    is_submitted: Optional[bool] = None
+
+
+class OnboardingDraftResponse(OnboardingDraftBase):
+    id: str
+    is_submitted: bool
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True

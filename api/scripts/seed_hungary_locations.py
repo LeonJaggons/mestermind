@@ -11,7 +11,7 @@ import sys
 import json
 import argparse
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 import uuid
 
 from sqlalchemy.orm import sessionmaker
@@ -52,6 +52,35 @@ def upsert_counties(db, counties: List[Dict[str, Any]]):
     logger.info("Counties: created=%s, skipped=%s", created, skipped)
 
 
+FALLBACK_CITY_COORDS: Dict[str, Tuple[float, float]] = {
+    # name -> (lat, lon)
+    "Budapest": (47.4979, 19.0402),
+    "Debrecen": (47.5316, 21.6273),
+    "Szeged": (46.2530, 20.1414),
+    "Miskolc": (48.1030, 20.7784),
+    "Pécs": (46.0727, 18.2323),
+    "Győr": (47.6875, 17.6504),
+    "Nyíregyháza": (47.9554, 21.7167),
+    "Kecskemét": (46.9062, 19.6913),
+    "Székesfehérvár": (47.1860, 18.4221),
+    "Szombathely": (47.2307, 16.6218),
+    "Szolnok": (47.1720, 20.1807),
+    "Tatabánya": (47.5868, 18.3933),
+    "Salgótarján": (48.1046, 19.7895),
+    "Kaposvár": (46.3590, 17.7968),
+    "Békéscsaba": (46.6736, 21.0878),
+    "Zalaegerszeg": (46.8417, 16.8439),
+    "Veszprém": (47.0933, 17.9115),
+    "Érd": (47.3917, 18.9136),
+    "Sopron": (47.6817, 16.5845),
+    "Dunaújváros": (46.9642, 18.9396),
+    "Hódmezővásárhely": (46.4181, 20.3309),
+    "Nagykanizsa": (46.4540, 16.9890),
+    "Szekszárd": (46.3476, 18.7060),
+    "Eger": (47.9025, 20.3772),
+}
+
+
 def upsert_cities(db, cities: List[Dict[str, Any]]):
     created = skipped = 0
     for item in cities:
@@ -60,6 +89,17 @@ def upsert_cities(db, cities: List[Dict[str, Any]]):
         city_id = uuid.UUID(raw_id) if raw_id else None
         city = db.get(City, city_id)
         if city:
+            # Update lat/lon if missing and we have values either in JSON or fallback
+            json_lat: Optional[float] = item.get("lat")
+            json_lon: Optional[float] = item.get("lon")
+            if (getattr(city, "lat", None) is None or getattr(city, "lon", None) is None):
+                if json_lat is not None and json_lon is not None:
+                    city.lat = json_lat
+                    city.lon = json_lon
+                else:
+                    coords = FALLBACK_CITY_COORDS.get(item["name"])  # type: ignore[index]
+                    if coords:
+                        city.lat, city.lon = coords
             skipped += 1
             continue
         city = City(
@@ -69,6 +109,8 @@ def upsert_cities(db, cities: List[Dict[str, Any]]):
             is_capital=item.get("is_capital", False),
             is_active=item.get("is_active", True),
             sort_order=item.get("sort_order", 0),
+            lat=item.get("lat") if item.get("lat") is not None else (FALLBACK_CITY_COORDS.get(item["name"], (None, None))[0] if item.get("name") in FALLBACK_CITY_COORDS else None),
+            lon=item.get("lon") if item.get("lon") is not None else (FALLBACK_CITY_COORDS.get(item["name"], (None, None))[1] if item.get("name") in FALLBACK_CITY_COORDS else None),
         )
         db.add(city)
         created += 1

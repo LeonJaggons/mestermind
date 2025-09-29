@@ -4,7 +4,9 @@ Question Set routes for Mestermind API
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
+import uuid
+from datetime import datetime
 from app.core.database import get_db
 from app.models import (
     QuestionSet,
@@ -14,10 +16,45 @@ from app.models import (
     QuestionSetUpdate,
     QuestionSetResponse,
     QuestionSetListResponse,
-    QuestionSetStatus
+    QuestionSetStatus,
+    QuestionType,
 )
 
 router = APIRouter(prefix="/question-sets", tags=["question-sets"])
+
+
+def _build_default_timeline_question(question_set_id: str, sort_order_base: int = 10000) -> dict:
+    """Create a synthetic default timeline question to append to any question set.
+
+    This is not persisted in the database; it's injected into responses for consistency across all sets.
+    """
+    return {
+        "id": str(uuid.uuid4()),
+        "question_set_id": str(question_set_id),
+        "key": "timeline",
+        "label": "What's your timeline?",
+        "description": None,
+        "question_type": QuestionType.SELECT,
+        "is_required": False,
+        "is_active": True,
+        "sort_order": sort_order_base,
+        "options": {
+            "choices": [
+                "Urgent — need a pro right away\nWithin 48 hours",
+                "Ready to hire, but not in a hurry\nWithin 7 days",
+                "Still researching\nNo timeline in mind",
+            ]
+        },
+        "min_value": None,
+        "max_value": None,
+        "min_length": None,
+        "max_length": None,
+        "conditional_rules": None,
+        "allowed_file_types": None,
+        "max_file_size": None,
+        "created_at": datetime.utcnow(),
+        "updated_at": None,
+    }
 
 
 @router.get("/", response_model=List[QuestionSetListResponse])
@@ -53,7 +90,7 @@ async def get_question_sets(
             Question.is_active == True
         ).count()
         
-        question_set_data = {
+        question_set_data: Dict[str, Any] = {
             "id": str(question_set.id),
             "service_id": str(question_set.service_id),
             "name": question_set.name,
@@ -66,7 +103,7 @@ async def get_question_sets(
             "updated_at": question_set.updated_at,
             "question_count": question_count
         }
-        result.append(QuestionSetListResponse(**question_set_data))
+        result.append(QuestionSetListResponse(**question_set_data))  # type: ignore[call-arg]
     
     return result
 
@@ -109,7 +146,10 @@ async def get_question_set(question_set_id: str, db: Session = Depends(get_db)):
         }
         questions_data.append(question_data)
     
-    question_set_data = {
+    # Append default timeline question at the end
+    questions_data.append(_build_default_timeline_question(str(question_set.id)))
+    
+    question_set_data: Dict[str, Any] = {
         "id": str(question_set.id),
         "service_id": str(question_set.service_id),
         "name": question_set.name,
@@ -122,7 +162,7 @@ async def get_question_set(question_set_id: str, db: Session = Depends(get_db)):
         "updated_at": question_set.updated_at,
         "questions": questions_data
     }
-    return QuestionSetResponse(**question_set_data)
+    return QuestionSetResponse(**question_set_data)  # type: ignore[call-arg]
 
 
 @router.post("/", response_model=QuestionSetResponse)
@@ -160,7 +200,7 @@ async def create_question_set(question_set: QuestionSetCreate, db: Session = Dep
     db.commit()
     db.refresh(db_question_set)
     
-    question_set_data = {
+    question_set_data: Dict[str, Any] = {
         "id": str(db_question_set.id),
         "service_id": str(db_question_set.service_id),
         "name": db_question_set.name,
@@ -171,9 +211,10 @@ async def create_question_set(question_set: QuestionSetCreate, db: Session = Dep
         "version": db_question_set.version,
         "created_at": db_question_set.created_at,
         "updated_at": db_question_set.updated_at,
+        # No questions immediately; clients fetch questions separately and will receive the default timeline.
         "questions": []
     }
-    return QuestionSetResponse(**question_set_data)
+    return QuestionSetResponse(**question_set_data)  # type: ignore[call-arg]
 
 
 @router.put("/{question_set_id}", response_model=QuestionSetResponse)
@@ -233,6 +274,9 @@ async def update_question_set(question_set_id: str, question_set_update: Questio
         }
         questions_data.append(question_data)
     
+    # Append default timeline question at the end
+    questions_data.append(_build_default_timeline_question(str(question_set_id)))
+    
     question_set_data = {
         "id": str(db_question_set.id),
         "service_id": str(db_question_set.service_id),
@@ -246,7 +290,7 @@ async def update_question_set(question_set_id: str, question_set_update: Questio
         "updated_at": db_question_set.updated_at,
         "questions": questions_data
     }
-    return QuestionSetResponse(**question_set_data)
+    return QuestionSetResponse(**question_set_data)  # type: ignore[call-arg]
 
 
 @router.delete("/{question_set_id}")
@@ -323,7 +367,7 @@ async def get_question_sets_by_service(service_id: str, db: Session = Depends(ge
             Question.is_active == True
         ).count()
         
-        question_set_data = {
+        question_set_data: Dict[str, Any] = {
             "id": str(question_set.id),
             "service_id": str(question_set.service_id),
             "name": question_set.name,
@@ -336,7 +380,7 @@ async def get_question_sets_by_service(service_id: str, db: Session = Depends(ge
             "updated_at": question_set.updated_at,
             "question_count": question_count
         }
-        result.append(QuestionSetListResponse(**question_set_data))
+        result.append(QuestionSetListResponse(**question_set_data))  # type: ignore[call-arg]
     
     return result
 

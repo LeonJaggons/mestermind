@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any
 import uuid
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, text, JSON, Enum
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, text, JSON, Enum, Float, UniqueConstraint, Index
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
@@ -176,6 +176,9 @@ class City(Base):
     county_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("counties.id"), nullable=False, index=True)
     name: Mapped[str] = mapped_column(String(150), nullable=False, index=True)
     is_capital: Mapped[bool] = mapped_column(Boolean, default=False)
+    # Optional centroid coordinates for normalization/search
+    lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
@@ -224,3 +227,164 @@ class PostalCode(Base):
     # Relationships
     city: Mapped["City"] = relationship("City", back_populates="postal_codes")
     district: Mapped[Optional["District"]] = relationship("District", back_populates="postal_codes")
+
+
+# -----------------------------
+# Request models (Customer job requests)
+# -----------------------------
+
+
+class RequestStatus(str, enum.Enum):
+    DRAFT = "draft"
+    SUBMITTED = "submitted"
+
+
+class Request(Base):
+    """Customer request capturing progressive answers and current step for resume/autosave."""
+    __tablename__ = "requests"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    service_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("services.id"), nullable=False, index=True)
+    question_set_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("question_sets.id"), nullable=False, index=True)
+    place_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    current_step: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    answers: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
+    status: Mapped[RequestStatus] = mapped_column(Enum(RequestStatus), nullable=False, default=RequestStatus.DRAFT)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), onupdate=text('now()'))
+
+    # Relationships
+    service: Mapped["Service"] = relationship("Service")
+    question_set: Mapped["QuestionSet"] = relationship("QuestionSet")
+
+
+# -----------------------------
+# Mester (service professional) models
+# -----------------------------
+
+
+class Mester(Base):
+    """Service professional profile suitable for search and filtering."""
+    __tablename__ = "mesters"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    full_name: Mapped[str] = mapped_column(String(150), nullable=False, index=True)
+    slug: Mapped[str] = mapped_column(String(160), nullable=False, unique=True, index=True)
+    email: Mapped[Optional[str]] = mapped_column(String(255), nullable=True, unique=True)
+    phone: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    bio: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Searchable attributes
+    skills: Mapped[Optional[List[str]]] = mapped_column(JSON, nullable=True)
+    tags: Mapped[Optional[List[str]]] = mapped_column(JSON, nullable=True)
+    languages: Mapped[Optional[List[str]]] = mapped_column(JSON, nullable=True)
+    years_experience: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    # Ratings summary for sorting/filtering (denormalized)
+    rating_avg: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    review_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    # Verification and status
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    # Location anchoring for geo search
+    home_city_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("cities.id"), nullable=True, index=True)
+    lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    lon: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), onupdate=text('now()'))
+
+    # Relationships
+    home_city: Mapped[Optional["City"]] = relationship("City")
+    services: Mapped[List["MesterService"]] = relationship("MesterService", back_populates="mester", cascade="all, delete-orphan")
+    coverage_areas: Mapped[List["MesterCoverageArea"]] = relationship("MesterCoverageArea", back_populates="mester", cascade="all, delete-orphan")
+    reviews: Mapped[List["MesterReview"]] = relationship("MesterReview", back_populates="mester", cascade="all, delete-orphan")
+
+    __table_args__ = (
+        Index("ix_mesters_active_city", "is_active", "home_city_id"),
+    )
+
+
+class MesterService(Base):
+    """Join table between Mester and Service with pricing metadata."""
+    __tablename__ = "mester_services"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    mester_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, index=True)
+    service_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("services.id"), nullable=False, index=True)
+
+    price_hour_min: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    price_hour_max: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    pricing_notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), onupdate=text('now()'))
+
+    # Relationships
+    mester: Mapped["Mester"] = relationship("Mester", back_populates="services")
+    service: Mapped["Service"] = relationship("Service")
+
+    __table_args__ = (
+        UniqueConstraint("mester_id", "service_id", name="uq_mester_service"),
+        Index("ix_mester_services_active", "is_active"),
+    )
+
+
+class MesterCoverageArea(Base):
+    """Geographic coverage for a Mester (city/district/postal code with optional radius)."""
+    __tablename__ = "mester_coverage_areas"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    mester_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, index=True)
+    city_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("cities.id"), nullable=True, index=True)
+    district_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("districts.id"), nullable=True, index=True)
+    postal_code_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("postal_codes.id"), nullable=True, index=True)
+    radius_km: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    priority: Mapped[int] = mapped_column(Integer, default=0)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+
+    # Relationships
+    mester: Mapped["Mester"] = relationship("Mester", back_populates="coverage_areas")
+    city: Mapped[Optional["City"]] = relationship("City")
+    district: Mapped[Optional["District"]] = relationship("District")
+    postal_code: Mapped[Optional["PostalCode"]] = relationship("PostalCode")
+
+
+class MesterReview(Base):
+    """Customer review for a Mester. Used to compute aggregated rating fields on Mester."""
+    __tablename__ = "mester_reviews"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    mester_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, index=True)
+    rating: Mapped[int] = mapped_column(Integer, nullable=False)  # 1-5
+    comment: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    author_name: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
+    is_public: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+
+    # Relationships
+    mester: Mapped["Mester"] = relationship("Mester", back_populates="reviews")
+
+
+# -----------------------------
+# Onboarding Drafts (server-side autosave)
+# -----------------------------
+
+
+class OnboardingDraft(Base):
+    """Server-side draft to support autosave/resume for mester activation."""
+    __tablename__ = "onboarding_drafts"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email: Mapped[Optional[str]] = mapped_column(String(255), nullable=True, index=True)
+    phone: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    data: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
+    current_step: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    is_submitted: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), onupdate=text('now()'))
