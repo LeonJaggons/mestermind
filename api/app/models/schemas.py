@@ -2,9 +2,10 @@
 Pydantic schemas for API requests and responses
 """
 
-from pydantic import BaseModel
-from typing import Optional, List
+from pydantic import BaseModel, Field
+from typing import Optional, List, Dict, Any
 from datetime import datetime
+from enum import Enum
 
 
 class HealthResponse(BaseModel):
@@ -155,3 +156,139 @@ class ServiceExploreResponse(ServiceBase):
 
     class Config:
         from_attributes = True
+
+
+# Question Set Enums
+class QuestionSetStatus(str, Enum):
+    """Question set status enum"""
+    DRAFT = "draft"
+    PUBLISHED = "published"
+
+
+class QuestionType(str, Enum):
+    """Question type enum"""
+    TEXT = "text"
+    NUMBER = "number"
+    BOOLEAN = "boolean"
+    SELECT = "select"
+    MULTI_SELECT = "multi_select"
+    DATE = "date"
+    FILE = "file"
+
+
+# Question Set Schemas
+class QuestionSetBase(BaseModel):
+    """Base question set model"""
+    name: str = Field(..., min_length=1, max_length=255)
+    description: Optional[str] = None
+    status: QuestionSetStatus = QuestionSetStatus.DRAFT
+    is_active: bool = True
+    sort_order: int = 0
+
+
+class QuestionSetCreate(QuestionSetBase):
+    """Model for creating a new question set"""
+    service_id: str
+
+
+class QuestionSetUpdate(BaseModel):
+    """Model for updating a question set"""
+    name: Optional[str] = Field(None, min_length=1, max_length=255)
+    description: Optional[str] = None
+    status: Optional[QuestionSetStatus] = None
+    is_active: Optional[bool] = None
+    sort_order: Optional[int] = None
+
+
+class QuestionSetResponse(QuestionSetBase):
+    """Question set response model"""
+    id: str
+    service_id: str
+    version: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    questions: List["QuestionResponse"] = []
+
+    class Config:
+        from_attributes = True
+
+
+class QuestionSetListResponse(QuestionSetBase):
+    """Question set response model for listing (without questions)"""
+    id: str
+    service_id: str
+    version: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    question_count: int = 0
+
+    class Config:
+        from_attributes = True
+
+
+# Question Schemas
+class QuestionBase(BaseModel):
+    """Base question model"""
+    key: str = Field(..., min_length=1, max_length=100, pattern="^[a-zA-Z0-9_]+$")
+    label: str = Field(..., min_length=1, max_length=255)
+    description: Optional[str] = None
+    question_type: QuestionType
+    is_required: bool = False
+    is_active: bool = True
+    sort_order: int = 0
+
+
+class QuestionCreate(QuestionBase):
+    """Model for creating a new question"""
+    question_set_id: str
+    options: Optional[Dict[str, Any]] = None  # For select/multi_select
+    min_value: Optional[float] = None  # For number type
+    max_value: Optional[float] = None  # For number type
+    min_length: Optional[int] = Field(None, ge=0)  # For text type
+    max_length: Optional[int] = Field(None, ge=1)  # For text type
+    conditional_rules: Optional[Dict[str, Any]] = None
+    allowed_file_types: Optional[List[str]] = None  # For file type
+    max_file_size: Optional[int] = Field(None, ge=1)  # For file type, in bytes
+
+
+class QuestionUpdate(BaseModel):
+    """Model for updating a question"""
+    key: Optional[str] = Field(None, min_length=1, max_length=100, pattern="^[a-zA-Z0-9_]+$")
+    label: Optional[str] = Field(None, min_length=1, max_length=255)
+    description: Optional[str] = None
+    question_type: Optional[QuestionType] = None
+    is_required: Optional[bool] = None
+    options: Optional[Dict[str, Any]] = None
+    min_value: Optional[float] = None
+    max_value: Optional[float] = None
+    min_length: Optional[int] = Field(None, ge=0)
+    max_length: Optional[int] = Field(None, ge=1)
+    conditional_rules: Optional[Dict[str, Any]] = None
+    allowed_file_types: Optional[List[str]] = None
+    max_file_size: Optional[int] = Field(None, ge=1)
+    is_active: Optional[bool] = None
+    sort_order: Optional[int] = None
+
+
+class QuestionResponse(QuestionBase):
+    """Question response model"""
+    id: str
+    question_set_id: str
+    options: Optional[Dict[str, Any]] = None
+    min_value: Optional[float] = None
+    max_value: Optional[float] = None
+    min_length: Optional[int] = None
+    max_length: Optional[int] = None
+    conditional_rules: Optional[Dict[str, Any]] = None
+    allowed_file_types: Optional[List[str]] = None
+    max_file_size: Optional[int] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+# Update forward references
+QuestionSetResponse.model_rebuild()
+QuestionResponse.model_rebuild()

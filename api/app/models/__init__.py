@@ -2,7 +2,7 @@
 Models package for Mestermind API
 """
 
-from .database import Category, Subcategory, Service
+from .database import Category, Subcategory, Service, QuestionSet, Question, QuestionSetStatus, QuestionType
 from .schemas import (
     HealthResponse,
     CategoryBase,
@@ -19,13 +19,26 @@ from .schemas import (
     ServiceUpdate,
     ServiceResponse,
     ServiceListResponse,
-    ServiceExploreResponse
+    ServiceExploreResponse,
+    QuestionSetBase,
+    QuestionSetCreate,
+    QuestionSetUpdate,
+    QuestionSetResponse,
+    QuestionSetListResponse,
+    QuestionBase,
+    QuestionCreate,
+    QuestionUpdate,
+    QuestionResponse
 )
 
 __all__ = [
     "Category",
     "Subcategory",
     "Service",
+    "QuestionSet",
+    "Question",
+    "QuestionSetStatus",
+    "QuestionType",
     "HealthResponse",
     "CategoryBase",
     "CategoryCreate",
@@ -41,5 +54,14 @@ __all__ = [
     "ServiceUpdate",
     "ServiceResponse",
     "ServiceListResponse",
-    "ServiceExploreResponse"
+    "ServiceExploreResponse",
+    "QuestionSetBase",
+    "QuestionSetCreate",
+    "QuestionSetUpdate",
+    "QuestionSetResponse",
+    "QuestionSetListResponse",
+    "QuestionBase",
+    "QuestionCreate",
+    "QuestionUpdate",
+    "QuestionResponse"
 ]
