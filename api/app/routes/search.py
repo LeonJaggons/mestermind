@@ -10,7 +10,7 @@ import json
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, literal, String, cast as sa_cast
+from sqlalchemy import or_, literal, String, cast as sa_cast, func
 
 from app.core.database import get_db
 from app.core.geo import haversine_sql_expr, haversine_distance_km
@@ -21,7 +21,9 @@ from app.models import (
     SearchProsResponse,
     MesterResponse,
     MesterServiceResponse,
+    City,
 )
+from app.models.database import MesterProfile
 
 
 router = APIRouter(prefix="/v1/search", tags=["search"])
@@ -62,8 +64,9 @@ async def search_pros(
     state = _decode_cursor(cursor)
     offset = int(state.get("offset", 0))
 
-    # Base query of active mesters
-    query = db.query(Mester)
+    # Base query of active mesters with profile join
+    query = db.query(Mester, MesterProfile)
+    query = query.outerjoin(MesterProfile, MesterProfile.mester_id == Mester.id)
     query = query.filter(Mester.is_active == True)  # noqa: E712
 
     # Keyword match across name, skills, tags
@@ -85,11 +88,14 @@ async def search_pros(
     # Compute distance expression if coordinates provided
     distance_expr = None
     if lat is not None and lon is not None:
-        # Require mester to have coordinates and optionally radius filter using a coarse bounding box via haversine
-        query = query.filter(Mester.lat.isnot(None), Mester.lon.isnot(None))
-        distance_expr = haversine_sql_expr(Mester.lat, Mester.lon, lat, lon) / 1000.0  # km
+        # Fallback: use home city coordinates when mester.lat/lon are missing
+        query = query.outerjoin(City, City.id == Mester.home_city_id)
+        coalesce_lat = func.coalesce(Mester.lat, City.lat)
+        coalesce_lon = func.coalesce(Mester.lon, City.lon)
+        distance_expr = haversine_sql_expr(coalesce_lat, coalesce_lon, lat, lon) / 1000.0  # km
         if radius_km:
-            query = query.filter(distance_expr <= radius_km)
+            # Keep mesters even if we can't compute distance (null coords); include those inside radius
+            query = query.filter((distance_expr <= radius_km) | (distance_expr.is_(None)))
 
     # Order by: service match desc, distance asc, rating desc, name asc
     service_match_score = literal(1 if service_id else 0)
@@ -97,17 +103,17 @@ async def search_pros(
     if service_id:
         order_cols.append(service_match_score.desc())  # type: ignore[arg-type]
     if distance_expr is not None:
-        order_cols.append(distance_expr.asc())  # type: ignore[arg-type]
+        order_cols.append(distance_expr.asc().nullslast())  # type: ignore[arg-type]
     order_cols.append(Mester.rating_avg.desc().nullslast())  # type: ignore[arg-type]
     order_cols.append(Mester.full_name.asc())  # type: ignore[arg-type]
 
     query = query.order_by(*order_cols)
 
     # Pagination using offset in cursor to avoid unstable results; for production prefer keyset
-    mesters = query.offset(offset).limit(limit + 1).all()
+    mester_results = query.offset(offset).limit(limit + 1).all()
 
     items: List[SearchProsItem] = []
-    for m in mesters[:limit]:
+    for m, profile in mester_results[:limit]:
         # Fetch services for the mester when filtering or useful for display
         svc_query = db.query(MesterService).filter(MesterService.mester_id == m.id)
         if service_id:
@@ -133,7 +139,8 @@ async def search_pros(
                     slug=m.slug,
                     email=m.email,
                     phone=m.phone,
-                    bio=m.bio,
+                    bio=profile.intro if profile else m.bio,
+                    logo_url=profile.logo_url if profile else None,
                     skills=m.skills,
                     tags=m.tags,
                     languages=m.languages,
@@ -168,7 +175,7 @@ async def search_pros(
         )
 
     next_cursor = None
-    if len(mesters) > limit:
+    if len(mester_results) > limit:
         next_cursor = _encode_cursor({"offset": offset + limit})
 
     return SearchProsResponse(items=items, next_cursor=next_cursor)

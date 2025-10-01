@@ -8,11 +8,25 @@ from typing import List, Optional, Dict, Any
 import uuid
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, text, JSON, Enum, Float, UniqueConstraint, Index
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
 
 from app.core.database import Base
+
+
+class User(Base):
+    """End-user account linked to Firebase auth."""
+    __tablename__ = "users"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    first_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    firebase_uid: Mapped[Optional[str]] = mapped_column(String(128), nullable=True, unique=True, index=True)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), onupdate=text('now()'))
 
 
 class Category(Base):
@@ -235,8 +249,14 @@ class PostalCode(Base):
 
 
 class RequestStatus(str, enum.Enum):
-    DRAFT = "draft"
-    SUBMITTED = "submitted"
+    DRAFT = "DRAFT"
+    OPEN = "OPEN"
+    QUOTED = "QUOTED"
+    SHORTLISTED = "SHORTLISTED"
+    ACCEPTED = "ACCEPTED"
+    BOOKED = "BOOKED"
+    EXPIRED = "EXPIRED"
+    CANCELLED = "CANCELLED"
 
 
 class Request(Base):
@@ -245,8 +265,14 @@ class Request(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     service_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("services.id"), nullable=False, index=True)
+    mester_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=True, index=True)
     question_set_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("question_sets.id"), nullable=False, index=True)
     place_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    # New contact and message fields
+    contact_email: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    contact_phone: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    postal_code: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    message_to_pro: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     current_step: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     answers: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
     status: Mapped[RequestStatus] = mapped_column(Enum(RequestStatus), nullable=False, default=RequestStatus.DRAFT)
@@ -255,6 +281,7 @@ class Request(Base):
 
     # Relationships
     service: Mapped["Service"] = relationship("Service")
+    mester: Mapped[Optional["Mester"]] = relationship("Mester")
     question_set: Mapped["QuestionSet"] = relationship("QuestionSet")
 
 
@@ -306,6 +333,115 @@ class Mester(Base):
         Index("ix_mesters_active_city", "is_active", "home_city_id"),
     )
 
+
+class MesterProfile(Base):
+    """Normalized profile info mirroring onboarding form (one-to-one with Mester)."""
+    __tablename__ = "mester_profiles"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    mester_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("mesters.id", ondelete="CASCADE"), unique=True, nullable=False, index=True)
+
+    business_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    display_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    slug: Mapped[Optional[str]] = mapped_column(String(160), nullable=True)
+    contact_email: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    contact_phone: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+
+    year_founded: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    employees_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    intro: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    languages: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String(10)), nullable=True)
+
+    availability_mode: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+
+    budget_mode: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    weekly_budget: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    logo_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text('now()'))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), onupdate=text('now()'))
+
+    # Relationships to normalized tables
+    services: Mapped[List["MesterProfileService"]] = relationship("MesterProfileService", back_populates="profile", cascade="all, delete-orphan")
+    address: Mapped[Optional["MesterProfileAddress"]] = relationship("MesterProfileAddress", back_populates="profile", uselist=False, cascade="all, delete-orphan")
+    coverage: Mapped[List["MesterProfileCoverage"]] = relationship("MesterProfileCoverage", back_populates="profile", cascade="all, delete-orphan")
+    hours: Mapped[List["MesterProfileWorkingHour"]] = relationship("MesterProfileWorkingHour", back_populates="profile", cascade="all, delete-orphan")
+    preferences: Mapped[Optional["MesterProfilePreference"]] = relationship("MesterProfilePreference", back_populates="profile", uselist=False, cascade="all, delete-orphan")
+    budget: Mapped[Optional["MesterProfileBudget"]] = relationship("MesterProfileBudget", back_populates="profile", uselist=False, cascade="all, delete-orphan")
+
+
+class MesterProfileService(Base):
+    __tablename__ = "mester_profile_services"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    profile_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("mester_profiles.id", ondelete="CASCADE"), index=True)
+    service_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("services.id"), nullable=False)
+    service_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    pricing_model: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    price: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    profile: Mapped["MesterProfile"] = relationship("MesterProfile", back_populates="services")
+
+
+class MesterProfileAddress(Base):
+    __tablename__ = "mester_profile_addresses"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    profile_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("mester_profiles.id", ondelete="CASCADE"), unique=True)
+    street: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    unit: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    city: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
+    zip: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    home_city_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("cities.id"), nullable=True)
+
+    profile: Mapped["MesterProfile"] = relationship("MesterProfile", back_populates="address")
+
+
+class MesterProfileCoverage(Base):
+    __tablename__ = "mester_profile_coverage"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    profile_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("mester_profiles.id", ondelete="CASCADE"), index=True)
+    city_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("cities.id"), nullable=True)
+    district_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("districts.id"), nullable=True)
+    postal_code_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("postal_codes.id"), nullable=True)
+    radius_km: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    priority: Mapped[int] = mapped_column(Integer, default=0)
+
+    profile: Mapped["MesterProfile"] = relationship("MesterProfile", back_populates="coverage")
+
+
+class MesterProfileWorkingHour(Base):
+    __tablename__ = "mester_profile_working_hours"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    profile_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("mester_profiles.id", ondelete="CASCADE"), index=True)
+    day: Mapped[str] = mapped_column(String(3), nullable=False)  # Sun, Mon, ...
+    open: Mapped[str] = mapped_column(String(5), nullable=False)  # HH:MM
+    close: Mapped[str] = mapped_column(String(5), nullable=False)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    profile: Mapped["MesterProfile"] = relationship("MesterProfile", back_populates="hours")
+
+
+class MesterProfilePreference(Base):
+    __tablename__ = "mester_profile_preferences"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    profile_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("mester_profiles.id", ondelete="CASCADE"), unique=True)
+    property_type: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    job_size: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    frequency: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    remove_debris: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    profile: Mapped["MesterProfile"] = relationship("MesterProfile", back_populates="preferences")
+
+
+class MesterProfileBudget(Base):
+    __tablename__ = "mester_profile_budgets"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    profile_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("mester_profiles.id", ondelete="CASCADE"), unique=True)
+    budget_mode: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    weekly_budget: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    profile: Mapped["MesterProfile"] = relationship("MesterProfile", back_populates="budget")
 
 class MesterService(Base):
     """Join table between Mester and Service with pricing metadata."""

@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import create_tables
-from app.routes import categories_router, health_router, services_router, question_sets_router, questions_router, geo_router, search_router, onboarding_router
+from app.routes import categories_router, health_router, services_router, question_sets_router, questions_router, geo_router, search_router, onboarding_router, users_router, mesters_router
 from app.routes.requests import router as requests_router
 
 
@@ -55,3 +55,5 @@ app.include_router(geo_router)
 app.include_router(requests_router)
 app.include_router(search_router)
 app.include_router(onboarding_router)
+app.include_router(users_router)
+app.include_router(mesters_router)

@@ -18,6 +18,7 @@ from .database import (
     PostalCode,
     Mester,
     MesterService,
+    MesterProfile,
     MesterCoverageArea,
     MesterReview,
 )
@@ -101,6 +102,7 @@ __all__ = [
     "PostalCode",
     "Mester",
     "MesterService",
+    "MesterProfile",
     "MesterCoverageArea",
     "MesterReview",
     "HealthResponse",

@@ -227,10 +227,19 @@ async def update_question_set(question_set_id: str, question_set_update: Questio
     # Check for duplicate question set name if name is being updated
     update_data = question_set_update.dict(exclude_unset=True)
     
+    # Validate service_id if being updated
+    if "service_id" in update_data:
+        service = db.query(Service).filter(Service.id == update_data["service_id"]).first()
+        if not service:
+            raise HTTPException(status_code=404, detail="Service not found")
+    
+    # Check for duplicate question set name
     if "name" in update_data:
+        # Use the new service_id if it's being updated, otherwise use the current one
+        target_service_id = update_data.get("service_id", db_question_set.service_id)
         existing_question_set = db.query(QuestionSet).filter(
             QuestionSet.name == update_data["name"],
-            QuestionSet.service_id == db_question_set.service_id,
+            QuestionSet.service_id == target_service_id,
             QuestionSet.id != question_set_id
         ).first()
         if existing_question_set:

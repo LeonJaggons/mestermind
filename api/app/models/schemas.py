@@ -14,6 +14,31 @@ class HealthResponse(BaseModel):
     message: str
 
 
+# -----------------------------
+# User schemas
+# -----------------------------
+
+
+class UserCreate(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    firebase_uid: Optional[str] = None
+
+
+class UserResponse(BaseModel):
+    id: str
+    first_name: str
+    last_name: str
+    email: str
+    firebase_uid: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
 class CategoryBase(BaseModel):
     """Base category model"""
     name: str
@@ -193,6 +218,7 @@ class QuestionSetCreate(QuestionSetBase):
 
 class QuestionSetUpdate(BaseModel):
     """Model for updating a question set"""
+    service_id: Optional[str] = None
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = None
     status: Optional[QuestionSetStatus] = None
@@ -294,8 +320,14 @@ class QuestionResponse(QuestionBase):
 # -----------------------------
 class RequestBase(BaseModel):
     service_id: str
+    mester_id: Optional[str] = None
     question_set_id: str
     place_id: Optional[str] = None
+    # New optional contact + message fields
+    contact_email: Optional[str] = None
+    contact_phone: Optional[str] = None
+    postal_code: Optional[str] = None
+    message_to_pro: Optional[str] = None
     answers: Optional[Dict[str, Any]] = None
     current_step: int = 0
 
@@ -308,13 +340,23 @@ class RequestUpdate(BaseModel):
     answers: Optional[Dict[str, Any]] = None
     current_step: Optional[int] = None
     status: Optional[str] = None
+    mester_id: Optional[str] = None
+    contact_email: Optional[str] = None
+    contact_phone: Optional[str] = None
+    postal_code: Optional[str] = None
+    message_to_pro: Optional[str] = None
 
 
 class RequestResponse(BaseModel):
     id: str
     service_id: str
+    mester_id: Optional[str] = None
     question_set_id: str
     place_id: Optional[str]
+    contact_email: Optional[str] = None
+    contact_phone: Optional[str] = None
+    postal_code: Optional[str] = None
+    message_to_pro: Optional[str] = None
     current_step: int
     answers: Optional[Dict[str, Any]]
     status: str
@@ -521,6 +563,7 @@ class MesterResponse(MesterBase):
     id: str
     rating_avg: Optional[float] = None
     review_count: int
+    logo_url: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 

@@ -114,8 +114,36 @@ def upgrade() -> None:
     op.create_index('ix_mester_reviews_mester_id', 'mester_reviews', ['mester_id'], unique=False)
     op.create_index('ix_mester_reviews_rating', 'mester_reviews', ['rating'], unique=False)
 
+    # mester_profiles (new)
+    op.create_table(
+        'mester_profiles',
+        sa.Column('id', postgresql.UUID(as_uuid=True), primary_key=True),
+        sa.Column('mester_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('mesters.id', ondelete='CASCADE'), nullable=False),
+        sa.Column('business_name', sa.String(length=255), nullable=True),
+        sa.Column('display_name', sa.String(length=255), nullable=True),
+        sa.Column('contact_email', sa.String(length=255), nullable=True),
+        sa.Column('contact_phone', sa.String(length=50), nullable=True),
+        sa.Column('year_founded', sa.Integer(), nullable=True),
+        sa.Column('employees_count', sa.Integer(), nullable=True),
+        sa.Column('intro', sa.Text(), nullable=True),
+        sa.Column('languages', postgresql.JSON(astext_type=sa.Text()), nullable=True),
+        sa.Column('availability_mode', sa.String(length=20), nullable=True),
+        sa.Column('working_hours', postgresql.JSON(astext_type=sa.Text()), nullable=True),
+        sa.Column('preferences', postgresql.JSON(astext_type=sa.Text()), nullable=True),
+        sa.Column('budget_mode', sa.String(length=20), nullable=True),
+        sa.Column('weekly_budget', sa.Integer(), nullable=True),
+        sa.Column('radius_km', sa.Float(), nullable=True),
+        sa.Column('logo_url', sa.Text(), nullable=True),
+        sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()')),
+        sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
+        sa.UniqueConstraint('mester_id', name='uq_mester_profiles_mester_id'),
+    )
+    op.create_index('ix_mester_profiles_mester_id', 'mester_profiles', ['mester_id'], unique=False)
+
 
 def downgrade() -> None:
+    op.drop_index('ix_mester_profiles_mester_id', table_name='mester_profiles')
+    op.drop_table('mester_profiles')
     with op.batch_alter_table('cities') as batch_op:
         try:
             batch_op.drop_column('lon')
