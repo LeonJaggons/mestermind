@@ -1,0 +1,19 @@
+INFO:     Will watch for changes in these directories: ['/Users/leonj/Development/mestermind/api']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [45983] using WatchFiles
+INFO:     Started server process [45987]
+INFO:     Waiting for application startup.
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+✅ Database tables initialized
+INFO:     127.0.0.1:53122 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53131 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:No Firebase credentials configured (FIREBASE_CREDENTIALS_PATH not set)
+WARNING:app.core.auth:Running in development mode without token verification
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53131 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53133 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53133 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK

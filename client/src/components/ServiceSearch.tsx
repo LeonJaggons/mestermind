@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
@@ -13,7 +13,13 @@ interface ServiceSearchProps {
   className?: string;
 }
 
-export default function ServiceSearch({ onSelect, selectedService = null, onClearSelected, placeholder = "Describe your project or problem — be as detailed as you'd like.", className = "" }: ServiceSearchProps) {
+export default function ServiceSearch({
+  onSelect,
+  selectedService = null,
+  onClearSelected,
+  placeholder = "Describe your project or problem — be as detailed as you'd like.",
+  className = "",
+}: ServiceSearchProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Service[]>([]);
   const [open, setOpen] = useState(false);
@@ -53,16 +59,19 @@ export default function ServiceSearch({ onSelect, selectedService = null, onClea
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     }
-    document.addEventListener('mousedown', onClickOutside);
-    return () => document.removeEventListener('mousedown', onClickOutside);
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
   return (
-    <div ref={containerRef} className={cn('relative w-full', className)}>
+    <div ref={containerRef} className={cn("relative w-full", className)}>
       <Input
         value={query}
         onChange={(e) => {
@@ -74,9 +83,10 @@ export default function ServiceSearch({ onSelect, selectedService = null, onClea
           }
         }}
         placeholder={placeholder}
-        className="border-0 focus-visible:ring-0 text-gray-600 placeholder-gray-400 py-4 px-6 text-lg"
+        className="border-0 w-[600px] focus-visible:ring-0 text-gray-800 py-6 px-6 h-full"
         aria-autocomplete="list"
         role="combobox"
+        style={{ fontSize: "16px" }}
         aria-expanded={open}
       />
       {open && (results.length > 0 || loading) && (
@@ -84,23 +94,26 @@ export default function ServiceSearch({ onSelect, selectedService = null, onClea
           {loading && (
             <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
           )}
-          {!loading && results.map((svc) => (
-            <button
-              key={svc.id}
-              type="button"
-              className="w-full text-left px-4 py-3 hover:bg-gray-50 text-gray-700"
-              onClick={() => {
-                onSelect(svc);
-                setQuery(svc.name);
-                setOpen(false);
-              }}
-            >
-              <div className="font-medium">{svc.name}</div>
-              {svc.description && (
-                <div className="text-sm text-gray-500 line-clamp-1">{svc.description}</div>
-              )}
-            </button>
-          ))}
+          {!loading &&
+            results.map((svc) => (
+              <button
+                key={svc.id}
+                type="button"
+                className="w-full text-left px-4 py-3 hover:bg-gray-50 text-gray-700"
+                onClick={() => {
+                  onSelect(svc);
+                  setQuery(svc.name);
+                  setOpen(false);
+                }}
+              >
+                <div className="font-medium">{svc.name}</div>
+                {svc.description && (
+                  <div className="text-sm text-gray-500 line-clamp-1">
+                    {svc.description}
+                  </div>
+                )}
+              </button>
+            ))}
           {!loading && results.length === 0 && debouncedQuery && (
             <div className="px-4 py-3 text-sm text-gray-500">No matches</div>
           )}
@@ -118,5 +131,3 @@ function useDebounce<T>(value: T, delay: number): T {
   }, [value, delay]);
   return debounced;
 }
-
-

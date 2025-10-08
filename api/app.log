@@ -1,0 +1,1015 @@
+INFO:     Will watch for changes in these directories: ['/Users/leonj/Development/mestermind/api']
+ERROR:    [Errno 48] Address already in use
+INFO:     Will watch for changes in these directories: ['/Users/leonj/Development/mestermind/api']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [46517] using WatchFiles
+INFO:     Started server process [46520]
+INFO:     Waiting for application startup.
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+WARNING:app.core.auth:No Firebase credentials configured (FIREBASE_CREDENTIALS_PATH not set)
+WARNING:app.core.auth:Running in development mode without token verification
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+✅ Database tables initialized
+INFO:     127.0.0.1:53400 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53404 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53431 - "POST /requests/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53433 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53433 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:app.services.notifications:Created notification 6a8a68eb-b3ea-4563-b1a9-18c0269f8d13 for mester d0a7cf78-8b1a-4099-a877-34e6be31e3ef
+INFO:app.services.notifications:Created 1 notifications for request 9b8fb914-62dc-4979-9949-25d3c618c468
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.OPEN
+[NOTIFICATION DEBUG] Triggering notifications for request 9b8fb914-62dc-4979-9949-25d3c618c468
+[NOTIFICATION DEBUG] Created 1 notifications
+INFO:     127.0.0.1:53437 - "PATCH /requests/9b8fb914-62dc-4979-9949-25d3c618c468 HTTP/1.1" 200 OK
+ERROR:app.services.notifications:Error sending email notification to leon.jaggon@gmail.com: Instance <Service at 0x10e2ec910> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+INFO:app.services.notifications:Logged email notification to leon.jaggon@gmail.com: failed
+INFO:app.routes.offers:[OFFER] Creating notification for offer 2d91caef-998e-46a4-bc5a-853e1e58441b
+ERROR:app.routes.offers:[OFFER] Error creating notification for offer 2d91caef-998e-46a4-bc5a-853e1e58441b: 'Mester' object has no attribute 'business_name'
+Traceback (most recent call last):
+  File "/Users/leonj/Development/mestermind/api/app/routes/offers.py", line 75, in create_offer
+    notification = await notification_service.notify_new_offer(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/Users/leonj/Development/mestermind/api/app/services/notifications.py", line 185, in notify_new_offer
+    title=f"New quote from {mester.business_name or mester.full_name}",
+                            ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Mester' object has no attribute 'business_name'
+INFO:     127.0.0.1:53439 - "POST /offers/?mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53448 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:watchfiles.main:1 change detected
+WARNING:  WatchFiles detected changes in 'app/services/notifications.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [46520]
+INFO:     Started server process [46640]
+INFO:     Waiting for application startup.
+INFO:watchfiles.main:3 changes detected
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+WARNING:app.core.auth:No Firebase credentials configured (FIREBASE_CREDENTIALS_PATH not set)
+WARNING:app.core.auth:Running in development mode without token verification
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+✅ Database tables initialized
+INFO:     127.0.0.1:53483 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53500 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:watchfiles.main:1 change detected
+WARNING:  WatchFiles detected changes in 'app/services/notifications.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [46640]
+INFO:     Started server process [46699]
+INFO:     Waiting for application startup.
+INFO:watchfiles.main:3 changes detected
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+WARNING:app.core.auth:No Firebase credentials configured (FIREBASE_CREDENTIALS_PATH not set)
+WARNING:app.core.auth:Running in development mode without token verification
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+✅ Database tables initialized
+INFO:     127.0.0.1:53539 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53541 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53545 - "POST /requests/ HTTP/1.1" 200 OK
+INFO:app.services.notifications:Created notification c03fa079-d718-4335-b40e-cce84227e4c5 for mester d0a7cf78-8b1a-4099-a877-34e6be31e3ef
+INFO:app.services.notifications:Created 1 notifications for request 50ab1687-0927-42c1-aa66-3800e2504c78
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.OPEN
+[NOTIFICATION DEBUG] Triggering notifications for request 50ab1687-0927-42c1-aa66-3800e2504c78
+[NOTIFICATION DEBUG] Created 1 notifications
+INFO:     127.0.0.1:53547 - "PATCH /requests/50ab1687-0927-42c1-aa66-3800e2504c78 HTTP/1.1" 200 OK
+ERROR:app.services.notifications:Error sending email notification to leon.jaggon@gmail.com: Instance <Service at 0x10a634910> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+INFO:app.services.notifications:Logged email notification to leon.jaggon@gmail.com: failed
+INFO:app.routes.offers:[OFFER] Creating notification for offer 090ee55d-9d18-46ba-ac4b-4d238bc89a16
+INFO:app.services.notifications:Created notification 11acd50c-1512-46da-af75-60bfc1585c6e for mester None
+INFO:app.services.notifications:Created notification for offer 090ee55d-9d18-46ba-ac4b-4d238bc89a16 to user eff672c9-4b2e-40b9-b0fb-df5ee83daf3f
+INFO:app.routes.offers:[OFFER] Notification 11acd50c-1512-46da-af75-60bfc1585c6e created successfully for offer 090ee55d-9d18-46ba-ac4b-4d238bc89a16
+INFO:     127.0.0.1:53549 - "POST /offers/?mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 401, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/routing.py", line 74, in app
+    await response(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/responses.py", line 156, in __call__
+    await self.background()
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/background.py", line 41, in __call__
+    await task()
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/background.py", line 26, in __call__
+    await self.func(*self.args, **self.kwargs)
+  File "/Users/leonj/Development/mestermind/api/app/services/notifications.py", line 498, in _send_offer_email_notification
+    if not user.email:
+           ^^^^^^^^^^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/sqlalchemy/orm/attributes.py", line 569, in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/sqlalchemy/orm/attributes.py", line 1096, in get
+    value = self._fire_loader_callables(state, key, passive)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/sqlalchemy/orm/attributes.py", line 1126, in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/sqlalchemy/orm/state.py", line 803, in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/sqlalchemy/orm/loading.py", line 1607, in load_scalar_attributes
+    raise orm_exc.DetachedInstanceError(
+    ...<2 lines>...
+    )
+sqlalchemy.orm.exc.DetachedInstanceError: Instance <User at 0x10a635e50> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53584 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53589 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53610 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53608 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53610 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53608 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53614 - "OPTIONS /notifications/c03fa079-d718-4335-b40e-cce84227e4c5/read HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53614 - "POST /notifications/c03fa079-d718-4335-b40e-cce84227e4c5/read HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53614 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53614 - "GET /requests/50ab1687-0927-42c1-aa66-3800e2504c78 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53616 - "GET /offers/?request_id=50ab1687-0927-42c1-aa66-3800e2504c78&mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53616 - "GET /questions/?question_set_id=6fc23a8e-3abb-4e03-8cfe-9ede2d2ba1e0&limit=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53616 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53616 - "GET /v1/geo/coordinates/1001 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53624 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53641 - "OPTIONS /requests/my-requests HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53638 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53637 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53639 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53640 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53641 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53639 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53637 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53638 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53640 - "OPTIONS /notifications/11acd50c-1512-46da-af75-60bfc1585c6e/read HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53641 - "POST /notifications/11acd50c-1512-46da-af75-60bfc1585c6e/read HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53646 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53648 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53667 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53694 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53718 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53746 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53751 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53750 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53751 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53750 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53777 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53793 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53814 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53830 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53833 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53856 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53865 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53868 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53870 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53873 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53876 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53879 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53881 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53883 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53883 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53886 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53888 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53891 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53894 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53896 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53902 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53915 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53916 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53917 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53902 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53914 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53915 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53916 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53902 - "GET /offers/?request_id=99aac5b3-18f1-4141-a3c1-1908beafe17a HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53917 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53920 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53924 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53926 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53934 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53935 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53936 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53934 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53936 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53935 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53934 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53936 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53941 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53943 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53945 - "OPTIONS /offers/6241e313-1679-4cc8-a5d4-002271a4828c HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53945 - "PATCH /offers/6241e313-1679-4cc8-a5d4-002271a4828c HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53945 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53945 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53945 - "GET /offers/?request_id=99aac5b3-18f1-4141-a3c1-1908beafe17a HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53954 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53953 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53945 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53955 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53952 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53953 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53955 - "GET /offers/?request_id=99aac5b3-18f1-4141-a3c1-1908beafe17a HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53945 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53954 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53967 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53965 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53966 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53964 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53967 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53965 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53966 - "GET /offers/?request_id=99aac5b3-18f1-4141-a3c1-1908beafe17a HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53969 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53969 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53974 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53971 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53983 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53982 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53984 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53985 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53982 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53983 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53984 - "GET /offers/?request_id=99aac5b3-18f1-4141-a3c1-1908beafe17a HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53987 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53989 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53991 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:53996 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:53998 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54000 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54003 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54005 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54010 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54014 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54031 - "OPTIONS /requests/my-requests HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54029 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54027 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54031 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54027 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54029 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54030 - "GET /offers/?request_id=99aac5b3-18f1-4141-a3c1-1908beafe17a HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54031 - "GET /services/explore HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54027 - "GET /v1/geo/search?q=Budapest&limit=1 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54036 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54038 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54040 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54042 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54045 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54047 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54050 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54068 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54066 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54068 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+ERROR:app.core.database:Database session error: 404: Request not found
+INFO:     127.0.0.1:54066 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54072 - "GET /offers/?request_id=50ab1687-0927-42c1-aa66-3800e2504c78&mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54071 - "GET /requests/50ab1687-0927-42c1-aa66-3800e2504c78 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:54066 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54066 - "GET /services/explore?limit=8&is_active=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54066 - "GET /services/explore?limit=8&is_active=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54077 - "GET /v1/geo/search?q=Budapest&limit=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54076 - "GET /services/explore HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54079 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54083 - "GET /services/explore HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54092 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54093 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54091 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54092 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54091 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54093 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54092 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54091 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54093 - "GET /services/explore?limit=8&is_active=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54092 - "GET /services/explore?limit=8&is_active=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54097 - "GET /services/explore HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54098 - "GET /v1/geo/search?q=Budapest&limit=1 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54100 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54109 - "OPTIONS /v1/geo/normalize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54112 - "OPTIONS /v1/geo/normalize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54108 - "GET /question-sets/service/15b99e11-b4d5-4aa6-ae58-ff5079944c3f HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54110 - "GET /v1/mesters/best-matches?service_id=15b99e11-b4d5-4aa6-ae58-ff5079944c3f&limit=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54111 - "GET /question-sets/service/15b99e11-b4d5-4aa6-ae58-ff5079944c3f HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54109 - "POST /v1/geo/normalize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54113 - "GET /v1/mesters/best-matches?service_id=15b99e11-b4d5-4aa6-ae58-ff5079944c3f&limit=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54112 - "POST /v1/geo/normalize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54108 - "GET /v1/search/pros?service_id=15b99e11-b4d5-4aa6-ae58-ff5079944c3f&lat=47.4979&lon=19.0402&radius_km=25&limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54110 - "GET /services/explore?limit=8&is_active=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54113 - "GET /services/explore?limit=8&is_active=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54113 - "GET /services/explore HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54117 - "GET /question-sets/service/15b99e11-b4d5-4aa6-ae58-ff5079944c3f HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54118 - "POST /v1/geo/normalize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54119 - "GET /v1/mesters/best-matches?service_id=15b99e11-b4d5-4aa6-ae58-ff5079944c3f&limit=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54120 - "GET /question-sets/service/15b99e11-b4d5-4aa6-ae58-ff5079944c3f HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54121 - "POST /v1/geo/normalize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54122 - "GET /v1/mesters/best-matches?service_id=15b99e11-b4d5-4aa6-ae58-ff5079944c3f&limit=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54117 - "GET /v1/search/pros?service_id=15b99e11-b4d5-4aa6-ae58-ff5079944c3f&lat=47.4979&lon=19.0402&radius_km=25&limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54118 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54120 - "GET /services/explore HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54121 - "GET /v1/search/pros?service_id=4d7b6511-f29d-4698-9170-8905211be0c5&lat=47.4979&lon=19.0402&radius_km=25&limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54119 - "GET /question-sets/service/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54122 - "GET /v1/mesters/best-matches?service_id=4d7b6511-f29d-4698-9170-8905211be0c5&limit=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54118 - "GET /v1/mesters/d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54120 - "GET /services/76cd763e-a411-4cdc-bd93-701046f1f9a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54119 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54121 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54128 - "GET /services/76cd763e-a411-4cdc-bd93-701046f1f9a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54122 - "GET /services/b38fa90e-d48b-4a3f-be47-edc2a0899c37 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54118 - "GET /services/4e34d5dc-e398-4568-97b2-b7e495416d40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54120 - "GET /services/e992edb0-7a34-4c8d-98c8-8eb42c2d3ddf HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54121 - "GET /services/b38fa90e-d48b-4a3f-be47-edc2a0899c37 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54119 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54128 - "GET /services/4e34d5dc-e398-4568-97b2-b7e495416d40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54122 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54118 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54120 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54121 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54119 - "GET /question-sets/service/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54128 - "GET /question-sets/service/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54122 - "OPTIONS /v1/users/me HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54121 - "GET /question-sets/2485b63e-ed0d-47cc-a3e7-f4450f667ef7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54120 - "GET /question-sets/2485b63e-ed0d-47cc-a3e7-f4450f667ef7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54118 - "GET /v1/users/me HTTP/1.1" 200 OK
+ERROR:app.core.database:Database session error: 404: Request not found
+INFO:     127.0.0.1:54119 - "GET /requests/94c01765-cddc-4a5e-8150-f5e1ae9c36c9 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:54128 - "OPTIONS /requests/ HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54122 - "POST /requests/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54121 - "OPTIONS /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54120 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54130 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54118 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54119 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54128 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54122 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54118 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54119 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54122 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54118 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54122 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54118 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54132 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54132 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54132 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54136 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54143 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54143 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54143 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.DRAFT
+INFO:     127.0.0.1:54143 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54145 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54145 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54147 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54150 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54152 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:app.services.notifications:Created notification 17277fdd-9f3e-442a-a88e-88f1abf3d2c3 for mester d0a7cf78-8b1a-4099-a877-34e6be31e3ef
+INFO:app.services.notifications:Created 1 notifications for request 7b4ca156-e21f-4208-b0a8-a03f45b492b9
+[NOTIFICATION DEBUG] old_status: RequestStatus.DRAFT, new_status: RequestStatus.OPEN
+[NOTIFICATION DEBUG] Triggering notifications for request 7b4ca156-e21f-4208-b0a8-a03f45b492b9
+[NOTIFICATION DEBUG] Created 1 notifications
+INFO:     127.0.0.1:54155 - "PATCH /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+ERROR:app.services.notifications:Error sending email notification to leon.jaggon@gmail.com: Instance <Service at 0x10a8319d0> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+INFO:app.services.notifications:Logged email notification to leon.jaggon@gmail.com: failed
+INFO:     127.0.0.1:54170 - "GET /services/explore?limit=8&is_active=true HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54172 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54170 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54170 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54172 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54180 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54180 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54180 - "GET /offers/?request_id=7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54182 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54183 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54180 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54182 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54186 - "OPTIONS /notifications/17277fdd-9f3e-442a-a88e-88f1abf3d2c3/read HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54186 - "POST /notifications/17277fdd-9f3e-442a-a88e-88f1abf3d2c3/read HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54186 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54188 - "GET /offers/?request_id=7b4ca156-e21f-4208-b0a8-a03f45b492b9&mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54186 - "GET /requests/7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54188 - "GET /questions/?question_set_id=2485b63e-ed0d-47cc-a3e7-f4450f667ef7&limit=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54188 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54188 - "GET /v1/geo/coordinates/1118 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54198 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54200 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54200 - "OPTIONS /offers/?mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+INFO:app.routes.offers:[OFFER] Creating notification for offer 3ad58424-8bba-45dc-822f-ea49e0397b55
+INFO:app.services.notifications:Created notification b3aee5db-8fbd-4329-971a-37190f89495f for mester None
+INFO:app.services.notifications:Created notification for offer 3ad58424-8bba-45dc-822f-ea49e0397b55 to user eff672c9-4b2e-40b9-b0fb-df5ee83daf3f
+INFO:app.routes.offers:[OFFER] Notification b3aee5db-8fbd-4329-971a-37190f89495f created successfully for offer 3ad58424-8bba-45dc-822f-ea49e0397b55
+INFO:     127.0.0.1:54200 - "POST /offers/?mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 401, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 62, in wrapped_app
+    raise exc
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 51, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/routing.py", line 74, in app
+    await response(scope, receive, send)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/responses.py", line 156, in __call__
+    await self.background()
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/background.py", line 41, in __call__
+    await task()
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/starlette/background.py", line 26, in __call__
+    await self.func(*self.args, **self.kwargs)
+  File "/Users/leonj/Development/mestermind/api/app/services/notifications.py", line 498, in _send_offer_email_notification
+    if not user.email:
+           ^^^^^^^^^^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/sqlalchemy/orm/attributes.py", line 569, in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/sqlalchemy/orm/attributes.py", line 1096, in get
+    value = self._fire_loader_callables(state, key, passive)
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/sqlalchemy/orm/attributes.py", line 1126, in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/sqlalchemy/orm/state.py", line 803, in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/leonj/Development/mestermind/api/venv/lib/python3.13/site-packages/sqlalchemy/orm/loading.py", line 1607, in load_scalar_attributes
+    raise orm_exc.DetachedInstanceError(
+    ...<2 lines>...
+    )
+sqlalchemy.orm.exc.DetachedInstanceError: Instance <User at 0x10a936b10> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+INFO:     127.0.0.1:54203 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54203 - "GET /offers/?mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54203 - "GET /requests/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54203 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54217 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54218 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54219 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54220 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54217 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54218 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54219 - "GET /offers/?request_id=7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54220 - "OPTIONS /offers/3ad58424-8bba-45dc-822f-ea49e0397b55 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54217 - "PATCH /offers/3ad58424-8bba-45dc-822f-ea49e0397b55 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54218 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54219 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54220 - "GET /offers/?request_id=7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54223 - "OPTIONS /notifications/read-all HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54223 - "POST /notifications/read-all HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54227 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54230 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54244 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54227 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54244 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54246 - "GET /offers/?mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54227 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54227 - "GET /requests/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54227 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54246 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54260 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54258 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54260 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54262 - "GET /offers/?mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54258 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54262 - "GET /requests/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54262 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54258 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54264 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54266 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54268 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54271 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54273 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54275 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54275 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54286 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54277 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54334 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54343 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54385 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54393 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:54419 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54430 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54521 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:54525 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:watchfiles.main:1 change detected
+WARNING:  WatchFiles detected changes in 'app/models/database.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [46699]
+INFO:watchfiles.main:9 changes detected
+WARNING:  WatchFiles detected changes in 'migrations/versions/20251003_add_messaging_tables.py', 'app/routes/mesters.py', 'app/models/schemas.py', 'app/routes/messages.py', 'app/__init__.py', 'app/routes/__init__.py'. Reloading...
+INFO:watchfiles.main:9 changes detected
+INFO:     Started server process [49150]
+INFO:     Waiting for application startup.
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+INFO:watchfiles.main:6 changes detected
+INFO:watchfiles.main:1 change detected
+WARNING:  WatchFiles detected changes in 'app/models/database.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [49150]
+INFO:watchfiles.main:3 changes detected
+INFO:     Started server process [49709]
+INFO:     Waiting for application startup.
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+INFO:watchfiles.main:1 change detected
+WARNING:  WatchFiles detected changes in 'app/models/schemas.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [49709]
+INFO:watchfiles.main:3 changes detected
+INFO:     Started server process [49738]
+INFO:     Waiting for application startup.
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+INFO:watchfiles.main:1 change detected
+WARNING:  WatchFiles detected changes in 'app/routes/__init__.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [49738]
+INFO:watchfiles.main:3 changes detected
+INFO:     Started server process [49773]
+INFO:     Waiting for application startup.
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+INFO:watchfiles.main:1 change detected
+WARNING:  WatchFiles detected changes in 'app/routes/messages.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [49773]
+INFO:     Started server process [49806]
+INFO:     Waiting for application startup.
+INFO:watchfiles.main:3 changes detected
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+INFO:watchfiles.main:1 change detected
+WARNING:  WatchFiles detected changes in 'migrations/versions/20251003_add_messaging_tables.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [49806]
+INFO:     Started server process [49834]
+INFO:     Waiting for application startup.
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+INFO:watchfiles.main:1 change detected
+WARNING:  WatchFiles detected changes in 'app/__init__.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [49834]
+INFO:watchfiles.main:3 changes detected
+INFO:     Started server process [49934]
+INFO:     Waiting for application startup.
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+INFO:watchfiles.main:1 change detected
+WARNING:  WatchFiles detected changes in 'app/routes/mesters.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [49934]
+INFO:     Started server process [49978]
+INFO:     Waiting for application startup.
+INFO:watchfiles.main:3 changes detected
+INFO:app.core.database:Database tables created successfully
+INFO:     Application startup complete.
+✅ Database tables initialized
+INFO:     127.0.0.1:55179 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55180 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:No Firebase credentials configured (FIREBASE_CREDENTIALS_PATH not set)
+WARNING:app.core.auth:Running in development mode without token verification
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+INFO:     127.0.0.1:55185 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55186 - "OPTIONS /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55187 - "OPTIONS /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55176 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55179 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user eydvrWFrDGXT9V9cnQjHF2W5PRy1
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+WARNING:app.core.auth:Using unverified token decoding (development mode only)
+INFO:app.core.auth:Development mode: Decoded token for user KfGvdhgnIMcxQdL2rKPvlDUqB1B3
+INFO:     127.0.0.1:55185 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55176 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55184 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55186 - "GET /notifications/?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55187 - "GET /requests/my-requests HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55180 - "GET /offers/?mester_id=d0a7cf78-8b1a-4099-a877-34e6be31e3ef HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55179 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55179 - "GET /requests/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55184 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55185 - "GET /v1/users/pro-status?email=leon%2Bcustomer%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55179 - "GET /services/4d7b6511-f29d-4698-9170-8905211be0c5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55180 - "GET /v1/users/pro-status?email=leon.jaggon%40gmail.com HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55186 - "GET /offers/?request_id=7b4ca156-e21f-4208-b0a8-a03f45b492b9 HTTP/1.1" 200 OK

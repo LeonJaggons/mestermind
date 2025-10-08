@@ -100,6 +100,59 @@ async def delete_draft(draft_id: str, db: Session = Depends(get_db)):
     return {"ok": True}
 
 
+@router.delete("/drafts/cleanup/abandoned")
+async def cleanup_abandoned_drafts(db: Session = Depends(get_db)):
+    """
+    Clean up abandoned onboarding drafts that are older than 7 days and not submitted.
+    This endpoint can be called periodically to clean up stale data.
+    """
+    from datetime import datetime, timedelta
+    
+    cutoff_date = datetime.utcnow() - timedelta(days=7)
+    
+    # Find abandoned drafts (not submitted and older than 7 days)
+    abandoned_drafts = db.query(OnboardingDraft).filter(
+        OnboardingDraft.is_submitted == False,
+        OnboardingDraft.created_at < cutoff_date
+    ).all()
+    
+    count = len(abandoned_drafts)
+    
+    # Delete abandoned drafts
+    for draft in abandoned_drafts:
+        db.delete(draft)
+    
+    db.commit()
+    
+    return {
+        "message": f"Cleaned up {count} abandoned onboarding drafts",
+        "deleted_count": count
+    }
+
+
+@router.delete("/drafts/cleanup/by-email/{email}")
+async def cleanup_drafts_by_email(email: str, db: Session = Depends(get_db)):
+    """
+    Clean up all onboarding drafts for a specific email address.
+    This is called when a user signs out or their session expires.
+    """
+    # Find all drafts for this email
+    drafts = db.query(OnboardingDraft).filter(OnboardingDraft.email == email).all()
+    
+    count = len(drafts)
+    
+    # Delete all drafts for this email
+    for draft in drafts:
+        db.delete(draft)
+    
+    db.commit()
+    
+    return {
+        "message": f"Cleaned up {count} onboarding drafts for email {email}",
+        "deleted_count": count
+    }
+
+
 @router.post("/drafts/{draft_id}/finalize", response_model=MesterResponse)
 async def finalize_draft(draft_id: str, db: Session = Depends(get_db)):
     draft = db.query(OnboardingDraft).filter(OnboardingDraft.id == draft_id).first()
@@ -348,5 +401,4 @@ async def finalize_draft(draft_id: str, db: Session = Depends(get_db)):
         created_at=mester.created_at,
         updated_at=mester.updated_at,
     )
-
 

@@ -10,17 +10,17 @@ from sqlalchemy import func
 from sqlalchemy import or_, text
 
 from app.core.database import get_db
-from app.models import City, County, District, GeoNormalizeRequest, GeoNormalizeResponse
+from app.models import City, County, District, PostalCode, GeoNormalizeRequest, GeoNormalizeResponse
 
 
 router = APIRouter(prefix="/v1/geo", tags=["geo"])
 
 
-def _normalize(text: str) -> str:
+def _normalize(input_text: str) -> str:
     """Lowercase and strip diacritics for simple matching."""
-    if text is None:
+    if input_text is None:
         return ""
-    text_lower = text.lower()
+    text_lower = input_text.lower()
     nfkd = unicodedata.normalize("NFKD", text_lower)
     return "".join([c for c in nfkd if not unicodedata.combining(c)])
 
@@ -291,6 +291,83 @@ async def geo_normalize(payload: GeoNormalizeRequest, db: Session = Depends(get_
 
     # No unique resolution
     raise_fastapi_422()
+
+
+@router.get("/coordinates/{postal_code}")
+async def get_coordinates_by_postal_code(
+    postal_code: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Get coordinates for a postal code.
+    For Budapest postal codes (1XYZ), returns district coordinates.
+    For other postal codes, returns city coordinates.
+    """
+    # Clean the postal code
+    postal_code = postal_code.strip()
+    
+    # If Budapest postal code (1XYZ), get district coordinates
+    if postal_code.isdigit() and len(postal_code) == 4 and postal_code[0] == "1":
+        try:
+            district_num = int(postal_code[1:3])
+            if 1 <= district_num <= 23:
+                budapest = db.query(City).filter(func.lower(City.name) == "budapest").first()
+                if budapest:
+                    district = (
+                        db.query(District)
+                        .filter(District.city_id == budapest.id)
+                        .filter(District.is_active == True)  # noqa: E712
+                        .filter(District.number == district_num)
+                        .first()
+                    )
+                    if district:
+                        # For Budapest districts, use city coordinates as fallback
+                        lat = budapest.lat
+                        lon = budapest.lon
+                        return {
+                            "postal_code": postal_code,
+                            "type": "district",
+                            "name": district.name,
+                            "city_name": budapest.name,
+                            "lat": lat,
+                            "lon": lon,
+                            "source": "city_fallback"
+                        }
+        except ValueError:
+            pass
+    
+    # For other postal codes, find the city
+    postal_code_row = (
+        db.query(PostalCode, City)
+        .join(City, PostalCode.city_id == City.id)
+        .filter(PostalCode.code == postal_code)
+        .filter(PostalCode.is_active == True)  # noqa: E712
+        .first()
+    )
+    
+    if postal_code_row:
+        _, city = postal_code_row
+        return {
+            "postal_code": postal_code,
+            "type": "city",
+            "name": city.name,
+            "city_name": city.name,
+            "lat": city.lat,
+            "lon": city.lon,
+            "source": "city_coordinates"
+        }
+    
+    # If no exact match, try to find by city name (fallback)
+    # This is a simple fallback - in production you might want to use a geocoding service
+    return {
+        "postal_code": postal_code,
+        "type": "unknown",
+        "name": "Unknown location",
+        "city_name": "Unknown",
+        "lat": 47.4979,  # Budapest coordinates as fallback
+        "lon": 19.0402,
+        "source": "fallback"
+    }
 
 
 def raise_fastapi_422():

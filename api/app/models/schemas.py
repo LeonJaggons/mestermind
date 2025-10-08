@@ -2,14 +2,16 @@
 Pydantic schemas for API requests and responses
 """
 
-from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any
+from pydantic import BaseModel, Field, field_validator
+from typing import Optional, List, Dict, Any, Literal
 from datetime import datetime
 from enum import Enum
+import uuid
 
 
 class HealthResponse(BaseModel):
     """Response model for health check endpoints"""
+
     status: str
     message: str
 
@@ -35,12 +37,20 @@ class UserResponse(BaseModel):
     created_at: datetime
     updated_at: Optional[datetime] = None
 
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_uuid_to_str(cls, v):
+        if isinstance(v, uuid.UUID):
+            return str(v)
+        return v
+
     class Config:
         from_attributes = True
 
 
 class CategoryBase(BaseModel):
     """Base category model"""
+
     name: str
     description: Optional[str] = None
     icon: Optional[str] = None
@@ -54,6 +64,7 @@ class CategoryCreate(CategoryBase):
 
 class CategoryUpdate(BaseModel):
     """Model for updating a category"""
+
     name: Optional[str] = None
     description: Optional[str] = None
     icon: Optional[str] = None
@@ -63,6 +74,7 @@ class CategoryUpdate(BaseModel):
 
 class SubcategoryBase(BaseModel):
     """Base subcategory model"""
+
     name: str
     description: Optional[str] = None
     icon: Optional[str] = None
@@ -72,11 +84,13 @@ class SubcategoryBase(BaseModel):
 
 class SubcategoryCreate(SubcategoryBase):
     """Model for creating a new subcategory"""
+
     category_id: str
 
 
 class SubcategoryUpdate(BaseModel):
     """Model for updating a subcategory"""
+
     name: Optional[str] = None
     description: Optional[str] = None
     icon: Optional[str] = None
@@ -86,6 +100,7 @@ class SubcategoryUpdate(BaseModel):
 
 class SubcategoryResponse(SubcategoryBase):
     """Subcategory response model"""
+
     id: str
     category_id: str
     created_at: datetime
@@ -97,6 +112,7 @@ class SubcategoryResponse(SubcategoryBase):
 
 class CategoryResponse(CategoryBase):
     """Category response model with subcategories"""
+
     id: str
     created_at: datetime
     updated_at: Optional[datetime] = None
@@ -108,6 +124,7 @@ class CategoryResponse(CategoryBase):
 
 class CategoryListResponse(CategoryBase):
     """Category response model without subcategories (for listing)"""
+
     id: str
     created_at: datetime
     updated_at: Optional[datetime] = None
@@ -119,6 +136,7 @@ class CategoryListResponse(CategoryBase):
 
 class ServiceBase(BaseModel):
     """Base service model"""
+
     name: str
     description: Optional[str] = None
     requires_license: bool = False
@@ -130,12 +148,14 @@ class ServiceBase(BaseModel):
 
 class ServiceCreate(ServiceBase):
     """Model for creating a new service"""
+
     category_id: str
     subcategory_id: str
 
 
 class ServiceUpdate(BaseModel):
     """Model for updating a service"""
+
     name: Optional[str] = None
     description: Optional[str] = None
     requires_license: Optional[bool] = None
@@ -147,6 +167,7 @@ class ServiceUpdate(BaseModel):
 
 class ServiceResponse(ServiceBase):
     """Service response model"""
+
     id: str
     category_id: str
     subcategory_id: str
@@ -159,6 +180,7 @@ class ServiceResponse(ServiceBase):
 
 class ServiceListResponse(ServiceBase):
     """Service response model for listing (without full details)"""
+
     id: str
     category_id: str
     subcategory_id: str
@@ -171,6 +193,7 @@ class ServiceListResponse(ServiceBase):
 
 class ServiceExploreResponse(ServiceBase):
     """Service response model for explore endpoint with category and subcategory info"""
+
     id: str
     category_id: str
     subcategory_id: str
@@ -186,12 +209,14 @@ class ServiceExploreResponse(ServiceBase):
 # Question Set Enums
 class QuestionSetStatus(str, Enum):
     """Question set status enum"""
+
     DRAFT = "draft"
     PUBLISHED = "published"
 
 
 class QuestionType(str, Enum):
     """Question type enum"""
+
     TEXT = "text"
     NUMBER = "number"
     BOOLEAN = "boolean"
@@ -204,6 +229,7 @@ class QuestionType(str, Enum):
 # Question Set Schemas
 class QuestionSetBase(BaseModel):
     """Base question set model"""
+
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
     status: QuestionSetStatus = QuestionSetStatus.DRAFT
@@ -213,11 +239,13 @@ class QuestionSetBase(BaseModel):
 
 class QuestionSetCreate(QuestionSetBase):
     """Model for creating a new question set"""
+
     service_id: str
 
 
 class QuestionSetUpdate(BaseModel):
     """Model for updating a question set"""
+
     service_id: Optional[str] = None
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = None
@@ -228,6 +256,7 @@ class QuestionSetUpdate(BaseModel):
 
 class QuestionSetResponse(QuestionSetBase):
     """Question set response model"""
+
     id: str
     service_id: str
     version: int
@@ -241,6 +270,7 @@ class QuestionSetResponse(QuestionSetBase):
 
 class QuestionSetListResponse(QuestionSetBase):
     """Question set response model for listing (without questions)"""
+
     id: str
     service_id: str
     version: int
@@ -255,6 +285,7 @@ class QuestionSetListResponse(QuestionSetBase):
 # Question Schemas
 class QuestionBase(BaseModel):
     """Base question model"""
+
     key: str = Field(..., min_length=1, max_length=100, pattern="^[a-zA-Z0-9_]+$")
     label: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
@@ -266,6 +297,7 @@ class QuestionBase(BaseModel):
 
 class QuestionCreate(QuestionBase):
     """Model for creating a new question"""
+
     question_set_id: str
     options: Optional[Dict[str, Any]] = None  # For select/multi_select
     min_value: Optional[float] = None  # For number type
@@ -279,7 +311,10 @@ class QuestionCreate(QuestionBase):
 
 class QuestionUpdate(BaseModel):
     """Model for updating a question"""
-    key: Optional[str] = Field(None, min_length=1, max_length=100, pattern="^[a-zA-Z0-9_]+$")
+
+    key: Optional[str] = Field(
+        None, min_length=1, max_length=100, pattern="^[a-zA-Z0-9_]+$"
+    )
     label: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = None
     question_type: Optional[QuestionType] = None
@@ -298,6 +333,7 @@ class QuestionUpdate(BaseModel):
 
 class QuestionResponse(QuestionBase):
     """Question response model"""
+
     id: str
     question_set_id: str
     options: Optional[Dict[str, Any]] = None
@@ -320,16 +356,24 @@ class QuestionResponse(QuestionBase):
 # -----------------------------
 class RequestBase(BaseModel):
     service_id: str
+    user_id: Optional[str] = None
     mester_id: Optional[str] = None
     question_set_id: str
     place_id: Optional[str] = None
     # New optional contact + message fields
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     contact_email: Optional[str] = None
     contact_phone: Optional[str] = None
     postal_code: Optional[str] = None
     message_to_pro: Optional[str] = None
     answers: Optional[Dict[str, Any]] = None
-    current_step: int = 0
+
+class WeeklyAvailability(BaseModel):
+    type: Literal["weekly"] = "weekly"
+    days: List[int]
+    start: str
+    end: str
 
 
 class RequestCreate(RequestBase):
@@ -338,9 +382,13 @@ class RequestCreate(RequestBase):
 
 class RequestUpdate(BaseModel):
     answers: Optional[Dict[str, Any]] = None
+    availability: Optional[WeeklyAvailability] = None
     current_step: Optional[int] = None
     status: Optional[str] = None
+    user_id: Optional[str] = None
     mester_id: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     contact_email: Optional[str] = None
     contact_phone: Optional[str] = None
     postal_code: Optional[str] = None
@@ -350,21 +398,68 @@ class RequestUpdate(BaseModel):
 class RequestResponse(BaseModel):
     id: str
     service_id: str
+    user_id: Optional[str] = None
     mester_id: Optional[str] = None
     question_set_id: str
     place_id: Optional[str]
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     contact_email: Optional[str] = None
     contact_phone: Optional[str] = None
     postal_code: Optional[str] = None
     message_to_pro: Optional[str] = None
     current_step: int
     answers: Optional[Dict[str, Any]]
+    availability: Optional[WeeklyAvailability] = None
     status: str
     created_at: datetime
     updated_at: Optional[datetime]
 
     class Config:
         from_attributes = True
+
+
+# -----------------------------
+# Offer schemas
+# -----------------------------
+
+
+class OfferBase(BaseModel):
+    request_id: str
+    mester_id: str
+    price: float
+    currency: str = "HUF"
+    message: Optional[str] = None
+
+
+class OfferCreate(BaseModel):
+    request_id: str
+    price: float
+    currency: str = "HUF"
+    message: Optional[str] = None
+
+
+class OfferUpdate(BaseModel):
+    price: Optional[float] = None
+    message: Optional[str] = None
+    status: Optional[str] = None
+
+
+class OfferResponse(BaseModel):
+    id: str
+    request_id: str
+    mester_id: str
+    price: float
+    currency: str
+    message: Optional[str]
+    status: str
+    created_at: datetime
+    updated_at: Optional[datetime]
+    expires_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
 
 # Update forward references
 QuestionSetResponse.model_rebuild()
@@ -374,6 +469,7 @@ QuestionResponse.model_rebuild()
 # -----------------------------
 # Location schemas (Hungary)
 # -----------------------------
+
 
 class CountyBase(BaseModel):
     name: str
@@ -498,8 +594,10 @@ class PostalCodeResponse(PostalCodeBase):
 # Geo normalization schemas
 # -----------------------------
 
+
 class GeoNormalizeRequest(BaseModel):
     """Geo normalization request model"""
+
     query: Optional[str] = None
     place_id: Optional[str] = None
     type: Optional[str] = Field(None, pattern="^(city|district)$")
@@ -507,6 +605,7 @@ class GeoNormalizeRequest(BaseModel):
 
 class GeoNormalizeResponse(BaseModel):
     """Geo normalization response model"""
+
     place_id: str
     type: str
     name: str
@@ -705,3 +804,119 @@ class OnboardingDraftResponse(OnboardingDraftBase):
 
     class Config:
         from_attributes = True
+
+
+# -----------------------------
+# Messaging schemas
+# -----------------------------
+
+
+class MessageThreadCreate(BaseModel):
+    request_id: str
+    mester_id: str
+    customer_user_id: Optional[str] = None
+
+
+class MessageThreadResponse(BaseModel):
+    id: str
+    request_id: str
+    mester_id: str
+    customer_user_id: Optional[str] = None
+    last_message_at: Optional[datetime] = None
+    last_message_preview: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class MessageCreate(BaseModel):
+    body: str
+    sender_type: str  # 'customer' | 'mester'
+    sender_user_id: Optional[str] = None
+    sender_mester_id: Optional[str] = None
+
+
+class MessageResponse(BaseModel):
+    id: str
+    thread_id: str
+    body: str
+    sender_type: str
+    sender_user_id: Optional[str] = None
+    sender_mester_id: Optional[str] = None
+    is_read_by_customer: bool
+    is_read_by_mester: bool
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# -----------------------------
+# Notification schemas
+# -----------------------------
+
+
+class NotificationType(str, Enum):
+    """Notification type enum"""
+
+    NEW_REQUEST = "new_request"
+    NEW_OFFER = "new_offer"
+    NEW_MESSAGE = "new_message"
+    BOOKING_CONFIRMED = "booking_confirmed"
+    REVIEW_REMINDER = "review_reminder"
+    PAYMENT_RECEIVED = "payment_received"
+
+
+class NotificationResponse(BaseModel):
+    """Notification response model"""
+
+    id: str
+    user_id: Optional[str] = None
+    mester_id: Optional[str] = None
+    type: str
+    title: str
+    body: str
+    request_id: Optional[str] = None
+    offer_id: Optional[str] = None
+    message_id: Optional[str] = None
+    action_url: Optional[str] = None
+    data: Optional[Dict[str, Any]] = None
+    is_read: bool
+    read_at: Optional[datetime] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class NotificationListResponse(BaseModel):
+    """Notification list response with unread count"""
+
+    items: List[NotificationResponse]
+    unread_count: int
+
+
+class NotificationPreferenceResponse(BaseModel):
+    """Notification preference response model"""
+
+    id: str
+    user_id: Optional[str] = None
+    mester_id: Optional[str] = None
+    preferences: Dict[str, Any]
+    quiet_hours_start: Optional[str] = None
+    quiet_hours_end: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class NotificationPreferenceUpdate(BaseModel):
+    """Notification preference update model"""
+
+    preferences: Dict[str, Any]
+    quiet_hours_start: Optional[str] = None
+    quiet_hours_end: Optional[str] = None

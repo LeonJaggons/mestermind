@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Home,
   LogOut,
-  ClipboardList
+  ClipboardList,
+  MessageSquare
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -23,6 +24,8 @@ interface AdminLayoutProps {
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Requests', href: '/admin/requests', icon: MessageSquare },
+  { name: 'Mesters', href: '/admin/mesters', icon: Users },
   { name: 'Services', href: '/admin/services', icon: FileText },
   { name: 'Categories', href: '/admin/categories', icon: Settings },
   { name: 'Question Sets', href: '/admin/question-sets', icon: ClipboardList },

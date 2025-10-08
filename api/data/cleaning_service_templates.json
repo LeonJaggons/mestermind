@@ -1,0 +1,136 @@
+{
+  "services": {
+    "commercial cleaning": {
+      "name": "Commercial Cleaning Details",
+      "desc": "Scope and scheduling for offices and commercial spaces.",
+      "questions": [
+        {"key": "space_type", "label": "What type of space is it?", "question_type": "SELECT", "options": {"choices": ["Office", "Retail", "Restaurant", "Warehouse", "Other"]}, "sort_order": 10},
+        {"key": "area", "label": "What is the approximate area (m²)?", "question_type": "NUMBER", "min_value": 10, "max_value": 10000, "sort_order": 20},
+        {"key": "frequency", "label": "How often do you need this service?", "question_type": "SELECT", "options": {"choices": ["One-time", "Weekly", "Bi-weekly", "Monthly"]}, "sort_order": 30},
+        {"key": "hours", "label": "When would you prefer the cleaning to occur?", "question_type": "SELECT", "options": {"choices": ["Business hours", "After hours", "Weekend"]}, "sort_order": 40},
+        {"key": "special", "label": "Are there any special requirements? (optional)", "question_type": "TEXT", "is_required": false, "max_length": 500, "sort_order": 50}
+      ]
+    },
+    "fireplace and chimney cleaning or repair": {
+      "name": "Fireplace/Chimney Service Details",
+      "desc": "Safety, access, and service type.",
+      "questions": [
+        {"key": "service", "label": "What fireplace or chimney service do you need?", "question_type": "SELECT", "options": {"choices": ["Cleaning", "Inspection", "Repair"]}, "sort_order": 10},
+        {"key": "fuel", "label": "What is the fuel type?", "question_type": "SELECT", "options": {"choices": ["Wood", "Gas", "Pellet", "Other"]}, "sort_order": 20},
+        {"key": "access", "label": "Is there easy roof or chimney access?", "question_type": "BOOLEAN", "sort_order": 30},
+        {"key": "last_service", "label": "When was the last service (approximately)?", "question_type": "TEXT", "is_required": false, "sort_order": 40},
+        {"key": "issues", "label": "Have you noticed any issues? (optional)", "question_type": "TEXT", "is_required": false, "max_length": 500, "sort_order": 50}
+      ]
+    },
+    "furniture upholstery": {
+      "name": "Upholstery Service Details",
+      "desc": "Fabric, count, and stains.",
+      "questions": [
+        {"key": "items", "label": "Which items need upholstery work?", "question_type": "SELECT", "options": {"choices": ["Sofa", "Chair", "Ottoman", "Mattress", "Other"]}, "sort_order": 10},
+        {"key": "count", "label": "How many items are there?", "question_type": "SELECT", "options": {"choices": ["1", "2-3", "4-6", "7+"]}, "sort_order": 20},
+        {"key": "fabric", "label": "What is the fabric type (if known)?", "question_type": "TEXT", "is_required": false, "sort_order": 30},
+        {"key": "stains", "label": "Are there any stains or odors?", "question_type": "BOOLEAN", "sort_order": 40},
+        {"key": "notes", "label": "Do you have any access or parking notes? (optional)", "question_type": "TEXT", "is_required": false, "max_length": 300, "sort_order": 50}
+      ]
+    },
+    "garage, basement or attic cleaning": {
+      "name": "Garage/Basement/Attic Cleaning Details",
+      "desc": "Space, access, and disposal.",
+      "questions": [
+        {"key": "space", "label": "Which space needs cleaning?", "question_type": "SELECT", "options": {"choices": ["Garage", "Basement", "Attic"]}, "sort_order": 10},
+        {"key": "size", "label": "What is the approximate size?", "question_type": "SELECT", "options": {"choices": ["Small", "Medium", "Large"]}, "sort_order": 20},
+        {"key": "haul", "label": "Do you need junk hauling or disposal?", "question_type": "BOOLEAN", "sort_order": 30},
+        {"key": "stairs", "label": "Will stairs or an elevator be involved?", "question_type": "SELECT", "options": {"choices": ["Elevator", "1 flight", "2+ flights", "Ground level"]}, "sort_order": 40},
+        {"key": "notes", "label": "Are there special items or hazards we should know about? (optional)", "question_type": "TEXT", "is_required": false, "max_length": 500, "sort_order": 50}
+      ]
+    },
+    "house cleaning": {
+      "name": "House Cleaning Details",
+      "desc": "Home size and focus areas.",
+      "questions": [
+        {"key": "type", "label": "What type of cleaning do you need?", "question_type": "SELECT", "options": {"choices": ["Standard", "Deep", "Move-in/Move-out"]}, "sort_order": 10},
+        {"key": "size", "label": "What is the size of your home?", "question_type": "SELECT", "options": {"choices": ["Studio/1 BR", "2-3 BR", "4+ BR"]}, "sort_order": 20},
+        {"key": "frequency", "label": "How often should we clean?", "question_type": "SELECT", "options": {"choices": ["One-time", "Weekly", "Bi-weekly", "Monthly"]}, "sort_order": 30},
+        {"key": "pets", "label": "Are there any pets at home?", "question_type": "BOOLEAN", "sort_order": 40},
+        {"key": "notes", "label": "Which areas need special attention? (optional)", "question_type": "TEXT", "is_required": false, "max_length": 500, "sort_order": 50}
+      ]
+    },
+    "junk removal": {
+      "name": "Junk Removal Details",
+      "desc": "Items, access, and disposal.",
+      "questions": [
+        {"key": "items", "label": "What items need to be removed?", "question_type": "TEXT", "sort_order": 10},
+        {"key": "volume", "label": "What is the approximate volume?", "question_type": "SELECT", "options": {"choices": ["Car trunk", "Small van", "Large van", "Truck"]}, "sort_order": 20},
+        {"key": "stairs", "label": "Will stairs or an elevator be needed?", "question_type": "SELECT", "options": {"choices": ["Elevator", "1 flight", "2+ flights", "Ground level"]}, "sort_order": 30},
+        {"key": "hazard", "label": "Does this include hazardous waste?", "question_type": "BOOLEAN", "sort_order": 40},
+        {"key": "notes", "label": "Do you have any parking or access notes? (optional)", "question_type": "TEXT", "is_required": false, "max_length": 300, "sort_order": 50}
+      ]
+    },
+    "odor removal": {
+      "name": "Odor Removal Details",
+      "desc": "Source, area, and sensitivity.",
+      "questions": [
+        {"key": "source", "label": "What is the suspected source of the odor?", "question_type": "SELECT", "options": {"choices": ["Pet", "Mold/Mildew", "Smoke", "Food", "Other"]}, "sort_order": 10},
+        {"key": "area", "label": "What is the size of the affected area?", "question_type": "SELECT", "options": {"choices": ["Small", "Medium", "Large"]}, "sort_order": 20},
+        {"key": "sensitive", "label": "Does anyone have chemical sensitivities?", "question_type": "BOOLEAN", "sort_order": 30},
+        {"key": "recurrence", "label": "Is the odor recurring?", "question_type": "BOOLEAN", "sort_order": 40},
+        {"key": "notes", "label": "Please share any additional details. (optional)", "question_type": "TEXT", "is_required": false, "max_length": 300, "sort_order": 50}
+      ]
+    },
+    "pressure washing": {
+      "name": "Pressure Washing Details",
+      "desc": "Surface, area, and water access.",
+      "questions": [
+        {"key": "surface", "label": "Which surface needs to be cleaned?", "question_type": "SELECT", "options": {"choices": ["Driveway", "Patio", "Siding", "Deck", "Roof", "Other"]}, "sort_order": 10},
+        {"key": "area", "label": "What is the approximate area (m²)?", "question_type": "NUMBER", "min_value": 5, "max_value": 2000, "sort_order": 20},
+        {"key": "water", "label": "Is on-site water access available?", "question_type": "BOOLEAN", "sort_order": 30},
+        {"key": "height", "label": "Will any work be done over 3 meters in height?", "question_type": "BOOLEAN", "sort_order": 40},
+        {"key": "notes", "label": "Are there stains or restrictions we should know about? (optional)", "question_type": "TEXT", "is_required": false, "max_length": 300, "sort_order": 50}
+      ]
+    },
+    "rug cleaning": {
+      "name": "Rug Cleaning Details",
+      "desc": "Fiber, size, and stains.",
+      "questions": [
+        {"key": "rug_type", "label": "What type of rug is it?", "question_type": "SELECT", "options": {"choices": ["Wool", "Synthetic", "Silk", "Cotton", "Other", "Unknown"]}, "sort_order": 10},
+        {"key": "size", "label": "What is the approximate size?", "question_type": "SELECT", "options": {"choices": ["Small", "Medium", "Large"]}, "sort_order": 20},
+        {"key": "pick_drop", "label": "Do you prefer pickup/drop-off or on-site cleaning?", "question_type": "SELECT", "options": {"choices": ["Pickup/Drop-off", "On-site"]}, "sort_order": 30},
+        {"key": "stains", "label": "Are there any stains or odors?", "question_type": "BOOLEAN", "sort_order": 40},
+        {"key": "notes", "label": "Please share any delicacy or care notes. (optional)", "question_type": "TEXT", "is_required": false, "max_length": 300, "sort_order": 50}
+      ]
+    },
+    "solar panel cleaning": {
+      "name": "Solar Panel Cleaning Details",
+      "desc": "Array size and access.",
+      "questions": [
+        {"key": "array_size", "label": "How many panels are in the array (approximately)?", "question_type": "NUMBER", "min_value": 1, "max_value": 500, "sort_order": 10},
+        {"key": "roof", "label": "Are the panels roof mounted?", "question_type": "BOOLEAN", "sort_order": 20},
+        {"key": "height", "label": "Will work be over 3 meters in height?", "question_type": "BOOLEAN", "sort_order": 30},
+        {"key": "access", "label": "Is safe access available?", "question_type": "BOOLEAN", "sort_order": 40},
+        {"key": "notes", "label": "Are there inverter or monitoring issues? (optional)", "question_type": "TEXT", "is_required": false, "max_length": 300, "sort_order": 50}
+      ]
+    },
+    "upholstery and furniture cleaning": {
+      "name": "Furniture Cleaning Details",
+      "desc": "Fabric, count, and stains.",
+      "questions": [
+        {"key": "items", "label": "Which furniture items need cleaning?", "question_type": "SELECT", "options": {"choices": ["Sofa", "Chair", "Ottoman", "Mattress", "Other"]}, "sort_order": 10},
+        {"key": "count", "label": "How many items are there?", "question_type": "SELECT", "options": {"choices": ["1", "2-3", "4-6", "7+"]}, "sort_order": 20},
+        {"key": "fabric", "label": "What is the fabric type (if known)?", "question_type": "TEXT", "is_required": false, "sort_order": 30},
+        {"key": "stains", "label": "Are there any stains or odors?", "question_type": "BOOLEAN", "sort_order": 40},
+        {"key": "notes", "label": "Do you have any access or parking notes? (optional)", "question_type": "TEXT", "is_required": false, "max_length": 300, "sort_order": 50}
+      ]
+    },
+    "water damage cleanup and restoration": {
+      "name": "Water Damage Cleanup Details",
+      "desc": "Source, extent, and urgency for mitigation.",
+      "questions": [
+        {"key": "source", "label": "What is the source of the water?", "question_type": "SELECT", "options": {"choices": ["Burst pipe", "Roof leak", "Flood", "Appliance", "Other"]}, "sort_order": 10},
+        {"key": "area", "label": "How large is the affected area?", "question_type": "SELECT", "options": {"choices": ["Small", "Medium", "Large"]}, "sort_order": 20},
+        {"key": "standing", "label": "Is there any standing water present?", "question_type": "BOOLEAN", "sort_order": 30},
+        {"key": "drywall", "label": "Are walls or ceilings affected?", "question_type": "BOOLEAN", "sort_order": 40},
+        {"key": "notes", "label": "Do you have insurance or urgent needs to note? (optional)", "question_type": "TEXT", "is_required": false, "max_length": 500, "sort_order": 50}
+      ]
+    }
+  }
+}

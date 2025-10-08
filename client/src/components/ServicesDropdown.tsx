@@ -1,9 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
-import { ChevronRight } from 'lucide-react';
-import { fetchExploreServices, ServiceExplore, searchLocations, type LocationSearchResult } from '@/lib/api';
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import { LuChevronRight } from "react-icons/lu";
+import {
+  fetchExploreServices,
+  ServiceExplore,
+  searchLocations,
+  type LocationSearchResult,
+} from "@/lib/api";
 
 interface ServicesDropdownProps {
   isOpen: boolean;
@@ -11,35 +16,44 @@ interface ServicesDropdownProps {
   buttonRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-export default function ServicesDropdown({ isOpen, onClose, buttonRef }: ServicesDropdownProps) {
+export default function ServicesDropdown({
+  isOpen,
+  onClose,
+  buttonRef,
+}: ServicesDropdownProps) {
   const router = useRouter();
   const [exploreServices, setExploreServices] = useState<ServiceExplore[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hoveredSubcategory, setHoveredSubcategory] = useState<string | null>(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ left: 0, width: 600 });
+  const [hoveredSubcategory, setHoveredSubcategory] = useState<string | null>(
+    null,
+  );
+  const [dropdownPosition, setDropdownPosition] = useState({
+    left: 0,
+    width: 600,
+  });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [budapestId, setBudapestId] = useState<string | null>(null);
 
   // Calculate dropdown position
   const calculatePosition = () => {
     if (!buttonRef || !buttonRef.current) return;
-    
+
     const buttonRect = buttonRef.current.getBoundingClientRect();
     const viewportWidth = window.innerWidth;
     const dropdownWidth = Math.min(600, viewportWidth - 32); // 32px for margins
-    
+
     let left = buttonRect.left;
-    
+
     // If dropdown would overflow right side, align it to the right edge of button
     if (left + dropdownWidth > viewportWidth - 16) {
       left = buttonRect.right - dropdownWidth;
     }
-    
+
     // If dropdown would overflow left side, align it to left edge of viewport
     if (left < 16) {
       left = 16;
     }
-    
+
     setDropdownPosition({ left, width: dropdownWidth });
   };
 
@@ -49,10 +63,10 @@ export default function ServicesDropdown({ isOpen, onClose, buttonRef }: Service
       try {
         setLoading(true);
         const data = await fetchExploreServices();
-        console.log('exploreServices', data);
+        console.log("exploreServices", data);
         setExploreServices(data);
       } catch (error) {
-        console.error('Failed to load explore services:', error);
+        console.error("Failed to load explore services:", error);
       } finally {
         setLoading(false);
       }
@@ -67,7 +81,10 @@ export default function ServicesDropdown({ isOpen, onClose, buttonRef }: Service
   useEffect(() => {
     const fetchBudapest = async () => {
       try {
-        const results: LocationSearchResult[] = await searchLocations('Budapest', 1);
+        const results: LocationSearchResult[] = await searchLocations(
+          "Budapest",
+          1,
+        );
         if (results && results.length > 0) {
           setBudapestId(results[0].id);
         }
@@ -81,56 +98,69 @@ export default function ServicesDropdown({ isOpen, onClose, buttonRef }: Service
   }, [isOpen, budapestId]);
 
   // Group services by category and subcategory
-  const groupedServices = exploreServices.reduce((acc, service) => {
-    const categoryKey = `${service.category_id}-${service.category_name}`;
-    const subcategoryKey = `${service.subcategory_id}-${service.subcategory_name}`;
-    
-    if (!acc[categoryKey]) {
-      acc[categoryKey] = {
-        id: service.category_id,
-        name: service.category_name,
-        subcategories: {}
-      };
-    }
-    
-    if (!acc[categoryKey].subcategories[subcategoryKey]) {
-      acc[categoryKey].subcategories[subcategoryKey] = {
-        id: service.subcategory_id,
-        name: service.subcategory_name,
-        services: []
-      };
-    }
-    
-    acc[categoryKey].subcategories[subcategoryKey].services.push(service);
-    return acc;
-  }, {} as Record<string, {
-    id: string;
-    name: string;
-    subcategories: Record<string, {
-      id: string;
-      name: string;
-      services: ServiceExplore[];
-    }>;
-  }>);
+  const groupedServices = exploreServices.reduce(
+    (acc, service) => {
+      const categoryKey = `${service.category_id}-${service.category_name}`;
+      const subcategoryKey = `${service.subcategory_id}-${service.subcategory_name}`;
+
+      if (!acc[categoryKey]) {
+        acc[categoryKey] = {
+          id: service.category_id,
+          name: service.category_name,
+          subcategories: {},
+        };
+      }
+
+      if (!acc[categoryKey].subcategories[subcategoryKey]) {
+        acc[categoryKey].subcategories[subcategoryKey] = {
+          id: service.subcategory_id,
+          name: service.subcategory_name,
+          services: [],
+        };
+      }
+
+      acc[categoryKey].subcategories[subcategoryKey].services.push(service);
+      return acc;
+    },
+    {} as Record<
+      string,
+      {
+        id: string;
+        name: string;
+        subcategories: Record<
+          string,
+          {
+            id: string;
+            name: string;
+            services: ServiceExplore[];
+          }
+        >;
+      }
+    >,
+  );
 
   // Get services for hovered subcategory
-  const hoveredServices = hoveredSubcategory 
+  const hoveredServices = hoveredSubcategory
     ? Object.values(groupedServices)
-        .flatMap(cat => Object.values(cat.subcategories))
-        .find(sub => sub.id === hoveredSubcategory)?.services || []
+        .flatMap((cat) => Object.values(cat.subcategories))
+        .find((sub) => sub.id === hoveredSubcategory)?.services || []
     : [];
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [isOpen, onClose]);
 
@@ -138,32 +168,33 @@ export default function ServicesDropdown({ isOpen, onClose, buttonRef }: Service
   useEffect(() => {
     if (isOpen) {
       calculatePosition();
-      
+
       const handleResize = () => {
         calculatePosition();
       };
-      
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       ref={dropdownRef}
-      className="fixed bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-[600px] overflow-hidden"
+      className="fixed bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden"
       style={{
-        top: '64px',
-        borderRadius: '0px',
+        top: "64px",
+        borderRadius: "0px",
         left: `${dropdownPosition.left}px`,
-        width: `${dropdownPosition.width}px`
+        width: `${dropdownPosition.width}px`,
+        height: "500px",
       }}
     >
-      <div className="flex max-h-[600px]">
+      <div className="flex h-full">
         {/* Left Column - Categories and Subcategories */}
-        <div className="flex-1 border-r border-gray-200 overflow-y-auto max-h-[500px]">
+        <div className="flex-1 border-r border-gray-200 overflow-y-auto">
           {loading ? (
             <div className="p-6 text-center text-gray-500">Loading...</div>
           ) : (
@@ -172,27 +203,34 @@ export default function ServicesDropdown({ isOpen, onClose, buttonRef }: Service
                 <div key={category.id}>
                   {/* Category Header */}
                   <div className="px-6 py-3">
-                    <h3 className="font-bold text-gray-900 text-xs uppercase tracking-wide">{category.name}</h3>
+                    <h3 className="font-bold text-gray-900 text-xs uppercase tracking-wide">
+                      {category.name}
+                    </h3>
                   </div>
-                  
+
                   {/* Subcategories */}
                   <div className="space-y-0">
-                    {Object.values(category.subcategories).map((subcategory) => (
-                      <div
-                        key={subcategory.id}
-                        className="px-6 py-3 hover:bg-gray-50 cursor-pointer flex items-center justify-between group transition-colors duration-150"
-                        onMouseEnter={() => setHoveredSubcategory(subcategory.id)}
-                      >
-                        <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors duration-150">
-                          {subcategory.name}
-                        </span>
-                        <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-150" />
-                      </div>
-                    ))}
+                    {Object.values(category.subcategories).map(
+                      (subcategory) => (
+                        <div
+                          key={subcategory.id}
+                          className="px-6 py-3 hover:bg-gray-50 cursor-pointer flex items-center justify-between group transition-colors duration-150"
+                          onMouseEnter={() =>
+                            setHoveredSubcategory(subcategory.id)
+                          }
+                        >
+                          <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors duration-150">
+                            {subcategory.name}
+                          </span>
+                          <LuChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-150" />
+                        </div>
+                      ),
+                    )}
                   </div>
-                  
+
                   {/* Separator line between categories */}
-                  {categoryIndex < Object.values(groupedServices).length - 1 && (
+                  {categoryIndex <
+                    Object.values(groupedServices).length - 1 && (
                     <div className="border-t border-gray-200 my-3"></div>
                   )}
                 </div>
@@ -202,7 +240,7 @@ export default function ServicesDropdown({ isOpen, onClose, buttonRef }: Service
         </div>
 
         {/* Right Column - Services */}
-        <div className="flex-1 overflow-y-auto max-h-[500px]">
+        <div className="flex-1 overflow-y-auto">
           {hoveredSubcategory ? (
             <div className="p-6">
               {/* <h5 className="font-semibold text-gray-900 mb-4 text-sm sticky top-0 bg-white pb-2 border-b border-gray-100">
@@ -220,8 +258,12 @@ export default function ServicesDropdown({ isOpen, onClose, buttonRef }: Service
                         try {
                           let cityId = budapestId;
                           if (!cityId) {
-                            const results = await searchLocations('Budapest', 1);
-                            cityId = results && results[0] ? results[0].id : null;
+                            const results = await searchLocations(
+                              "Budapest",
+                              1,
+                            );
+                            cityId =
+                              results && results[0] ? results[0].id : null;
                             if (cityId) setBudapestId(cityId);
                           }
                           // Use the proper URL format: /instant-results/service_pk=...&place_pk=...
@@ -240,7 +282,9 @@ export default function ServicesDropdown({ isOpen, onClose, buttonRef }: Service
                   ))}
                 </div>
               ) : (
-                <div className="text-sm text-gray-500">No services available</div>
+                <div className="text-sm text-gray-500">
+                  No services available
+                </div>
               )}
             </div>
           ) : (

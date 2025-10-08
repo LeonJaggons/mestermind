@@ -14,6 +14,12 @@ import {
 import { storage, auth } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { subscribeToAuthChanges } from '@/lib/auth';
+import { 
+  cleanupOnboardingData, 
+  setupOnboardingCleanupOnUnload,
+  isInOnboardingFlow,
+  getCurrentOnboardingDraftId 
+} from '@/lib/onboardingCleanup';
 import ProSignupDialog from '@/components/ProSignupDialog';
 
 function useDraft() {
@@ -115,8 +121,29 @@ export default function ProOnboardingPage() {
   }
 
   useEffect(() => {
-    const unsub = subscribeToAuthChanges((u) => setUserPresent(Boolean(u)));
+    const unsub = subscribeToAuthChanges((u) => {
+      setUserPresent(Boolean(u));
+      
+      // If user signs out while in onboarding, clean up
+      if (!u && isInOnboardingFlow()) {
+        const draftId = getCurrentOnboardingDraftId();
+        if (draftId) {
+          cleanupOnboardingData({ 
+            draftId, 
+            cleanupStorage: true 
+          }).catch(error => {
+            console.error('Error cleaning up onboarding on sign out:', error);
+          });
+        }
+      }
+    });
     return () => { if (unsub) unsub(); };
+  }, []);
+
+  // Set up cleanup on page unload
+  useEffect(() => {
+    const cleanup = setupOnboardingCleanupOnUnload();
+    return cleanup;
   }, []);
 
   // Move to intro step without finalizing

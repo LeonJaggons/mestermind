@@ -10,7 +10,17 @@ export default function SignupPage() {
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async ({ email, password, firstName, lastName }: { email: string; password: string; firstName?: string; lastName?: string }) => {
+  const handleSubmit = async ({
+    email,
+    password,
+    firstName,
+    lastName,
+  }: {
+    email: string;
+    password: string;
+    firstName?: string;
+    lastName?: string;
+  }) => {
     setError(null);
     setSubmitting(true);
     try {
@@ -23,7 +33,18 @@ export default function SignupPage() {
         last_name: lastName || "",
         firebase_uid: user.uid,
       });
-      router.push("/");
+
+      // Check if there's a return URL in sessionStorage
+      const returnUrl =
+        typeof window !== "undefined"
+          ? sessionStorage.getItem("returnUrl")
+          : null;
+      if (returnUrl) {
+        sessionStorage.removeItem("returnUrl");
+        router.push(returnUrl);
+      } else {
+        router.push("/");
+      }
     } catch (e: any) {
       setError(e?.message || "Failed to create account");
     } finally {
@@ -35,13 +56,19 @@ export default function SignupPage() {
     <div className="py-10">
       <div className="mx-auto max-w-md space-y-4">
         <h1 className="text-2xl font-semibold">Create your account</h1>
-        <AuthForm mode="signup" onSubmit={handleSubmit} isSubmitting={submitting} error={error} />
+        <AuthForm
+          mode="signup"
+          onSubmit={handleSubmit}
+          isSubmitting={submitting}
+          error={error}
+        />
         <p className="text-sm text-muted-foreground">
-          Already have an account? <Link href="/login" className="text-primary">Sign in</Link>
+          Already have an account?{" "}
+          <Link href="/login" className="text-primary">
+            Sign in
+          </Link>
         </p>
       </div>
     </div>
   );
 }
-
-

@@ -1,10 +1,21 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import "@fontsource/zalando-sans/400.css";
-import "@fontsource/zalando-sans/500.css";
-import "@fontsource/zalando-sans/700.css";
+import "@fontsource/outfit/300.css";
+import "@fontsource/outfit/400.css";
+import "@fontsource/outfit/500.css";
+import "@fontsource/outfit/600.css";
+import "@fontsource/outfit/700.css";
+import "@fontsource/outfit/800.css";
+import "@fontsource/outfit/900.css";
+import "@fontsource/open-sans/300.css";
+import "@fontsource/open-sans/400.css";
+import "@fontsource/open-sans/500.css";
+import "@fontsource/open-sans/600.css";
+import "@fontsource/open-sans/700.css";
+import "@fontsource/open-sans/800.css";
 import Header from "@/components/Header";
 import { useRouter } from "next/router";
+import { Toaster } from "sonner";
 
 // @ts-ignore
 export default function App({ Component, pageProps }: AppProps) {
@@ -15,6 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <div className="font-sans">
       {!isAdmin && <Header />}
       <Component {...pageProps} />
+      <Toaster position="top-center" richColors />
     </div>
   );
 }

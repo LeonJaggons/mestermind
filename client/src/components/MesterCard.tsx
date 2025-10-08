@@ -1,14 +1,15 @@
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Star, 
-  Trophy, 
-  MapPin, 
-  MessageCircle, 
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Star,
+  Trophy,
+  MapPin,
+  MessageCircle,
   Calendar,
-  User
-} from 'lucide-react';
+  User,
+} from "lucide-react";
+import { useState } from "react";
 
 interface MesterCardProps {
   mester: {
@@ -30,27 +31,41 @@ interface MesterCardProps {
     service_id: string;
     name?: string;
   }>;
+  serviceId?: string;
 }
 
-export default function MesterCard({ mester, distance, services }: MesterCardProps) {
+export default function MesterCard({
+  mester,
+  distance,
+  services,
+  serviceId,
+}: MesterCardProps) {
+  const [isBioExpanded, setIsBioExpanded] = useState(false);
   const renderStars = (rating: number) => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
     const stars = [];
-    
+
     for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={i} className="h-4 w-4 fill-green-500 text-green-500" />);
+      stars.push(
+        <Star key={i} className="h-4 w-4 fill-green-500 text-green-500" />,
+      );
     }
-    
+
     if (hasHalfStar) {
-      stars.push(<Star key="half" className="h-4 w-4 fill-green-500/50 text-green-500" />);
+      stars.push(
+        <Star
+          key="half"
+          className="h-4 w-4 fill-green-500/50 text-green-500"
+        />,
+      );
     }
-    
+
     const remainingStars = 5 - Math.ceil(rating);
     for (let i = 0; i < remainingStars; i++) {
       stars.push(<Star key={`empty-${i}`} className="h-4 w-4 text-gray-300" />);
     }
-    
+
     return stars;
   };
 
@@ -75,47 +90,53 @@ export default function MesterCard({ mester, distance, services }: MesterCardPro
       <div className="flex gap-4 px-6">
         {/* Profile Picture */}
         <div className="flex-shrink-0">
-          <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+          <div className="max-h-32 max-w-32 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
             {mester.logo_url ? (
-              <img 
-                src={mester.logo_url} 
+              <img
+                src={mester.logo_url}
                 alt={`${mester.full_name} logo`}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   // Fallback to user icon if image fails to load
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling?.classList.remove(
+                    "hidden",
+                  );
                 }}
               />
             ) : null}
-            <User className={`h-10 w-10 text-gray-400 ${mester.logo_url ? 'hidden' : ''}`} />
+            <User
+              className={`h-10 w-10 text-gray-400 ${mester.logo_url ? "hidden" : ""}`}
+            />
           </div>
         </div>
 
         {/* Main Content */}
         <div className="flex-1 min-w-0">
           {/* Name and Rating */}
-          <div className="flex items-start justify-between mb-2">
+          <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-1">
+              <h4 className="text-md font-bold text-gray-900">
                 {mester.full_name}
-              </h3>
-          {/* Availability Badge */}
-          {
-          mester.availability_status && (
-            <div className="mb-3">
-              <Badge 
-                variant="outline" 
-                className="bg-amber-50 text-amber-700 border-amber-200"
-              >
-                <Calendar className="h-3 w-3 mr-1" />
-                {mester.availability_status}
-              </Badge>
-            </div>
-          )}
+              </h4>
+              {/* Availability Badge */}
+              {/* {
+                mester.availability_status && (
+                  <div className="mb-2">
+                    <Badge
+                      variant="outline"
+                      className="bg-amber-50 text-amber-700 border-amber-200"
+                    >
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {mester.availability_status}
+                    </Badge>
+                  </div>
+                )} */}
               {mester.rating_avg && (
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`font-semibold ${getRatingColor(mester.rating_avg)}`}>
+                <div className="flex items-center gap-2 mb-0">
+                  <span
+                    className={`font-semibold ${getRatingColor(mester.rating_avg)}`}
+                  >
                     {getRatingText(mester.rating_avg)} {mester.rating_avg}
                   </span>
                   <div className="flex items-center gap-1">
@@ -130,20 +151,17 @@ export default function MesterCard({ mester, distance, services }: MesterCardPro
 
             {/* Pricing */}
             {mester.starting_price && (
-              <div className="text-right">
-                <div className="text-2xl font-bold text-gray-900">
-                  ${mester.starting_price}
+              <div className="">
+                <div className="text-md font-semibold text-gray-600">
+                  ${mester.starting_price}/hour
                 </div>
-                <div className="text-sm text-gray-500">
-                  Starting price
-                </div>
+                <div className="text-xs text-gray-500">Starting price</div>
               </div>
             )}
           </div>
 
-
           {/* Stats */}
-          <div className="space-y-1 mb-4">
+          <div className="space-y-1 mb-2">
             {mester.hire_count && (
               <div className="flex items-center text-sm text-gray-600">
                 <Trophy className="h-4 w-4 mr-2 text-gray-400" />
@@ -159,37 +177,43 @@ export default function MesterCard({ mester, distance, services }: MesterCardPro
             {mester.response_time && (
               <div className="flex items-center text-sm text-gray-600">
                 <MessageCircle className="h-4 w-4 mr-2 text-gray-400" />
-                Responds within <span className="font-semibold ml-1">{mester.response_time}</span>
+                Responds within{" "}
+                <span className="font-semibold ml-1">
+                  {mester.response_time}
+                </span>
               </div>
             )}
           </div>
 
-          {/* Business Introduction */}
-          {mester.bio && (
-            <div className="bg-gray-50 rounded-lg p-3 mb-4">
-              <p className="text-sm text-gray-700">
-                {mester.bio}
-              </p>
-              <button className="text-blue-600 text-sm hover:underline mt-1">
-                See more
-              </button>
-            </div>
-          )}
-
-          {/* Services */}
-          {services.length > 0 && (
-            <div className="mb-4">
-              <div className="text-sm text-gray-600">
-                Services: {services.map(s => s.name || s.service_id).join(', ')}
+          <div className={"flex flex-row gap-2 items-end"}>
+            {/* Business Introduction */}
+            {mester.bio && (
+              <div className="bg-gray-50 rounded-lg p-3 ">
+                <p
+                  className={`text-sm text-gray-700 ${!isBioExpanded ? "line-clamp-2" : ""}`}
+                >
+                  {mester.bio}
+                </p>
+                {mester.bio.length > 150 && (
+                  <button
+                    className="text-blue-600 text-sm hover:underline mt-1"
+                    onClick={() => setIsBioExpanded(!isBioExpanded)}
+                  >
+                    {isBioExpanded ? "See less" : "See more"}
+                  </button>
+                )}
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Action Button */}
-          <div className="flex justify-end">
-            <Button 
+            {/* Action Button */}
+            <Button
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg"
-              onClick={() => window.location.href = `/mester/${mester.id}`}
+              onClick={() => {
+                const url = serviceId
+                  ? `/mester/${mester.id}?service_pk=${serviceId}`
+                  : `/mester/${mester.id}`;
+                window.location.href = url;
+              }}
             >
               View profile
             </Button>

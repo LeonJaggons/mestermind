@@ -9,12 +9,29 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async ({ email, password }: { email: string; password: string }) => {
+  const handleSubmit = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
     setError(null);
     setSubmitting(true);
     try {
       await loginWithEmailAndPassword(email, password);
-      router.push("/");
+
+      // Check if there's a return URL in sessionStorage
+      const returnUrl =
+        typeof window !== "undefined"
+          ? sessionStorage.getItem("returnUrl")
+          : null;
+      if (returnUrl) {
+        sessionStorage.removeItem("returnUrl");
+        router.push(returnUrl);
+      } else {
+        router.push("/");
+      }
     } catch (e: any) {
       setError(e?.message || "Failed to sign in");
     } finally {
@@ -26,13 +43,19 @@ export default function LoginPage() {
     <div className="py-10">
       <div className="mx-auto max-w-md space-y-4">
         <h1 className="text-2xl font-semibold">Sign in</h1>
-        <AuthForm mode="login" onSubmit={handleSubmit} isSubmitting={submitting} error={error} />
+        <AuthForm
+          mode="login"
+          onSubmit={handleSubmit}
+          isSubmitting={submitting}
+          error={error}
+        />
         <p className="text-sm text-muted-foreground">
-          Don't have an account? <Link href="/signup" className="text-primary">Create one</Link>
+          Don't have an account?{" "}
+          <Link href="/signup" className="text-primary">
+            Create one
+          </Link>
         </p>
       </div>
     </div>
   );
 }
-
-

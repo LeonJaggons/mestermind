@@ -6,8 +6,23 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import create_tables
-from app.routes import categories_router, health_router, services_router, question_sets_router, questions_router, geo_router, search_router, onboarding_router, users_router, mesters_router
+from app.routes import (
+    categories_router,
+    health_router,
+    services_router,
+    question_sets_router,
+    questions_router,
+    geo_router,
+    search_router,
+    onboarding_router,
+    users_router,
+    mesters_router,
+    messages_router,
+    offers_router,
+    notifications_router,
+)
 from app.routes.requests import router as requests_router
+from app.routes.cleanup import router as cleanup_router
 
 
 @asynccontextmanager
@@ -19,9 +34,9 @@ async def lifespan(_fastapi_app: FastAPI):
         print("✅ Database tables initialized")
     except Exception as e:  # noqa: BLE001
         print(f"❌ Database initialization failed: {e}")
-    
+
     yield
-    
+
     # Shutdown (if needed in the future)
     # Add any cleanup code here
 
@@ -33,7 +48,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # Configure CORS - Allow any localhost URL for development
@@ -42,7 +57,7 @@ app.add_middleware(
     allow_origins=["*"],  # Allow all origins for development
     allow_credentials=False,  # Set to False when using wildcard origins
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
 # Include routers
@@ -57,3 +72,7 @@ app.include_router(search_router)
 app.include_router(onboarding_router)
 app.include_router(users_router)
 app.include_router(mesters_router)
+app.include_router(messages_router)
+app.include_router(offers_router)
+app.include_router(notifications_router)
+app.include_router(cleanup_router)
