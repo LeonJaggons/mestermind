@@ -2,17 +2,25 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { LuChevronDown, LuLogOut } from "react-icons/lu";
+import { LuChevronDown, LuLogOut, LuMenu } from "react-icons/lu";
 import ServicesDropdown from "./ServicesDropdown";
 import Link from "next/link";
 import { subscribeToAuthChanges, logout, getAuthToken } from "@/lib/auth";
 import { fetchIsProByEmail, fetchProProfileByEmail, getNotifications } from "@/lib/api";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { NotificationBell } from "./NotificationBell";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export default function Header() {
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -36,14 +44,15 @@ export default function Header() {
     setIsAvatarDropdownOpen(!isAvatarDropdownOpen);
   };
 
-  const handleAvatarDropdownClose = () => {
-    setIsAvatarDropdownOpen(false);
+  const handleServicesDropdownClose = () => {
+    setIsServicesDropdownOpen(false);
   };
 
   const handleSignOut = async () => {
     try {
       await logout();
       setIsAvatarDropdownOpen(false);
+      setIsMobileMenuOpen(false);
       // Clear pro flag cookie so middleware stops treating user as pro
       try {
         document.cookie = "is_pro=; Path=/; Max-Age=0; SameSite=Lax";
@@ -51,6 +60,10 @@ export default function Header() {
     } catch (error) {
       console.error("Error signing out:", error);
     }
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
   };
 
   useEffect(() => {
@@ -132,64 +145,183 @@ export default function Header() {
             <span className="text-xs text-gray-500 ml-[1px]">®</span>
           </Link>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu */}
           <div className="md:hidden flex items-center space-x-2">
             {isSignedIn && authToken && (
               <NotificationBell token={authToken} />
             )}
-            {isSignedIn && (
-              <div className="relative" ref={avatarRef}>
-                <button
-                  onClick={handleAvatarClick}
-                  className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full"
-                >
-                  <Avatar>
-                    {avatarUrl ? (
-                      <AvatarImage src={avatarUrl} alt="Profile" />
-                    ) : (
-                      <AvatarFallback>{userInitials || "U"}</AvatarFallback>
-                    )}
-                  </Avatar>
-                </button>
-
-                {isAvatarDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                    <div className="px-4 py-2 text-sm text-gray-600 border-b border-gray-100">
-                      <div className="font-medium text-gray-900 truncate">
-                        {userName ? `Welcome, ${userName}` : "Welcome"}
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="p-2">
+                  <LuMenu className="h-5 w-5" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80">
+                <SheetHeader>
+                  <SheetTitle className="text-left">
+                    {isSignedIn ? `Welcome, ${userName || 'User'}` : 'Menu'}
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 space-y-6">
+                  {/* User Info */}
+                  {isSignedIn && (
+                    <div className="flex items-center space-x-3 pb-4 border-b">
+                      <Avatar>
+                        {avatarUrl ? (
+                          <AvatarImage src={avatarUrl} alt="Profile" />
+                        ) : (
+                          <AvatarFallback>{userInitials || "U"}</AvatarFallback>
+                        )}
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900 truncate">
+                          {userName || "User"}
+                        </div>
+                        {userEmail && (
+                          <div className="text-xs text-gray-500 truncate">{userEmail}</div>
+                        )}
                       </div>
-                      {userEmail && (
-                        <div className="text-gray-500 truncate">{userEmail}</div>
+                    </div>
+                  )}
+
+                  {/* Navigation Links */}
+                  <div className="space-y-2">
+                    {/* Explore Services */}
+                    <div className="space-y-1">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-left font-normal"
+                        onClick={() => {
+                          setIsServicesDropdownOpen(!isServicesDropdownOpen);
+                        }}
+                      >
+                        Explore Services
+                        <LuChevronDown className="w-4 h-4 ml-auto" />
+                      </Button>
+                      {isServicesDropdownOpen && (
+                        <div className="ml-4 space-y-1">
+                          <Link href="/services/cleaning" onClick={closeMobileMenu}>
+                            <Button variant="ghost" className="w-full justify-start text-sm">
+                              House Cleaning
+                            </Button>
+                          </Link>
+                          <Link href="/services/plumbing" onClick={closeMobileMenu}>
+                            <Button variant="ghost" className="w-full justify-start text-sm">
+                              Plumbing
+                            </Button>
+                          </Link>
+                          <Link href="/services/electrical" onClick={closeMobileMenu}>
+                            <Button variant="ghost" className="w-full justify-start text-sm">
+                              Electrical
+                            </Button>
+                          </Link>
+                          <Link href="/services/painting" onClick={closeMobileMenu}>
+                            <Button variant="ghost" className="w-full justify-start text-sm">
+                              Painting
+                            </Button>
+                          </Link>
+                        </div>
                       )}
                     </div>
-                    <button
-                      onClick={handleSignOut}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      <LuLogOut className="w-4 h-4 mr-3" />
-                      Sign out
-                    </button>
+
+                    {/* Pro User Menu Items */}
+                    {isSignedIn && isPro && (
+                      <>
+                        <Link href="/pro/leads" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Jobs
+                          </Button>
+                        </Link>
+                        <Link href="/pro/messages" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Messages
+                            {unreadCount > 0 && (
+                              <span className="ml-auto inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-semibold leading-none text-white bg-red-600 rounded-full min-w-[18px]">
+                                {unreadCount > 99 ? '99+' : unreadCount}
+                              </span>
+                            )}
+                          </Button>
+                        </Link>
+                        <Link href="/pro/services" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Services
+                          </Button>
+                        </Link>
+                        <Link href="/pro/calendar" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Calendar
+                          </Button>
+                        </Link>
+                        <Link href="/pro/profile" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Profile
+                          </Button>
+                        </Link>
+                      </>
+                    )}
+
+                    {/* Customer User Menu Items */}
+                    {isSignedIn && !isPro && (
+                      <>
+                        <Link href="/tasks" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            My Requests
+                          </Button>
+                        </Link>
+                        <Link href="/messages" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Messages
+                            {unreadCount > 0 && (
+                              <span className="ml-auto inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-semibold leading-none text-white bg-red-600 rounded-full min-w-[18px]">
+                                {unreadCount > 99 ? '99+' : unreadCount}
+                              </span>
+                            )}
+                          </Button>
+                        </Link>
+                      </>
+                    )}
+
+                    {/* Join as Pro */}
+                    {!isPro && (
+                      <Link href="/pro/onboarding" onClick={closeMobileMenu}>
+                        <Button variant="ghost" className="w-full justify-start">
+                          Join as a pro
+                        </Button>
+                      </Link>
+                    )}
+
+                    {/* Auth Buttons */}
+                    {!isSignedIn && (
+                      <>
+                        <Link href="/login" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Log in
+                          </Button>
+                        </Link>
+                        <Link href="/signup" onClick={closeMobileMenu}>
+                          <Button className="w-full">
+                            Sign up
+                          </Button>
+                        </Link>
+                      </>
+                    )}
+
+                    {/* Sign Out */}
+                    {isSignedIn && (
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={handleSignOut}
+                      >
+                        <LuLogOut className="w-4 h-4 mr-2" />
+                        Sign out
+                      </Button>
+                    )}
                   </div>
-                )}
-              </div>
-            )}
-            {!isSignedIn && (
-              <div className="flex items-center space-x-2">
-                <Link href="/login">
-                  <Button
-                    variant="ghost"
-                    className="text-gray-600 hover:text-gray-900 text-sm px-3 py-2"
-                  >
-                    Log in
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm">
-                    Sign up
-                  </Button>
-                </Link>
-              </div>
-            )}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
 
           {/* Desktop Navigation */}
