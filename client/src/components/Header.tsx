@@ -44,10 +44,6 @@ export default function Header() {
     setIsAvatarDropdownOpen(!isAvatarDropdownOpen);
   };
 
-  const handleServicesDropdownClose = () => {
-    setIsServicesDropdownOpen(false);
-  };
-
   const handleSignOut = async () => {
     try {
       await logout();
@@ -187,43 +183,6 @@ export default function Header() {
 
                   {/* Navigation Links */}
                   <div className="space-y-2">
-                    {/* Explore Services */}
-                    <div className="space-y-1">
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start text-left font-normal"
-                        onClick={() => {
-                          setIsServicesDropdownOpen(!isServicesDropdownOpen);
-                        }}
-                      >
-                        Explore Services
-                        <LuChevronDown className="w-4 h-4 ml-auto" />
-                      </Button>
-                      {isServicesDropdownOpen && (
-                        <div className="ml-4 space-y-1">
-                          <Link href="/services/cleaning" onClick={closeMobileMenu}>
-                            <Button variant="ghost" className="w-full justify-start text-sm">
-                              House Cleaning
-                            </Button>
-                          </Link>
-                          <Link href="/services/plumbing" onClick={closeMobileMenu}>
-                            <Button variant="ghost" className="w-full justify-start text-sm">
-                              Plumbing
-                            </Button>
-                          </Link>
-                          <Link href="/services/electrical" onClick={closeMobileMenu}>
-                            <Button variant="ghost" className="w-full justify-start text-sm">
-                              Electrical
-                            </Button>
-                          </Link>
-                          <Link href="/services/painting" onClick={closeMobileMenu}>
-                            <Button variant="ghost" className="w-full justify-start text-sm">
-                              Painting
-                            </Button>
-                          </Link>
-                        </div>
-                      )}
-                    </div>
 
                     {/* Pro User Menu Items */}
                     {isSignedIn && isPro && (
