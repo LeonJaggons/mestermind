@@ -231,8 +231,8 @@ export default function InstantResults() {
       <Head>
         <title>Instant Results</title>
       </Head>
-      <main className="min-h-screen py-8">
-        <div className="max-w-5xl mx-auto px-4">
+      <main className="min-h-screen py-4 sm:py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {fallbackMsg && (
             <div className="mb-6 max-w-2xl mx-auto rounded-lg border border-amber-300 bg-amber-50 text-amber-900 px-4 py-3">
               <p className="text-sm">{fallbackMsg}</p>
@@ -242,7 +242,7 @@ export default function InstantResults() {
           {/* Best Matches Section */}
           {!loadingBestMatches && bestMatches && bestMatches.length > 0 && (
             <div className="mb-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">
                 Get pricing from the 3 best matches
               </h2>
 
@@ -261,7 +261,7 @@ export default function InstantResults() {
               </div>
 
               {/* Best Matches Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {bestMatches.map((match) => {
                   const getCategoryLabel = (category: string) => {
                     switch (category) {
@@ -315,7 +315,7 @@ export default function InstantResults() {
           )}
 
           {/* Results */}
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">
             All Mesters
           </h2>
           {!loadingPros && !errorPros && pros && (

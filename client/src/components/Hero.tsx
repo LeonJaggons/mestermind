@@ -49,56 +49,59 @@ export default function Hero() {
 
   return (
     <>
-      <section className="w-full bg-white" style={{ height: "calc(100vh)" }}>
+      <section className="w-full bg-white min-h-screen">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center h-full flex flex-col">
           {/* Content Section - Positioned in the middle */}
-          <div className="flex flex-col items-center flex-1 justify-center">
+          <div className="flex flex-col items-center flex-1 justify-center py-8">
             {/* Main Heading */}
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight px-4">
               The easiest way to hire with confidence.
             </h1>
 
             {/* Search Bar */}
-            <div className="max-w-6xl mx-auto mb-6">
-              <div className="relative flex items-center bg-white border border-gray-200 rounded-lg shadow-sm h-16">
+            <div className="w-full max-w-6xl mx-auto mb-6 px-4">
+              <div className="relative flex flex-col sm:flex-row items-stretch bg-white border border-gray-200 rounded-lg shadow-sm min-h-16">
                 <ServiceSearch
                   onSelect={(svc) => setSelectedService(svc)}
                   selectedService={selectedService}
                   onClearSelected={() => setSelectedService(null)}
-                  className="flex-1"
+                  className="flex-1 min-h-16"
                 />
+                <div className="hidden sm:block w-px bg-gray-200"></div>
                 <LocationSearch
                   selectedLocation={selectedLocation}
                   onLocationSelect={setSelectedLocation}
                   placeholder="Enter location..."
+                  className="sm:min-w-[180px]"
                 />
+                <div className="hidden sm:block w-px bg-gray-200"></div>
                 <Button
                   id="search-button"
                   onClick={handleSearch}
                   disabled={!selectedService || !selectedLocation}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 disabled:opacity-50 disabled:cursor-not-allowed h-full "
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-4 sm:py-6 disabled:opacity-50 disabled:cursor-not-allowed min-h-16 rounded-t-none sm:rounded-t-lg sm:rounded-l-none rounded-b-lg sm:rounded-b-lg"
                 >
                   Search
                 </Button>
               </div>
             </div>
-            <div className="text-sm text-gray-500 font-medium mb-12">
+            <div className="text-sm text-gray-500 font-medium mb-8 sm:mb-12 px-4">
               Trusted by over 4.5M customers with 98% satisfaction rate.
             </div>
 
             {/* Recent Searches */}
-            <div className="mb-12">
+            <div className="mb-8 sm:mb-12 w-full px-4">
               <RecentSearches />
             </div>
           </div>
 
           {/* Hero Image - Positioned at the bottom */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
             <div className="relative">
               <img
                 src="/img/2560.webp"
                 alt="Professional service providers at work"
-                className="w-full h-auto object-cover "
+                className="w-full h-auto object-cover rounded-lg"
               />
             </div>
           </div>

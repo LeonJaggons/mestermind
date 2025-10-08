@@ -119,20 +119,80 @@ export default function Header() {
 
   return (
     <header className="w-full bg-white border-b border-gray-200 relative overflow-visible">
-      <div className="  px-4 sm:px-6 lg:px-8 overflow-visible">
+      <div className="px-4 sm:px-6 lg:px-8 overflow-visible">
         <div className="flex justify-between items-center h-16 overflow-visible">
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <span
               style={{ fontFamily: "var(--font-heading)" }}
-              className="text-xl font-bold text-gray-800"
+              className="text-lg sm:text-xl font-bold text-gray-800"
             >
               Mestermind
             </span>
             <span className="text-xs text-gray-500 ml-[1px]">®</span>
           </Link>
 
-          {/* Navigation */}
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center space-x-2">
+            {isSignedIn && authToken && (
+              <NotificationBell token={authToken} />
+            )}
+            {isSignedIn && (
+              <div className="relative" ref={avatarRef}>
+                <button
+                  onClick={handleAvatarClick}
+                  className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full"
+                >
+                  <Avatar>
+                    {avatarUrl ? (
+                      <AvatarImage src={avatarUrl} alt="Profile" />
+                    ) : (
+                      <AvatarFallback>{userInitials || "U"}</AvatarFallback>
+                    )}
+                  </Avatar>
+                </button>
+
+                {isAvatarDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                    <div className="px-4 py-2 text-sm text-gray-600 border-b border-gray-100">
+                      <div className="font-medium text-gray-900 truncate">
+                        {userName ? `Welcome, ${userName}` : "Welcome"}
+                      </div>
+                      {userEmail && (
+                        <div className="text-gray-500 truncate">{userEmail}</div>
+                      )}
+                    </div>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <LuLogOut className="w-4 h-4 mr-3" />
+                      Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+            {!isSignedIn && (
+              <div className="flex items-center space-x-2">
+                <Link href="/login">
+                  <Button
+                    variant="ghost"
+                    className="text-gray-600 hover:text-gray-900 text-sm px-3 py-2"
+                  >
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm">
+                    Sign up
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-0">
             <div className="relative overflow-visible" ref={buttonRef}>
               <Button

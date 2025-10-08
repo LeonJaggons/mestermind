@@ -53,9 +53,9 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="py-10">
-      <div className="mx-auto max-w-md space-y-4">
-        <h1 className="text-2xl font-semibold">Create your account</h1>
+    <div className="py-6 sm:py-10">
+      <div className="mx-auto max-w-md space-y-4 px-4 sm:px-6">
+        <h1 className="text-xl sm:text-2xl font-semibold">Create your account</h1>
         <AuthForm
           mode="signup"
           onSubmit={handleSubmit}

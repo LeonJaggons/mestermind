@@ -86,11 +86,11 @@ export default function MesterCard({
   };
 
   return (
-    <Card className="p-8 hover:shadow-lg transition-shadow duration-200">
-      <div className="flex gap-4 px-6">
+    <Card className="p-4 sm:p-6 lg:p-8 hover:shadow-lg transition-shadow duration-200">
+      <div className="flex flex-col sm:flex-row gap-4">
         {/* Profile Picture */}
-        <div className="flex-shrink-0">
-          <div className="max-h-32 max-w-32 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+        <div className="flex-shrink-0 flex justify-center sm:justify-start">
+          <div className="h-20 w-20 sm:h-24 sm:w-24 lg:h-32 lg:w-32 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
             {mester.logo_url ? (
               <img
                 src={mester.logo_url}
@@ -106,7 +106,7 @@ export default function MesterCard({
               />
             ) : null}
             <User
-              className={`h-10 w-10 text-gray-400 ${mester.logo_url ? "hidden" : ""}`}
+              className={`h-8 w-8 sm:h-10 sm:w-10 text-gray-400 ${mester.logo_url ? "hidden" : ""}`}
             />
           </div>
         </div>
@@ -114,9 +114,9 @@ export default function MesterCard({
         {/* Main Content */}
         <div className="flex-1 min-w-0">
           {/* Name and Rating */}
-          <div className="flex items-start justify-between">
-            <div>
-              <h4 className="text-md font-bold text-gray-900">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+            <div className="text-center sm:text-left">
+              <h4 className="text-lg sm:text-md font-bold text-gray-900">
                 {mester.full_name}
               </h4>
               {/* Availability Badge */}
@@ -133,16 +133,16 @@ export default function MesterCard({
                   </div>
                 )} */}
               {mester.rating_avg && (
-                <div className="flex items-center gap-2 mb-0">
+                <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
                   <span
-                    className={`font-semibold ${getRatingColor(mester.rating_avg)}`}
+                    className={`font-semibold text-sm ${getRatingColor(mester.rating_avg)}`}
                   >
                     {getRatingText(mester.rating_avg)} {mester.rating_avg}
                   </span>
                   <div className="flex items-center gap-1">
                     {renderStars(mester.rating_avg)}
                   </div>
-                  <span className="text-gray-600 text-sm">
+                  <span className="text-gray-600 text-xs">
                     ({mester.review_count || 0})
                   </span>
                 </div>
@@ -151,8 +151,8 @@ export default function MesterCard({
 
             {/* Pricing */}
             {mester.starting_price && (
-              <div className="">
-                <div className="text-md font-semibold text-gray-600">
+              <div className="text-center sm:text-right">
+                <div className="text-lg sm:text-md font-semibold text-gray-600">
                   ${mester.starting_price}/hour
                 </div>
                 <div className="text-xs text-gray-500">Starting price</div>
@@ -161,21 +161,21 @@ export default function MesterCard({
           </div>
 
           {/* Stats */}
-          <div className="space-y-1 mb-2">
+          <div className="space-y-1 mb-4">
             {mester.hire_count && (
-              <div className="flex items-center text-sm text-gray-600">
+              <div className="flex items-center justify-center sm:justify-start text-sm text-gray-600">
                 <Trophy className="h-4 w-4 mr-2 text-gray-400" />
                 {mester.hire_count} hires on Mestermind
               </div>
             )}
             {distance && (
-              <div className="flex items-center text-sm text-gray-600">
+              <div className="flex items-center justify-center sm:justify-start text-sm text-gray-600">
                 <MapPin className="h-4 w-4 mr-2 text-gray-400" />
                 {distance}
               </div>
             )}
             {mester.response_time && (
-              <div className="flex items-center text-sm text-gray-600">
+              <div className="flex items-center justify-center sm:justify-start text-sm text-gray-600">
                 <MessageCircle className="h-4 w-4 mr-2 text-gray-400" />
                 Responds within{" "}
                 <span className="font-semibold ml-1">
@@ -185,10 +185,10 @@ export default function MesterCard({
             )}
           </div>
 
-          <div className={"flex flex-row gap-2 items-end"}>
+          <div className="flex flex-col sm:flex-row gap-3">
             {/* Business Introduction */}
             {mester.bio && (
-              <div className="bg-gray-50 rounded-lg p-3 ">
+              <div className="bg-gray-50 rounded-lg p-3 flex-1">
                 <p
                   className={`text-sm text-gray-700 ${!isBioExpanded ? "line-clamp-2" : ""}`}
                 >
@@ -207,7 +207,7 @@ export default function MesterCard({
 
             {/* Action Button */}
             <Button
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg w-full sm:w-auto"
               onClick={() => {
                 const url = serviceId
                   ? `/mester/${mester.id}?service_pk=${serviceId}`

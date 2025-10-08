@@ -83,7 +83,7 @@ export default function ServiceSearch({
           }
         }}
         placeholder={placeholder}
-        className="border-0 w-[600px] focus-visible:ring-0 text-gray-800 py-6 px-6 h-full"
+        className="border-0 w-full focus-visible:ring-0 text-gray-800 py-4 sm:py-6 px-4 sm:px-6 h-full"
         aria-autocomplete="list"
         role="combobox"
         style={{ fontSize: "16px" }}

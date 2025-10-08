@@ -270,7 +270,7 @@ export default function PopularServicesNearYou({
             <LuTrendingUp className="w-4 h-4 mr-2 text-gray-500" />
             Popular services near you
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse">
                 <div className="h-20 bg-gray-200 rounded-lg"></div>
@@ -294,7 +294,7 @@ export default function PopularServicesNearYou({
             </span>
           )}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {popularServices.map((service) => (
             <button
               key={service.id}

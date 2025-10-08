@@ -57,13 +57,13 @@ export default function ProDashboardPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <div className="max-w-5xl mx-auto p-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Pro Dashboard</h1>
-        <p className="text-gray-700 mt-1">Welcome back{profile?.display_name ? ", " + profile.display_name : ""}.</p>
+      <div className="max-w-5xl mx-auto p-4 sm:p-6">
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">Pro Dashboard</h1>
+        <p className="text-gray-700 mt-1 text-sm sm:text-base">Welcome back{profile?.display_name ? ", " + profile.display_name : ""}.</p>
 
         {/* Profile completion alert */}
         {isProfileIncomplete && (
-          <div className="mt-6 bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <div className="mt-4 sm:mt-6 bg-amber-50 border border-amber-200 rounded-lg p-4">
             <div className="flex items-start">
               <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 mr-3 flex-shrink-0" />
               <div className="flex-1">
@@ -73,7 +73,7 @@ export default function ProDashboardPage() {
                 </p>
                 <div className="mt-3">
                   <Link href="/pro/onboarding">
-                    <button className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                    <button className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors w-full sm:w-auto">
                       Complete Profile
                     </button>
                   </Link>
@@ -83,7 +83,7 @@ export default function ProDashboardPage() {
           </div>
         )}
 
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <DashboardCard
             title="Leads"
             description="View and manage new customer requests."

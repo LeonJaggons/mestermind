@@ -145,16 +145,34 @@ body {
 }
 
 div[data-slot="card-header"] {
-    padding-top: 1.5rem;
+    padding-top: 1rem;
+}
+
+@media (min-width: 640px) {
+    div[data-slot="card-header"] {
+        padding-top: 1.5rem;
+    }
 }
 
 div[data-slot="card"] {
     border-radius: 0px;
-    padding-inline: 8px;
+    padding-inline: 4px;
+}
+
+@media (min-width: 640px) {
+    div[data-slot="card"] {
+        padding-inline: 8px;
+    }
 }
 
 div[data-slot="card-footer"] {
-    padding-bottom: 1.5rem;
+    padding-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+    div[data-slot="card-footer"] {
+        padding-bottom: 1.5rem;
+    }
 }
 
 /* Custom radio button and checkbox styling */
@@ -262,4 +280,62 @@ button {
 #search-button {
     border-top-left-radius: 0px !important;
     border-bottom-left-radius: 0px !important;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+    /* Improve touch targets */
+    button, .btn, [role="button"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Better spacing for mobile */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Improve text readability on mobile */
+    body {
+        font-size: 16px; /* Prevent zoom on iOS */
+        line-height: 1.5;
+    }
+    
+    /* Better form inputs on mobile */
+    input, textarea, select {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+    
+    /* Improve card spacing on mobile */
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    /* Better button spacing */
+    .btn-group > * + * {
+        margin-left: 0.5rem;
+    }
+    
+    /* Improve modal/dialog on mobile */
+    .modal, .dialog {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+    }
+}
+
+/* Tablet improvements */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+/* Desktop improvements */
+@media (min-width: 1025px) {
+    .container {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
 }

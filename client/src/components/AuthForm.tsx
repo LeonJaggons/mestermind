@@ -23,7 +23,7 @@ export default function AuthForm({ mode, onSubmit, isSubmitting = false, error }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-sm space-y-4 p-6 border rounded-md shadow-sm">
+    <form onSubmit={handleSubmit} className="mx-auto max-w-sm space-y-4 p-4 sm:p-6 border rounded-md shadow-sm">
       <div className="space-y-2">
         <label className="text-sm font-medium" htmlFor="email">Email</label>
         <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
@@ -33,7 +33,7 @@ export default function AuthForm({ mode, onSubmit, isSubmitting = false, error }
         <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
       </div>
       {mode === "signup" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium" htmlFor="firstName">First name</label>
             <Input id="firstName" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />

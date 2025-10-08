@@ -130,10 +130,10 @@ export default function LocationSearch({
   };
 
   return (
-    <div className={`relative ${className} max-w-[180px]`}>
+    <div className={`relative ${className} w-full sm:max-w-[180px]`}>
       <div className="relative">
-        <div className="flex items-center px-4 border-l border-gray-200 h-full">
-          <LuMapPin className="w-5 h-5 text-gray-400 mr-2" />
+        <div className="flex items-center px-3 sm:px-4 border-l border-gray-200 h-full">
+          <LuMapPin className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2" />
           <input
             ref={inputRef}
             type="text"
@@ -141,7 +141,7 @@ export default function LocationSearch({
             onChange={handleInputChange}
             onFocus={handleInputFocus}
             placeholder={placeholder}
-            className="text-md text-gray-600 bg-transparent border-0 outline-none w-full min-w-[50px] h-full"
+            className="text-sm sm:text-md text-gray-600 bg-transparent border-0 outline-none w-full min-w-[50px] h-full"
           />
           <LuChevronDown
             className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
