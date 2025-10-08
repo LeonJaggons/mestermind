@@ -76,9 +76,9 @@ async def geo_search(
         .filter(
             or_(
                 func.lower(District.name).ilike(func.lower(q_like)),
-                func.exists(
-                    text("SELECT 1 FROM jsonb_array_elements_text(districts.common_names::jsonb) AS common_name WHERE LOWER(common_name) LIKE LOWER(:q_like)")
-                ).params(q_like=q_like)
+                District.common_names.op('->>')('0').ilike(q_like),
+                District.common_names.op('->>')('1').ilike(q_like),
+                District.common_names.op('->>')('2').ilike(q_like)
             )
         )
         .order_by(District.sort_order, District.name)
