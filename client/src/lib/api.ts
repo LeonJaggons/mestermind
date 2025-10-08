@@ -110,12 +110,12 @@ export interface Question {
   is_required: boolean;
   is_active: boolean;
   sort_order: number;
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
   min_value?: number;
   max_value?: number;
   min_length?: number;
   max_length?: number;
-  conditional_rules?: Record<string, any>;
+  conditional_rules?: Record<string, unknown>;
   allowed_file_types?: string[];
   max_file_size?: number;
   created_at: string;
@@ -156,12 +156,12 @@ export interface QuestionCreate {
   is_required?: boolean;
   is_active?: boolean;
   sort_order?: number;
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
   min_value?: number;
   max_value?: number;
   min_length?: number;
   max_length?: number;
-  conditional_rules?: Record<string, any>;
+  conditional_rules?: Record<string, unknown>;
   allowed_file_types?: string[];
   max_file_size?: number;
 }
@@ -181,12 +181,12 @@ export interface QuestionUpdate {
   is_required?: boolean;
   is_active?: boolean;
   sort_order?: number;
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
   min_value?: number;
   max_value?: number;
   min_length?: number;
   max_length?: number;
-  conditional_rules?: Record<string, any>;
+  conditional_rules?: Record<string, unknown>;
   allowed_file_types?: string[];
   max_file_size?: number;
 }
@@ -1115,7 +1115,7 @@ export interface OnboardingDraft {
   id: string;
   email?: string | null;
   phone?: string | null;
-  data?: Record<string, any> | null;
+  data?: Record<string, unknown> | null;
   current_step: number;
   is_submitted: boolean;
   created_at: string;
@@ -1125,14 +1125,14 @@ export interface OnboardingDraft {
 export interface OnboardingDraftCreate {
   email?: string;
   phone?: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   current_step?: number;
 }
 
 export interface OnboardingDraftUpdate {
   email?: string;
   phone?: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   current_step?: number;
   is_submitted?: boolean;
 }
@@ -1200,7 +1200,7 @@ export interface CustomerRequest {
   message_to_pro?: string | null;
   mester_id?: string | null;
   current_step: number;
-  answers?: Record<string, any> | null;
+  answers?: Record<string, unknown> | null;
   status:
     | "DRAFT"
     | "OPEN"
@@ -1226,12 +1226,12 @@ export interface CustomerRequestCreate {
   message_to_pro?: string;
   mester_id?: string;
   current_step?: number;
-  answers?: Record<string, any>;
+  answers?: Record<string, unknown>;
 }
 
 export interface CustomerRequestUpdate {
   current_step?: number;
-  answers?: Record<string, any>;
+  answers?: Record<string, unknown>;
   status?:
     | "DRAFT"
     | "OPEN"
@@ -1564,12 +1564,12 @@ export async function createUserRecord(
     if (!res.ok) {
       // If endpoint not ready, don't block signup flow
       console.warn("User API not ready or failed, status:", res.status);
-      return { ok: false } as any;
+      return { ok: false } as { ok: boolean };
     }
     return await res.json();
   } catch (e) {
     console.warn("User API unreachable, continuing without server user record");
-    return { ok: false } as any;
+    return { ok: false } as { ok: boolean };
   }
 }
 
@@ -1777,7 +1777,7 @@ export interface Notification {
   offer_id?: string;
   message_id?: string;
   action_url?: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   is_read: boolean;
   read_at?: string;
   created_at: string;
@@ -1792,7 +1792,7 @@ export interface NotificationPreference {
   id: string;
   user_id?: string;
   mester_id?: string;
-  preferences: Record<string, any>;
+  preferences: Record<string, unknown>;
   quiet_hours_start?: string;
   quiet_hours_end?: string;
   created_at: string;
@@ -1910,7 +1910,7 @@ export async function getNotificationPreferences(
 export async function updateNotificationPreferences(
   token: string,
   preferences: {
-    preferences: Record<string, any>;
+    preferences: Record<string, unknown>;
     quiet_hours_start?: string;
     quiet_hours_end?: string;
   },

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { X, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Category } from '@/lib/api';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +16,7 @@ import {
 interface EditCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCategoryUpdated: (category: any) => void;
+  onCategoryUpdated: (category: Category) => void;
   category: {
     id: string;
     name: string;
@@ -62,7 +63,7 @@ export default function EditCategoryModal({
     }
   }, [category]);
 
-  const handleInputChange = (field: keyof CategoryFormData, value: any) => {
+  const handleInputChange = (field: keyof CategoryFormData, value: unknown) => {
     setFormData(prev => ({
       ...prev,
       [field]: value

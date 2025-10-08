@@ -49,9 +49,9 @@ export async function cleanupOnboardingStorage(draftId: string): Promise<void> {
     try {
       await deleteObject(logoRef);
       console.log(`Deleted logo file for draft ${draftId}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       // File might not exist, which is fine
-      if (error.code !== 'storage/object-not-found') {
+      if ((error as { code?: string })?.code !== 'storage/object-not-found') {
         console.warn(`Error deleting logo file:`, error);
       }
     }
@@ -66,8 +66,8 @@ export async function cleanupOnboardingStorage(draftId: string): Promise<void> {
         const fileRef = ref(storage, `mesters/${draftId}/${fileName}`);
         await deleteObject(fileRef);
         console.log(`Deleted file ${fileName} for draft ${draftId}`);
-      } catch (error: any) {
-        if (error.code !== 'storage/object-not-found') {
+      } catch (error: unknown) {
+        if ((error as { code?: string })?.code !== 'storage/object-not-found') {
           console.warn(`Error deleting file ${fileName}:`, error);
         }
       }

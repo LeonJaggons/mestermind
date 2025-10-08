@@ -10,6 +10,7 @@ import {
   searchLocations,
   type OnboardingDraft,
   type OnboardingDraftCreate,
+  type Service,
 } from '@/lib/api';
 import { storage, auth } from '@/firebase';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
@@ -52,8 +53,9 @@ function useDraft() {
           localStorage.setItem('onboarding_draft_id', d.id);
           setDraft(d);
         }
-      } catch (e: any) {
-        setError(e?.message || 'Failed to initialize draft');
+      } catch (e: unknown) {
+        const errorMessage = e instanceof Error ? e.message : 'Failed to initialize draft';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -73,7 +75,7 @@ export default function ProOnboardingPage() {
   const [saving, setSaving] = useState(false);
   const [step, setStep] = useState<number>(0);
 
-  async function savePartial(partial: Record<string, any>) {
+  async function savePartial(partial: Record<string, unknown>) {
     if (!draft) return;
     try {
       setSaving(true);
@@ -84,7 +86,7 @@ export default function ProOnboardingPage() {
     }
   }
 
-  async function submitAll(partial: Record<string, any>) {
+  async function submitAll(partial: Record<string, unknown>) {
     if (!draft) return;
     let payload = { ...partial };
     // Ensure signed-in user's email is used when submitting profile
@@ -93,7 +95,7 @@ export default function ProOnboardingPage() {
       payload.email = signedEmail;
     }
     // If a data URL image exists, upload to Firebase Storage and use the download URL
-    const dataUrl: string | undefined = (draft.data?.logo_url && draft.data.logo_url.startsWith('data:')) ? draft.data.logo_url : draft.data?.logo?.data_url;
+    const dataUrl: string | undefined = (draft.data?.logo_url && typeof draft.data.logo_url === 'string' && draft.data.logo_url.startsWith('data:')) ? draft.data.logo_url : (draft.data?.logo && typeof draft.data.logo === 'object' && 'data_url' in draft.data.logo) ? (draft.data.logo as { data_url: string }).data_url : undefined;
     if (dataUrl && typeof dataUrl === 'string' && dataUrl.startsWith('data:')) {
       try {
         const filePath = `mesters/${draft.id}/logo`;
@@ -113,7 +115,7 @@ export default function ProOnboardingPage() {
   }
 
   // Move to business profile step without finalizing
-  async function goToBusinessProfile(partial: Record<string, any>) {
+  async function goToBusinessProfile(partial: Record<string, unknown>) {
     if (!draft) return;
     const next = await updateOnboardingDraft(draft.id, { data: partial, current_step: 1 });
     setDraft(next);
@@ -147,7 +149,7 @@ export default function ProOnboardingPage() {
   }, []);
 
   // Move to intro step without finalizing
-  async function goToIntro(partial: Record<string, any>) {
+  async function goToIntro(partial: Record<string, unknown>) {
     if (!draft) return;
     const next = await updateOnboardingDraft(draft.id, { data: partial, current_step: 2 });
     setDraft(next);
@@ -155,7 +157,7 @@ export default function ProOnboardingPage() {
   }
 
   // Move to availability step without finalizing
-  async function goToAvailability(partial: Record<string, any>) {
+  async function goToAvailability(partial: Record<string, unknown>) {
     if (!draft) return;
     const next = await updateOnboardingDraft(draft.id, { data: partial, current_step: 3 });
     setDraft(next);
@@ -163,7 +165,7 @@ export default function ProOnboardingPage() {
   }
 
   // Move to preferences step without finalizing
-  async function goToPreferences(partial: Record<string, any>) {
+  async function goToPreferences(partial: Record<string, unknown>) {
     if (!draft) return;
     const next = await updateOnboardingDraft(draft.id, { data: partial, current_step: 4 });
     setDraft(next);
@@ -171,7 +173,7 @@ export default function ProOnboardingPage() {
   }
 
   // Move to coverage step without finalizing
-  async function goToCoverage(partial: Record<string, any>) {
+  async function goToCoverage(partial: Record<string, unknown>) {
     if (!draft) return;
     const next = await updateOnboardingDraft(draft.id, { data: partial, current_step: 5 });
     setDraft(next);
@@ -179,7 +181,7 @@ export default function ProOnboardingPage() {
   }
 
   // Move to budget step without finalizing
-  async function goToBudget(partial: Record<string, any>) {
+  async function goToBudget(partial: Record<string, unknown>) {
     if (!draft) return;
     const next = await updateOnboardingDraft(draft.id, { data: partial, current_step: 6 });
     setDraft(next);
@@ -187,14 +189,14 @@ export default function ProOnboardingPage() {
   }
 
   // Form state
-  const [businessName, setBusinessName] = useState<string>(draft?.data?.business_name || '');
-  const [yearFounded, setYearFounded] = useState<string>(draft?.data?.year_founded || '');
-  const [numEmployees, setNumEmployees] = useState<string>(draft?.data?.num_employees || '');
-  const [streetName, setStreetName] = useState<string>(draft?.data?.address?.street || '');
-  const [unit, setUnit] = useState<string>(draft?.data?.address?.unit || '');
-  const [city, setCity] = useState<string>(draft?.data?.address?.city || '');
-  const [zip, setZip] = useState<string>(draft?.data?.address?.zip || '');
-  const [logoPreview, setLogoPreview] = useState<string>(draft?.data?.logo_url || draft?.data?.logo?.data_url || '');
+  const [businessName, setBusinessName] = useState<string>(typeof draft?.data?.business_name === 'string' ? draft.data.business_name : '');
+  const [yearFounded, setYearFounded] = useState<string>(typeof draft?.data?.year_founded === 'string' ? draft.data.year_founded : '');
+  const [numEmployees, setNumEmployees] = useState<string>(typeof draft?.data?.num_employees === 'string' ? draft.data.num_employees : '');
+  const [streetName, setStreetName] = useState<string>(typeof draft?.data?.address === 'object' && draft.data.address && 'street' in draft.data.address && typeof draft.data.address.street === 'string' ? draft.data.address.street : '');
+  const [unit, setUnit] = useState<string>(typeof draft?.data?.address === 'object' && draft.data.address && 'unit' in draft.data.address && typeof draft.data.address.unit === 'string' ? draft.data.address.unit : '');
+  const [city, setCity] = useState<string>(typeof draft?.data?.address === 'object' && draft.data.address && 'city' in draft.data.address && typeof draft.data.address.city === 'string' ? draft.data.address.city : '');
+  const [zip, setZip] = useState<string>(typeof draft?.data?.address === 'object' && draft.data.address && 'zip' in draft.data.address && typeof draft.data.address.zip === 'string' ? draft.data.address.zip : '');
+  const [logoPreview, setLogoPreview] = useState<string>(typeof draft?.data?.logo_url === 'string' ? draft.data.logo_url : (typeof draft?.data?.logo === 'object' && draft.data.logo && 'data_url' in draft.data.logo) ? (draft.data.logo as { data_url: string }).data_url : '');
   const [cityQuery, setCityQuery] = useState<string>('');
   const [cityOptions, setCityOptions] = useState<Array<{ id: string; name: string }>>([]);
 
@@ -210,15 +212,15 @@ export default function ProOnboardingPage() {
 
   // Keep local form in sync when draft loads/changes
   useEffect(() => {
-    setBusinessName(draft?.data?.business_name || '');
-    setYearFounded(draft?.data?.year_founded || '');
-    setNumEmployees(draft?.data?.num_employees || '');
-    setStreetName(draft?.data?.address?.street || '');
-    setUnit(draft?.data?.address?.unit || '');
-    setCity(draft?.data?.address?.city || '');
-    setZip(draft?.data?.address?.zip || '');
-    setLogoPreview(draft?.data?.logo_url || draft?.data?.logo?.data_url || '');
-    setCityQuery(draft?.data?.address?.city || '');
+    setBusinessName(typeof draft?.data?.business_name === 'string' ? draft.data.business_name : '');
+    setYearFounded(typeof draft?.data?.year_founded === 'string' ? draft.data.year_founded : '');
+    setNumEmployees(typeof draft?.data?.num_employees === 'string' ? draft.data.num_employees : '');
+    setStreetName(typeof draft?.data?.address === 'object' && draft.data.address && 'street' in draft.data.address && typeof draft.data.address.street === 'string' ? draft.data.address.street : '');
+    setUnit(typeof draft?.data?.address === 'object' && draft.data.address && 'unit' in draft.data.address && typeof draft.data.address.unit === 'string' ? draft.data.address.unit : '');
+    setCity(typeof draft?.data?.address === 'object' && draft.data.address && 'city' in draft.data.address && typeof draft.data.address.city === 'string' ? draft.data.address.city : '');
+    setZip(typeof draft?.data?.address === 'object' && draft.data.address && 'zip' in draft.data.address && typeof draft.data.address.zip === 'string' ? draft.data.address.zip : '');
+    setLogoPreview(typeof draft?.data?.logo_url === 'string' ? draft.data.logo_url : (typeof draft?.data?.logo === 'object' && draft.data.logo && 'data_url' in draft.data.logo) ? (draft.data.logo as { data_url: string }).data_url : '');
+    setCityQuery(typeof draft?.data?.address === 'object' && draft.data.address && 'city' in draft.data.address && typeof draft.data.address.city === 'string' ? draft.data.address.city : '');
     setStep(typeof draft?.current_step === 'number' ? Math.min(Math.max(draft?.current_step || 0, 0), 6) : 0);
   }, [draft?.id]);
 
@@ -538,12 +540,12 @@ function RowActions({ onBack, onNext, nextLabel = 'Next' }: { onBack?: () => voi
   );
 }
 
-function ServicesSelectStep({ data, onSave, onNext }: { data: Record<string, any>; onSave: (p: any) => Promise<void>; onNext: (payload: any) => Promise<void> }) {
-  const [svcOptions, setSvcOptions] = useState<any[]>([]);
-  const [services, setServices] = useState<any[]>(data.services || []);
+function ServicesSelectStep({ data, onSave, onNext }: { data: Record<string, unknown>; onSave: (p: Record<string, unknown>) => Promise<void>; onNext: (payload: Record<string, unknown>) => Promise<void> }) {
+  const [svcOptions, setSvcOptions] = useState<Service[]>([]);
+  const [services, setServices] = useState<Array<{ service_id: string; price: number | null; service_name?: string }>>(data.services as Array<{ service_id: string; price: number | null; service_name?: string }> || []);
   const [serviceNames, setServiceNames] = useState<Record<string, string>>({});
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
-  const [categoryId, setCategoryId] = useState<string>(data.category_id || '');
+  const [categoryId, setCategoryId] = useState<string>((data.category_id as string) || '');
   const [loadingCats, setLoadingCats] = useState<boolean>(false);
   const [loadingSvcs, setLoadingSvcs] = useState<boolean>(false);
   const [svcFilter, setSvcFilter] = useState<string>('');
@@ -551,11 +553,11 @@ function ServicesSelectStep({ data, onSave, onNext }: { data: Record<string, any
   // Hydrate service name cache from existing draft items
   useEffect(() => {
     const initialNames: Record<string, string> = {};
-    (data.services || []).forEach((s: any) => {
+    (data.services as Array<{ service_id: string; price: number | null; service_name?: string }> || []).forEach((s: { service_id: string; price: number | null; service_name?: string }) => {
       if (s?.service_id && s?.service_name) initialNames[s.service_id] = s.service_name;
     });
     setServiceNames(initialNames);
-    if (data.category_id) setCategoryId(data.category_id);
+    if (data.category_id) setCategoryId(data.category_id as string);
   }, [data.services]);
 
   // Load categories
@@ -587,17 +589,17 @@ function ServicesSelectStep({ data, onSave, onNext }: { data: Record<string, any
     return () => clearTimeout(t);
   }, [services, categoryId]);
 
-  const toggleService = (svc: any) => {
+  const toggleService = (svc: Service) => {
     setServices(prev => {
-      const exists = prev.find((x: any) => x.service_id === svc.id);
-      if (exists) return prev.filter((x: any) => x.service_id !== svc.id);
+      const exists = prev.find((x: { service_id: string; price: number | null }) => x.service_id === svc.id);
+      if (exists) return prev.filter((x: { service_id: string; price: number | null }) => x.service_id !== svc.id);
       return [...prev, { service_id: svc.id, service_name: svc.name, pricing_model: 'hourly', price: null, quote_only: false }];
     });
     setServiceNames(prev => ({ ...prev, [svc.id]: svc.name }));
   };
 
   const updateServicePrice = (id: string, price: number) => {
-    setServices(prev => prev.map((x: any) => x.service_id === id ? { ...x, price: isNaN(price) ? null : price } : x));
+    setServices(prev => prev.map((x: { service_id: string; price: number | null }) => x.service_id === id ? { ...x, price: isNaN(price) ? null : price } : x));
   };
 
   return (
@@ -640,15 +642,15 @@ function ServicesSelectStep({ data, onSave, onNext }: { data: Record<string, any
           {categoryId && !loadingSvcs && svcOptions.length > 0 && (
             <div>
               {svcOptions
-                .filter((svc: any) => !svcFilter.trim() || svc.name.toLowerCase().includes(svcFilter.trim().toLowerCase()))
-                .sort((a: any, b: any) => {
-                  const aSel = services.some((x: any) => x.service_id === a.id);
-                  const bSel = services.some((x: any) => x.service_id === b.id);
+                .filter((svc: Service) => !svcFilter.trim() || svc.name.toLowerCase().includes(svcFilter.trim().toLowerCase()))
+                .sort((a: Service, b: Service) => {
+                  const aSel = services.some((x: { service_id: string; price: number | null }) => x.service_id === a.id);
+                  const bSel = services.some((x: { service_id: string; price: number | null }) => x.service_id === b.id);
                   if (aSel !== bSel) return aSel ? -1 : 1; // selected to top
                   return a.name.localeCompare(b.name);
                 })
-                .map((svc: any) => {
-                const checked = services.some((x: any) => x.service_id === svc.id);
+                .map((svc: Service) => {
+                const checked = services.some((x: { service_id: string; price: number | null }) => x.service_id === svc.id);
                 return (
                   <label key={svc.id} className="flex items-center gap-2 text-sm px-3 py-2 hover:bg-gray-50">
                     <input type="checkbox" checked={checked} onChange={() => toggleService(svc)} />
@@ -666,7 +668,7 @@ function ServicesSelectStep({ data, onSave, onNext }: { data: Record<string, any
 
       {services.length > 0 && (
         <div className="mt-4 space-y-3">
-          {services.map((sel: any) => (
+          {services.map((sel: { service_id: string; price: number | null; service_name?: string }) => (
             <div key={sel.service_id} className="border rounded p-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-sm font-medium text-gray-900">{serviceNames[sel.service_id] || sel.service_name || ''}</div>
@@ -695,8 +697,8 @@ function ServicesSelectStep({ data, onSave, onNext }: { data: Record<string, any
   );
 }
 
-function IntroStep({ data, onSave, onBack, onSubmit }: { data: Record<string, any>; onSave: (p: any) => Promise<void>; onBack: () => Promise<void> | void; onSubmit: (intro: string) => Promise<void> }) {
-  const [intro, setIntro] = useState<string>(data.intro || '');
+function IntroStep({ data, onSave, onBack, onSubmit }: { data: Record<string, unknown>; onSave: (p: Record<string, unknown>) => Promise<void>; onBack: () => Promise<void> | void; onSubmit: (intro: string) => Promise<void> }) {
+  const [intro, setIntro] = useState<string>((data.intro as string) || '');
   const min = 40;
   const tooShort = intro.trim().length > 0 && intro.trim().length < min;
 
@@ -739,7 +741,7 @@ function IntroStep({ data, onSave, onBack, onSubmit }: { data: Record<string, an
   );
 }
 
-function AvailabilityStep({ data, onSave, onBack, onSubmit }: { data: Record<string, any>; onSave: (p: any) => Promise<void>; onBack: () => Promise<void> | void; onSubmit: (payload: any) => Promise<void> }) {
+function AvailabilityStep({ data, onSave, onBack, onSubmit }: { data: Record<string, unknown>; onSave: (p: Record<string, unknown>) => Promise<void>; onBack: () => Promise<void> | void; onSubmit: (payload: Record<string, unknown>) => Promise<void> }) {
   type DayKey = 'Sun' | 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat';
   const businessHours: Record<DayKey, { open: string; close: string; enabled: boolean }> = {
     Sun: { open: '09:00', close: '17:00', enabled: true },
@@ -761,7 +763,7 @@ function AvailabilityStep({ data, onSave, onBack, onSubmit }: { data: Record<str
   };
 
   const initialFromSavedOrMode = (): Record<DayKey, { open: string; close: string; enabled: boolean }> => {
-    const saved = data?.working_hours;
+    const saved = data?.working_hours as Record<string, { open: string; close: string; enabled: boolean }> | undefined;
     if (saved && typeof saved === 'object') {
       return {
         Sun: saved.Sun || businessHours.Sun,
@@ -842,11 +844,12 @@ function AvailabilityStep({ data, onSave, onBack, onSubmit }: { data: Record<str
   );
 }
 
-function PreferencesStep({ data, onSave, onBack, onSubmit }: { data: Record<string, any>; onSave: (p: any) => Promise<void>; onBack: () => Promise<void> | void; onSubmit: (payload: any) => Promise<void> }) {
-  const [propertyType, setPropertyType] = useState<'residential' | 'commercial'>(data?.preferences?.property_type || 'residential');
-  const [jobSize, setJobSize] = useState<'smaller' | 'larger'>(data?.preferences?.job_size || 'smaller');
-  const [frequency, setFrequency] = useState<'one_time' | 'ongoing'>(data?.preferences?.frequency || 'one_time');
-  const [removeDebris, setRemoveDebris] = useState<boolean>(Boolean(data?.preferences?.remove_debris));
+function PreferencesStep({ data, onSave, onBack, onSubmit }: { data: Record<string, unknown>; onSave: (p: Record<string, unknown>) => Promise<void>; onBack: () => Promise<void> | void; onSubmit: (payload: Record<string, unknown>) => Promise<void> }) {
+  const preferences = data?.preferences as Record<string, unknown> | undefined;
+  const [propertyType, setPropertyType] = useState<'residential' | 'commercial'>((preferences?.property_type as 'residential' | 'commercial') || 'residential');
+  const [jobSize, setJobSize] = useState<'smaller' | 'larger'>((preferences?.job_size as 'smaller' | 'larger') || 'smaller');
+  const [frequency, setFrequency] = useState<'one_time' | 'ongoing'>((preferences?.frequency as 'one_time' | 'ongoing') || 'one_time');
+  const [removeDebris, setRemoveDebris] = useState<boolean>(Boolean(preferences?.remove_debris));
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -900,9 +903,10 @@ function PreferencesStep({ data, onSave, onBack, onSubmit }: { data: Record<stri
   );
 }
 
-function CoverageDistanceStep({ data, onSave, onBack, onSubmit }: { data: Record<string, any>; onSave: (p: any) => Promise<void>; onBack: () => Promise<void> | void; onSubmit: (payload: any) => Promise<void> }) {
+function CoverageDistanceStep({ data, onSave, onBack, onSubmit }: { data: Record<string, unknown>; onSave: (p: Record<string, unknown>) => Promise<void>; onBack: () => Promise<void> | void; onSubmit: (payload: Record<string, unknown>) => Promise<void> }) {
   const initialRadius = (() => {
-    const raw = data?.coverage?.[0]?.radius_miles ?? data?.radius_miles ?? 25;
+    const coverage = data?.coverage as Array<{ radius_miles: number }> | undefined;
+    const raw = coverage?.[0]?.radius_miles ?? (data?.radius_miles as number) ?? 25;
     const num = Number(raw);
     return Number.isFinite(num) && num >= 1 ? num : 25;
   })();
@@ -951,7 +955,7 @@ function CoverageDistanceStep({ data, onSave, onBack, onSubmit }: { data: Record
   );
 }
 
-function BudgetStep({ data, onSave, onBack, onSubmit }: { data: Record<string, any>; onSave: (p: any) => Promise<void>; onBack: () => Promise<void> | void; onSubmit: (payload: any) => Promise<void> }) {
+function BudgetStep({ data, onSave, onBack, onSubmit }: { data: Record<string, unknown>; onSave: (p: Record<string, unknown>) => Promise<void>; onBack: () => Promise<void> | void; onSubmit: (payload: Record<string, unknown>) => Promise<void> }) {
   const servicesCount = Array.isArray(data?.services) ? data.services.length : (Number(data?.services_count) || 3);
   const [budgetMode, setBudgetMode] = useState<'unlimited' | 'limited'>(data?.budget_mode === 'limited' ? 'limited' : 'unlimited');
   const [weeklyBudget, setWeeklyBudget] = useState<number>(Number(data?.weekly_budget || 125));

@@ -36,7 +36,7 @@ import {
   type Service,
   getCurrentUser,
 } from "@/lib/api";
-import AvailabilityStep, { type WeeklyAvailability } from "@/components/AvailabilityStep";
+import AvailabilityStep, { type AvailabilityValue, type WeeklyAvailability } from "@/components/AvailabilityStep";
 
 interface QuestionSetModalProps {
   serviceId: string;
@@ -62,7 +62,7 @@ export default function QuestionSetModal({
   const [noPublishedQuestionSet, setNoPublishedQuestionSet] = useState<boolean>(false);
   const [fallbackQuestionSetId, setFallbackQuestionSetId] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [request, setRequest] = useState<CustomerRequest | null>(null);
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -158,9 +158,10 @@ export default function QuestionSetModal({
           setAvailableServices(servicesWithDetails);
           setShowServiceSelection(true);
         }
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (!aborted) {
-          setError(e?.message || "Failed to load services");
+          const errorMessage = e instanceof Error ? e.message : "Failed to load services";
+          setError(errorMessage);
         }
       } finally {
         if (!aborted) {
@@ -272,8 +273,11 @@ export default function QuestionSetModal({
         if (typeof window !== "undefined") {
           localStorage.setItem(storageKey, created.id);
         }
-      } catch (e: any) {
-        if (!aborted) setError(e?.message || "Failed to load question set");
+      } catch (e: unknown) {
+        if (!aborted) {
+          const errorMessage = e instanceof Error ? e.message : "Failed to load question set";
+          setError(errorMessage);
+        }
       } finally {
         if (!aborted) setLoading(false);
       }
@@ -517,7 +521,7 @@ export default function QuestionSetModal({
                   })}
                 {currentQuestions.length === 0 && currentStep === availabilityStepIndex && (
                   <AvailabilityStep
-                    value={formData["availability"]}
+                    value={formData["availability"] as AvailabilityValue}
                     onChange={(val) =>
                       setFormData((prev) => ({ ...prev, availability: val }))
                     }
@@ -761,7 +765,7 @@ export default function QuestionSetModal({
                             );
 
                             // Only set status to OPEN if form is fully completed
-                            const updatePayload: any = {
+                            const updatePayload: Record<string, unknown> = {
                               answers: formData,
                               mester_id: mesterId,
                               first_name: firstName || undefined,
@@ -824,13 +828,13 @@ export default function QuestionSetModal({
   );
 }
 
-function renderInput(q: Question, value: any, onChange: (v: any) => void) {
+function renderInput(q: Question, value: unknown, onChange: (v: unknown) => void) {
   switch (q.question_type) {
     case "text":
       return (
         <Input
           placeholder="Enter your answer…"
-          value={value || ""}
+          value={String(value || "")}
           onChange={(e) => onChange((e.target as HTMLInputElement).value)}
           minLength={q.min_length}
           maxLength={q.max_length}
@@ -841,7 +845,7 @@ function renderInput(q: Question, value: any, onChange: (v: any) => void) {
         <Input
           type="number"
           placeholder="Enter a number…"
-          value={value ?? ""}
+          value={String(value ?? "")}
           onChange={(e) => onChange((e.target as HTMLInputElement).value)}
           min={q.min_value}
           max={q.max_value}
@@ -881,12 +885,12 @@ function renderInput(q: Question, value: any, onChange: (v: any) => void) {
     case "select":
       return (
         <div className="question-option-container">
-          {q.options?.choices?.map((choice: any, idx: number) => {
+          {Array.isArray(q.options?.choices) && q.options.choices.map((choice: unknown, idx: number) => {
             const choiceValue =
-              typeof choice === "string" ? choice : choice.value;
+              typeof choice === "string" ? choice : (choice as { value?: string })?.value;
             const choiceLabel =
-              typeof choice === "string" ? choice : choice.label;
-            const isLast = idx === (q.options?.choices?.length || 0) - 1;
+              typeof choice === "string" ? choice : (choice as { label?: string })?.label;
+            const isLast = idx === (Array.isArray(q.options?.choices) ? q.options.choices.length : 0) - 1;
             return (
               <div
                 key={idx}
@@ -915,14 +919,14 @@ function renderInput(q: Question, value: any, onChange: (v: any) => void) {
     case "multi_select":
       return (
         <div className="question-option-container">
-          {q.options?.choices?.map((choice: any, idx: number) => {
+          {Array.isArray(q.options?.choices) && q.options.choices.map((choice: unknown, idx: number) => {
             const choiceValue =
-              typeof choice === "string" ? choice : choice.value;
+              typeof choice === "string" ? choice : (choice as { value?: string })?.value;
             const choiceLabel =
-              typeof choice === "string" ? choice : choice.label;
+              typeof choice === "string" ? choice : (choice as { label?: string })?.label;
             const arr: string[] = Array.isArray(value) ? value : [];
-            const checked = arr.includes(choiceValue);
-            const isLast = idx === (q.options?.choices?.length || 0) - 1;
+            const checked = arr.includes(choiceValue || "");
+            const isLast = idx === (Array.isArray(q.options?.choices) ? q.options.choices.length : 0) - 1;
             return (
               <div
                 key={idx}
@@ -955,7 +959,7 @@ function renderInput(q: Question, value: any, onChange: (v: any) => void) {
       return (
         <Input
           type="date"
-          value={value || ""}
+          value={String(value || "")}
           onChange={(e) => onChange((e.target as HTMLInputElement).value)}
         />
       );

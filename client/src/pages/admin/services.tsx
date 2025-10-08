@@ -132,7 +132,7 @@ export default function AdminServices() {
     }
   };
 
-  const handleServiceCreated = async (newService: any) => {
+  const handleServiceCreated = async (newService: Service) => {
     // Refresh the services list to include the new service
     setCurrentPage(1); // Reset to first page
     // The useEffect will automatically refetch with the new page
@@ -143,7 +143,7 @@ export default function AdminServices() {
     setShowEditModal(true);
   };
 
-  const handleServiceUpdated = async (updatedService: any) => {
+  const handleServiceUpdated = async (updatedService: Service) => {
     // Refresh the services list to reflect the updated service
     // The useEffect will automatically refetch with current filters
   };
@@ -472,15 +472,17 @@ export default function AdminServices() {
         />
 
         {/* Edit Service Modal */}
-        <EditServiceModal
-          isOpen={showEditModal}
-          onClose={() => {
-            setShowEditModal(false);
-            setEditingService(null);
-          }}
-          onServiceUpdated={handleServiceUpdated}
-          service={editingService}
-        />
+        {editingService && (
+          <EditServiceModal
+            isOpen={showEditModal}
+            onClose={() => {
+              setShowEditModal(false);
+              setEditingService(null);
+            }}
+            onServiceUpdated={handleServiceUpdated}
+            service={editingService}
+          />
+        )}
       </div>
     </AdminLayout>
   );

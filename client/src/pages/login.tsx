@@ -32,8 +32,9 @@ export default function LoginPage() {
       } else {
         router.push("/");
       }
-    } catch (e: any) {
-      setError(e?.message || "Failed to sign in");
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : "Failed to sign in";
+      setError(errorMessage);
     } finally {
       setSubmitting(false);
     }

@@ -30,7 +30,7 @@ interface QuestionSetPreviewProps {
 
 export default function QuestionSetPreview({ questionSet, onBack, onEdit }: QuestionSetPreviewProps) {
   const [services, setServices] = useState<Service[]>([]);
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [currentStep, setCurrentStep] = useState(0);
   const [fullQuestionSet, setFullQuestionSet] = useState<QuestionSet | null>(null);
   const [loading, setLoading] = useState(true);
@@ -120,7 +120,7 @@ export default function QuestionSetPreview({ questionSet, onBack, onEdit }: Ques
         return (
           <Input
             placeholder="Enter your answer..."
-            value={value}
+            value={value as string}
             onChange={(e) => setFormData(prev => ({ ...prev, [question.key]: e.target.value }))}
             minLength={question.min_length}
             maxLength={question.max_length}
@@ -132,7 +132,7 @@ export default function QuestionSetPreview({ questionSet, onBack, onEdit }: Ques
           <Input
             type="number"
             placeholder="Enter a number..."
-            value={value}
+            value={value as string}
             onChange={(e) => setFormData(prev => ({ ...prev, [question.key]: e.target.value }))}
             min={question.min_value}
             max={question.max_value}
@@ -174,10 +174,10 @@ export default function QuestionSetPreview({ questionSet, onBack, onEdit }: Ques
       case 'select':
         return (
           <div className="question-option-container">
-            {question.options?.choices?.map((choice: any, index: number) => {
-              const choiceValue = typeof choice === 'string' ? choice : choice.value;
-              const choiceLabel = typeof choice === 'string' ? choice : choice.label;
-              const isLast = index === (question.options?.choices?.length || 0) - 1;
+            {(question.options?.choices as unknown[] | undefined)?.map((choice: unknown, index: number) => {
+              const choiceValue = typeof choice === 'string' ? choice : (choice as { value: string }).value;
+              const choiceLabel = typeof choice === 'string' ? choice : (choice as { label: string }).label;
+              const isLast = index === ((question.options?.choices as unknown[] | undefined)?.length || 0) - 1;
               return (
                 <div key={index} className={`question-option-item ${isLast ? 'border-b-0' : ''}`}>
                   <input
@@ -201,10 +201,10 @@ export default function QuestionSetPreview({ questionSet, onBack, onEdit }: Ques
       case 'multi_select':
         return (
           <div className="question-option-container">
-            {question.options?.choices?.map((choice: any, index: number) => {
-              const choiceValue = typeof choice === 'string' ? choice : choice.value;
-              const choiceLabel = typeof choice === 'string' ? choice : choice.label;
-              const isLast = index === (question.options?.choices?.length || 0) - 1;
+            {(question.options?.choices as unknown[] | undefined)?.map((choice: unknown, index: number) => {
+              const choiceValue = typeof choice === 'string' ? choice : (choice as { value: string }).value;
+              const choiceLabel = typeof choice === 'string' ? choice : (choice as { label: string }).label;
+              const isLast = index === ((question.options?.choices as unknown[] | undefined)?.length || 0) - 1;
               return (
                 <div key={index} className={`question-option-item ${isLast ? 'border-b-0' : ''}`}>
                   <input
@@ -233,7 +233,7 @@ export default function QuestionSetPreview({ questionSet, onBack, onEdit }: Ques
         return (
           <Input
             type="date"
-            value={value}
+            value={value as string}
             onChange={(e) => setFormData(prev => ({ ...prev, [question.key]: e.target.value }))}
           />
         );

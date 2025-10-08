@@ -12,23 +12,26 @@ interface Props {
   onProposeTime: (message: string) => void;
 }
 
-function formatWeeklyAvailability(av: any): string {
-  if (!av || av.type !== "weekly") return "Not specified";
+function formatWeeklyAvailability(av: unknown): string {
+  if (!av || typeof av !== 'object' || !('type' in av) || av.type !== "weekly") return "Not specified";
+  const avObj = av as { type: string; days?: unknown[]; start?: string; end?: string };
   const labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const dayNames = (av.days || [])
-    .filter((d: any) => Number.isInteger(d) && d >= 0 && d <= 6)
+  const dayNames = (avObj.days || [])
+    .filter((d: unknown): d is number => Number.isInteger(d) && typeof d === 'number' && d >= 0 && d <= 6)
     .map((d: number) => labels[d]);
   if (dayNames.length === 0) return "Not specified";
-  return `${dayNames.join(", ")} • ${av.start}–${av.end}`;
+  return `${dayNames.join(", ")} • ${avObj.start || ''}–${avObj.end || ''}`;
 }
 
-function getAvailability(request?: CustomerRequest | null): any | null {
+function getAvailability(request?: CustomerRequest | null): unknown | null {
   if (!request) return null;
-  const top = (request as any)?.availability;
-  if (top && top.type === "weekly") return top;
-  const a = (request as any)?.answers?.availability;
+  const requestWithAvailability = request as CustomerRequest & { availability?: unknown };
+  const top = requestWithAvailability?.availability;
+  if (top && typeof top === 'object' && top !== null && 'type' in top && (top as { type: string }).type === "weekly") return top;
+  const requestWithAnswers = request as CustomerRequest & { answers?: Record<string, unknown> };
+  const a = requestWithAnswers?.answers?.availability;
   if (!a) return null;
-  if (a && typeof a === "object" && "value" in a) return a.value;
+  if (a && typeof a === "object" && "value" in a) return (a as { value: unknown }).value;
   return a;
 }
 
@@ -116,8 +119,8 @@ export default function RequestOfferSidebar({ request, service, offer, mapLocati
               className="w-full"
               variant="outline"
               onClick={() => {
-                const av = availability;
-                const dayLabel = Array.isArray(av?.days) && av.days.length > 0 ? ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][av.days[0]] : "Mon";
+                const av = availability as { type?: string; days?: unknown[]; start?: string } | null;
+                const dayLabel = Array.isArray(av?.days) && av.days.length > 0 ? ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][av.days[0] as number] : "Mon";
                 const text = av && av.type === "weekly"
                   ? `I can schedule within your availability (${formatWeeklyAvailability(av)}). Would ${av.start} on ${dayLabel} work for you?`
                   : `When would you like to schedule the job?`;

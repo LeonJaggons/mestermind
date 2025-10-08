@@ -44,8 +44,8 @@ export default function AdminMestersPage() {
       const resp: ListMestersResponse = await listMesters({ q: query || undefined, is_active: isActiveValue, limit: 25, cursor: reset ? undefined : cursor || undefined });
       setCursor(resp.next_cursor || null);
       setItems(prev => reset ? resp.items : [...prev, ...resp.items]);
-    } catch (e: any) {
-      setError(e?.message || "Failed to load mesters");
+    } catch (e: unknown) {
+      setError((e as Error)?.message || "Failed to load mesters");
     } finally {
       setLoading(false);
     }
@@ -64,8 +64,8 @@ export default function AdminMestersPage() {
         setDetailLoading(true);
         const d = await fetchMesterById(selectedId);
         if (!aborted) setDetail(d);
-      } catch (e: any) {
-        if (!aborted) setError(e?.message || "Failed to load mester");
+      } catch (e: unknown) {
+        if (!aborted) setError((e as Error)?.message || "Failed to load mester");
       } finally {
         if (!aborted) setDetailLoading(false);
       }
@@ -82,7 +82,7 @@ export default function AdminMestersPage() {
           </div>
         <div className="flex items-center gap-3">
           <Input placeholder="Search mesters..." value={query} onChange={e => setQuery(e.target.value)} />
-          <select className="border rounded px-3 py-2" value={filterActive} onChange={e => setFilterActive(e.target.value as any)}>
+          <select className="border rounded px-3 py-2" value={filterActive} onChange={e => setFilterActive(e.target.value as "all" | "active" | "inactive")}>
             <option value="all">All</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>

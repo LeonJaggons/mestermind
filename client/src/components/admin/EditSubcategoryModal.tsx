@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { X, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Subcategory } from '@/lib/api';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +16,7 @@ import {
 interface EditSubcategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubcategoryUpdated: (subcategory: any) => void;
+  onSubcategoryUpdated: (subcategory: Subcategory) => void;
   subcategory: {
     id: string;
     name: string;
@@ -65,7 +66,7 @@ export default function EditSubcategoryModal({
     }
   }, [subcategory]);
 
-  const handleInputChange = (field: keyof SubcategoryFormData, value: any) => {
+  const handleInputChange = (field: keyof SubcategoryFormData, value: unknown) => {
     setFormData(prev => ({
       ...prev,
       [field]: value

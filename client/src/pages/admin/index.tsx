@@ -10,6 +10,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import { Service, CategoryWithSubcategories } from '@/lib/api';
 
 interface DashboardStats {
   totalServices: number;
@@ -50,11 +51,11 @@ export default function AdminDashboard() {
         
         // Calculate stats
         const totalServices = services.length;
-        const activeServices = services.filter((s: any) => s.is_active).length;
+        const activeServices = services.filter((s: Service) => s.is_active).length;
         const inactiveServices = totalServices - activeServices;
         
         // Calculate subcategories
-        const totalSubcategories = categories.reduce((acc: number, cat: any) => 
+        const totalSubcategories = categories.reduce((acc: number, cat: CategoryWithSubcategories) => 
           acc + (cat.subcategory_count || 0), 0);
 
         setStats({

@@ -429,7 +429,7 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
     question_type: 'text' as Question['question_type'],
     is_required: false,
     sort_order: 0,
-    options: {} as Record<string, any>,
+    options: {} as Record<string, unknown>,
     min_value: undefined as number | undefined,
     max_value: undefined as number | undefined,
     min_length: undefined as number | undefined,
@@ -490,15 +490,15 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Options ({formData.options?.choices?.length || 0} added)
+                  Options ({(formData.options?.choices as string[] | undefined)?.length || 0} added)
                 </label>
                 <div className="space-y-2">
-                  {(formData.options?.choices || []).map((choice: string, index: number) => (
+                  {((formData.options?.choices as string[] | undefined) || []).map((choice: string, index: number) => (
                     <div key={index} className="flex items-center gap-2">
                       <Input
                         value={choice}
                         onChange={(e) => {
-                          const newChoices = [...(formData.options?.choices || [])];
+                          const newChoices = [...((formData.options?.choices as string[] | undefined) || [])];
                           newChoices[index] = e.target.value;
                           setFormData(prev => ({
                             ...prev,
@@ -513,7 +513,7 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                          const newChoices = (formData.options?.choices || []).filter((_: string, i: number) => i !== index);
+                          const newChoices = ((formData.options?.choices as string[] | undefined) || []).filter((_: string, i: number) => i !== index);
                           setFormData(prev => ({
                             ...prev,
                             options: { ...prev.options, choices: newChoices }
@@ -531,7 +531,7 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const newChoices = [...(formData.options?.choices || []), ''];
+                      const newChoices = [...((formData.options?.choices as string[] | undefined) || []), ''];
                       setFormData(prev => ({
                         ...prev,
                         options: { ...prev.options, choices: newChoices }
@@ -554,7 +554,7 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
                     </label>
                     <Input
                       type="number"
-                      value={formData.options?.min_selections || ''}
+                      value={(formData.options?.min_selections as number | undefined) || ''}
                       onChange={(e) => setFormData(prev => ({
                         ...prev,
                         options: {
@@ -572,7 +572,7 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
                     </label>
                     <Input
                       type="number"
-                      value={formData.options?.max_selections || ''}
+                      value={(formData.options?.max_selections as number | undefined) || ''}
                       onChange={(e) => setFormData(prev => ({
                         ...prev,
                         options: {
@@ -599,7 +599,7 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
                 </div>
                 <input
                   type="checkbox"
-                  checked={formData.options?.allow_other || false}
+                  checked={(formData.options?.allow_other as boolean | undefined) || false}
                   onChange={(e) => setFormData(prev => ({
                     ...prev,
                     options: {
@@ -612,13 +612,13 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
               </div>
 
               {/* Other Label */}
-              {formData.options?.allow_other && (
+              {(formData.options?.allow_other as boolean | undefined) && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     &quot;Other&quot; Option Label
                   </label>
                   <Input
-                    value={formData.options?.other_label || ''}
+                    value={(formData.options?.other_label as string | undefined) || ''}
                     onChange={(e) => setFormData(prev => ({
                       ...prev,
                       options: {

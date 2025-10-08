@@ -35,8 +35,9 @@ export default function ProSignupDialog({ open, onClose, onSuccess }: { open: bo
                   firebase_uid: user.uid,
                 });
                 onSuccess();
-              } catch (e: any) {
-                setError(e?.message || "Signup failed");
+              } catch (e: unknown) {
+                const errorMessage = e instanceof Error ? e.message : "Signup failed";
+                setError(errorMessage);
               } finally {
                 setSubmitting(false);
               }

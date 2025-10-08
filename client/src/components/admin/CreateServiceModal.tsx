@@ -12,12 +12,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Category, CategoryWithSubcategories, fetchAllCategoriesWithSubcategories } from '@/lib/api';
+import { Service, CategoryWithSubcategories, fetchAllCategoriesWithSubcategories } from '@/lib/api';
 
 interface CreateServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onServiceCreated: (service: any) => void;
+  onServiceCreated: (service: Service) => void;
 }
 
 interface ServiceFormData {
@@ -67,7 +67,7 @@ export default function CreateServiceModal({ isOpen, onClose, onServiceCreated }
     }
   };
 
-  const handleInputChange = (field: keyof ServiceFormData, value: any) => {
+  const handleInputChange = (field: keyof ServiceFormData, value: unknown) => {
     setFormData(prev => ({
       ...prev,
       [field]: value

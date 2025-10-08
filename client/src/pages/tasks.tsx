@@ -35,7 +35,7 @@ export default function TasksPage() {
   const [requests, setRequests] = useState<RequestWithOffers[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<{ email?: string } | null>(null);
+  const [user, setUser] = useState<{ email?: string | null } | null>(null);
   const [activeTab, setActiveTab] = useState<"active" | "completed">("active");
   const [processingOffer, setProcessingOffer] = useState<string | null>(null);
   const [showMessageModal, setShowMessageModal] = useState(false);

@@ -12,13 +12,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Category, CategoryWithSubcategories, fetchAllCategoriesWithSubcategories } from '@/lib/api';
+import { Service, ServiceExplore, CategoryWithSubcategories, fetchAllCategoriesWithSubcategories } from '@/lib/api';
 
 interface EditServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onServiceUpdated: (service: any) => void;
-  service: any; // The service to edit
+  onServiceUpdated: (service: Service) => void;
+  service: ServiceExplore; // The service to edit
 }
 
 interface ServiceFormData {
@@ -59,7 +59,7 @@ export default function EditServiceModal({ isOpen, onClose, onServiceUpdated, se
         subcategory_id: service.subcategory_id || '',
         requires_license: service.requires_license || false,
         is_specialty: service.is_specialty || false,
-        indoor_outdoor: service.indoor_outdoor || 'both',
+        indoor_outdoor: (service.indoor_outdoor as 'both' | 'outdoor' | 'indoor') || 'both',
         is_active: service.is_active !== undefined ? service.is_active : true,
         sort_order: service.sort_order || 0
       });
@@ -81,7 +81,7 @@ export default function EditServiceModal({ isOpen, onClose, onServiceUpdated, se
     }
   };
 
-  const handleInputChange = (field: keyof ServiceFormData, value: any) => {
+  const handleInputChange = (field: keyof ServiceFormData, value: unknown) => {
     setFormData(prev => ({
       ...prev,
       [field]: value

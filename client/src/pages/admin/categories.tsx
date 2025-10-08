@@ -19,7 +19,7 @@ import {
   FolderOpen,
   MoreHorizontal
 } from 'lucide-react';
-import { Category, CategoryWithSubcategories, fetchAllCategoriesWithSubcategoriesAdmin } from '@/lib/api';
+import { Category, CategoryWithSubcategories, Subcategory, fetchAllCategoriesWithSubcategoriesAdmin } from '@/lib/api';
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState<CategoryWithSubcategories[]>([]);
@@ -32,8 +32,8 @@ export default function AdminCategories() {
   const [showEditSubcategoryModal, setShowEditSubcategoryModal] = useState(false);
   const [showEditCategoryModal, setShowEditCategoryModal] = useState(false);
   const [selectedCategoryForSubcategory, setSelectedCategoryForSubcategory] = useState<{id: string, name: string} | null>(null);
-  const [selectedSubcategoryForEdit, setSelectedSubcategoryForEdit] = useState<any>(null);
-  const [selectedCategoryForEdit, setSelectedCategoryForEdit] = useState<any>(null);
+  const [selectedSubcategoryForEdit, setSelectedSubcategoryForEdit] = useState<Subcategory | null>(null);
+  const [selectedCategoryForEdit, setSelectedCategoryForEdit] = useState<Category | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -111,7 +111,7 @@ export default function AdminCategories() {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
   };
 
-  const handleCategoryCreated = async (newCategory: any) => {
+  const handleCategoryCreated = async (newCategory: Category) => {
     // Refresh the categories list to include the new category
     try {
       const categoriesWithSubcategories = await fetchAllCategoriesWithSubcategoriesAdmin();
@@ -127,7 +127,7 @@ export default function AdminCategories() {
     setShowCreateSubcategoryModal(true);
   };
 
-  const handleSubcategoryCreated = async (newSubcategory: any) => {
+  const handleSubcategoryCreated = async (newSubcategory: Subcategory) => {
     // Refresh the categories list to include the new subcategory
     try {
       const categoriesWithSubcategories = await fetchAllCategoriesWithSubcategoriesAdmin();
@@ -138,13 +138,13 @@ export default function AdminCategories() {
     }
   };
 
-  const handleEditSubcategory = (subcategory: any, categoryName: string) => {
+  const handleEditSubcategory = (subcategory: Subcategory, categoryName: string) => {
     setSelectedSubcategoryForEdit(subcategory);
     setSelectedCategoryForSubcategory({ id: subcategory.category_id, name: categoryName });
     setShowEditSubcategoryModal(true);
   };
 
-  const handleSubcategoryUpdated = async (updatedSubcategory: any) => {
+  const handleSubcategoryUpdated = async (updatedSubcategory: Subcategory) => {
     // Refresh the categories list to include the updated subcategory
     try {
       const categoriesWithSubcategories = await fetchAllCategoriesWithSubcategoriesAdmin();
@@ -174,12 +174,12 @@ export default function AdminCategories() {
     }
   };
 
-  const handleEditCategory = (category: any) => {
+  const handleEditCategory = (category: Category) => {
     setSelectedCategoryForEdit(category);
     setShowEditCategoryModal(true);
   };
 
-  const handleCategoryUpdated = async (updatedCategory: any) => {
+  const handleCategoryUpdated = async (updatedCategory: Category) => {
     // Refresh the categories list to include the updated category
     try {
       const categoriesWithSubcategories = await fetchAllCategoriesWithSubcategoriesAdmin();

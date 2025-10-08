@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Category } from '@/lib/api';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +16,7 @@ import {
 interface CreateCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCategoryCreated: (category: any) => void;
+  onCategoryCreated: (category: Category) => void;
 }
 
 interface CategoryFormData {
@@ -36,7 +37,7 @@ export default function CreateCategoryModal({ isOpen, onClose, onCategoryCreated
     sort_order: 0
   });
 
-  const handleInputChange = (field: keyof CategoryFormData, value: any) => {
+  const handleInputChange = (field: keyof CategoryFormData, value: unknown) => {
     setFormData(prev => ({
       ...prev,
       [field]: value

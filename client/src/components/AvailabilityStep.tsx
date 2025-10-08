@@ -13,7 +13,7 @@ export type WeeklyAvailability = {
   end: string; // HH:mm
 };
 
-type AvailabilityValue = WeeklyAvailability | undefined;
+export type AvailabilityValue = WeeklyAvailability | undefined;
 
 interface AvailabilityStepProps {
   value: AvailabilityValue;
@@ -22,7 +22,7 @@ interface AvailabilityStepProps {
 
 export default function AvailabilityStep({ value, onChange }: AvailabilityStepProps) {
   const initialWeekly = useMemo<WeeklyAvailability | null>(() => {
-    if (value && (value as unknown).type === "weekly") return value as WeeklyAvailability;
+    if (value && typeof value === 'object' && value !== null && 'type' in value && (value as { type: string }).type === "weekly") return value as WeeklyAvailability;
     return null;
   }, [value]);
 

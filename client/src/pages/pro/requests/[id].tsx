@@ -244,7 +244,7 @@ export default function RequestDetailPage() {
     const a = (request.answers as { availability?: unknown })?.availability;
     if (!a) return null;
     if (a && typeof a === "object" && "value" in a) return (a as { value: { type: string; [key: string]: unknown } }).value;
-    return a;
+    return a as { type: string; [key: string]: unknown };
   }
 
   function formatWeeklyAvailability(av: {
@@ -414,13 +414,14 @@ export default function RequestDetailPage() {
                 {(() => {
                   const av = getAvailability();
                   if (!av || av.type !== "weekly") return null;
+                  const weeklyAv = av as unknown as { days: number[]; start: string; end: string };
                   return (
                     <div className="mt-4 p-3 bg-gray-50 rounded-md">
                       <div className="text-sm font-medium text-gray-900 mb-2">
                         Availability
                       </div>
                       <div className="text-sm text-gray-700">
-                        {formatWeeklyAvailability(av)}
+                        {formatWeeklyAvailability(weeklyAv)}
                       </div>
                     </div>
                   );

@@ -18,7 +18,6 @@ import Header from "@/components/Header";
 import { useRouter } from "next/router";
 import { Toaster } from "sonner";
 
-// @ts-expect-error - AppProps type issue
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const pathname = router.pathname;

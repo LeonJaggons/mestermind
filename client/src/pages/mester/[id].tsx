@@ -39,8 +39,11 @@ export default function MesterProfilePageWrapper() {
         setError(null);
         const resp = await fetchMesterById(id);
         if (!aborted) setData(resp);
-      } catch (e: any) {
-        if (!aborted) setError(e?.message || "Failed to load profile");
+      } catch (e: unknown) {
+        if (!aborted) {
+          const errorMessage = e instanceof Error ? e.message : "Failed to load profile";
+          setError(errorMessage);
+        }
       } finally {
         if (!aborted) setLoading(false);
       }

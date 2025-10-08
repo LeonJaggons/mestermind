@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import LocationSearch from "./LocationSearch";
-import { LocationSearchResult, Service } from "@/lib/api";
+import { LocationSearchResult, Service, ServiceExplore } from "@/lib/api";
 import ServiceSearch from "./ServiceSearch";
 import RecentSearches from "./RecentSearches";
 import PopularServicesNearYou from "./PopularServicesNearYou";

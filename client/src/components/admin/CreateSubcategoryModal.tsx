@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Subcategory } from '@/lib/api';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +16,7 @@ import {
 interface CreateSubcategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubcategoryCreated: (subcategory: any) => void;
+  onSubcategoryCreated: (subcategory: Subcategory) => void;
   categoryId: string;
   categoryName: string;
 }
@@ -44,7 +45,7 @@ export default function CreateSubcategoryModal({
     sort_order: 0
   });
 
-  const handleInputChange = (field: keyof SubcategoryFormData, value: any) => {
+  const handleInputChange = (field: keyof SubcategoryFormData, value: unknown) => {
     setFormData(prev => ({
       ...prev,
       [field]: value

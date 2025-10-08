@@ -28,7 +28,7 @@ export default function InstantResults() {
   // 2) /instant-results?service_pk=...&place_pk=...
   let serviceId = service_pk || "";
   let placeId = place_pk || "";
-  let placeType = place_type || ("" as any);
+  let placeType = place_type || "";
 
   if (!serviceId || !placeId) {
     const raw =
@@ -43,7 +43,7 @@ export default function InstantResults() {
         const [k, v] = pair.split("=");
         if (k === "service_pk") serviceId = v || "";
         if (k === "place_pk") placeId = v || "";
-        if (k === "place_type") placeType = (v as any) || "";
+        if (k === "place_type") placeType = (v as string) || "";
       }
     }
   }
@@ -108,7 +108,7 @@ export default function InstantResults() {
         if (placeId) {
           const res: GeoNormalizeResponse = await normalizeLocation(
             placeType
-              ? { place_id: placeId, type: placeType }
+              ? { place_id: placeId, type: placeType as "city" | "district" }
               : { place_id: placeId },
           );
           if (!aborted && res.lat != null && res.lon != null) {
@@ -150,8 +150,8 @@ export default function InstantResults() {
           limit: 20,
         });
         if (!aborted) setPros(resp.items);
-      } catch (e: any) {
-        if (!aborted) setErrorPros(e?.message || "Failed to load pros");
+      } catch (e: unknown) {
+        if (!aborted) setErrorPros((e as Error)?.message || "Failed to load pros");
       } finally {
         if (!aborted) setLoadingPros(false);
       }
@@ -171,7 +171,7 @@ export default function InstantResults() {
         setLoadingBestMatches(true);
         const matches = await fetchBestMatches(serviceId, 3);
         if (!aborted) setBestMatches(matches);
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error("Failed to load best matches:", e);
         if (!aborted) setBestMatches(null);
       } finally {
@@ -205,8 +205,8 @@ export default function InstantResults() {
             limit: 20,
           });
           setPros(resp.items);
-        } catch (e: any) {
-          setErrorPros(e?.message || "Failed to load pros");
+        } catch (e: unknown) {
+          setErrorPros((e as Error)?.message || "Failed to load pros");
         } finally {
           setLoadingPros(false);
           // Keep the submitted flag to avoid reopening the modal on future visits

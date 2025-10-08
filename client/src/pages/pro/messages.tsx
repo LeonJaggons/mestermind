@@ -117,23 +117,24 @@ export default function ProMessagesPage() {
     })();
   }, [selectedThread]);
 
-  const formatWeeklyAvailability = (av: any): string => {
-    if (!av || av.type !== "weekly") return "Not specified";
+  const formatWeeklyAvailability = (av: unknown): string => {
+    if (!av || typeof av !== 'object' || !('type' in av) || av.type !== "weekly") return "Not specified";
+    const avObj = av as { type: string; days?: unknown[]; start?: string; end?: string };
     const labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const dayNames = (av.days || [])
-      .filter((d: any) => Number.isInteger(d) && d >= 0 && d <= 6)
-      .map((d: number) => labels[d]);
+    const dayNames = (avObj.days || [])
+      .filter((d: unknown) => Number.isInteger(d) && typeof d === 'number' && d >= 0 && d <= 6)
+      .map((d: unknown) => labels[d as number]);
     if (dayNames.length === 0) return "Not specified";
-    return `${dayNames.join(", ")} • ${av.start}–${av.end}`;
+    return `${dayNames.join(", ")} • ${avObj.start || ''}–${avObj.end || ''}`;
   };
 
-  const getAvailability = (): any | null => {
-    const req = selectedRequest as any;
+  const getAvailability = (): unknown | null => {
+    const req = selectedRequest as CustomerRequest & { availability?: unknown; answers?: Record<string, unknown> };
     if (!req) return null;
-    if (req.availability && req.availability.type === "weekly") return req.availability;
+    if (req.availability && typeof req.availability === 'object' && req.availability !== null && 'type' in req.availability && (req.availability as { type: string }).type === "weekly") return req.availability;
     const a = req.answers?.availability;
     if (!a) return null;
-    if (a && typeof a === "object" && "value" in a) return a.value;
+    if (a && typeof a === "object" && "value" in a) return (a as { value: unknown }).value;
     return a;
   };
 
@@ -149,8 +150,8 @@ export default function ProMessagesPage() {
       const msg = await sendMessage(selectedThreadId, { body: newMessage.trim(), sender_type: "mester", sender_mester_id: mesterId });
       setMessages((prev) => [...prev, msg]);
       setNewMessage("");
-    } catch (e: any) {
-      if (e?.code === "PAYMENT_REQUIRED") {
+    } catch (e: unknown) {
+      if ((e as { code?: string })?.code === "PAYMENT_REQUIRED") {
         setPaywallContext({
           title: "Send your reply",
           body: "Unlock this conversation to send your next message, share details, and move the job forward.",
@@ -351,7 +352,7 @@ export default function ProMessagesPage() {
           </div>
 
           <RequestOfferSidebar
-            request={selectedRequest as any}
+            request={selectedRequest as CustomerRequest}
             service={selectedService}
             offer={selectedOffer}
             mapLocation={selectedLocation || undefined}
