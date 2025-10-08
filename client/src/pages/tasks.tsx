@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Header from "@/components/Header";
 import {
   getMyRequests,
   fetchServiceById,
@@ -36,7 +35,7 @@ export default function TasksPage() {
   const [requests, setRequests] = useState<RequestWithOffers[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ email?: string } | null>(null);
   const [activeTab, setActiveTab] = useState<"active" | "completed">("active");
   const [processingOffer, setProcessingOffer] = useState<string | null>(null);
   const [showMessageModal, setShowMessageModal] = useState(false);
@@ -149,9 +148,9 @@ export default function TasksPage() {
           try {
             const service = await fetchServiceById(request.service_id);
             const offers = await listOffers({ request_id: request.id });
-            return { ...request, service, offers } as any;
+            return { ...request, service, offers } as RequestWithOffers;
           } catch {
-            return request as any;
+            return request as RequestWithOffers;
           }
         }),
       );
@@ -159,7 +158,7 @@ export default function TasksPage() {
 
       if (current?.r && current.o) {
         const req = requestsWithServicesAndOffers.find(
-          (x: any) => x.id === current.r.id,
+          (x: RequestWithOffers) => x.id === current.r.id,
         );
         const mesterId = current.o.mester_id;
         const serviceName = req?.service?.name || "Service";
@@ -299,10 +298,6 @@ export default function TasksPage() {
           ) : (
             <div className="space-y-6">
               {filteredRequests.map((request) => {
-                const pendingOffers =
-                  request.offers?.filter((o) => o.status === "PENDING") || [];
-                const acceptedOffers =
-                  request.offers?.filter((o) => o.status === "ACCEPTED") || [];
                 const hasOffers = (request.offers?.length || 0) > 0;
 
                 return (

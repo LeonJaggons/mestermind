@@ -45,8 +45,8 @@ export default function SignupPage() {
       } else {
         router.push("/");
       }
-    } catch (e: any) {
-      setError(e?.message || "Failed to create account");
+    } catch (e: unknown) {
+      setError((e as { message?: string })?.message || "Failed to create account");
     } finally {
       setSubmitting(false);
     }

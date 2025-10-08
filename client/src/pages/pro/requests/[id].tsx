@@ -115,7 +115,7 @@ export default function RequestDetailPage() {
             console.warn("Failed to fetch coordinates:", e);
           }
         }
-      } catch (e) {
+      } catch {
         setError("Failed to load request");
       } finally {
         setLoading(false);
@@ -152,7 +152,7 @@ export default function RequestDetailPage() {
     return map;
   }, [questions]);
 
-  function renderAnswer(key: string, entry: any) {
+  function renderAnswer(key: string, entry: unknown) {
     const value =
       entry && typeof entry === "object" && "value" in entry
         ? entry.value
@@ -184,7 +184,7 @@ export default function RequestDetailPage() {
     );
   }
 
-  function formatValue(v: any): string {
+  function formatValue(v: unknown): string {
     if (v === null || v === undefined) return "—";
     if (Array.isArray(v)) {
       return v
@@ -228,13 +228,6 @@ export default function RequestDetailPage() {
     }
   };
 
-  const getLocationDisplay = () => {
-    if (request?.postal_code) {
-      return `${request.postal_code}`;
-    }
-    return "Location not specified";
-  };
-
   const getServiceDisplayName = () => {
     if (service) {
       return service.name;
@@ -242,15 +235,15 @@ export default function RequestDetailPage() {
     return "Service Request";
   };
 
-  function getAvailability(): any | null {
+  function getAvailability(): { type: string; [key: string]: unknown } | null {
     if (!request) return null;
     // Prefer normalized field from API
-    const top = (request as any).availability;
+    const top = (request as { availability?: { type: string; [key: string]: unknown } }).availability;
     if (top && top.type === "weekly") return top;
     // Fallback to answers.availability (structured or raw)
-    const a = (request.answers as any)?.availability;
+    const a = (request.answers as { availability?: unknown })?.availability;
     if (!a) return null;
-    if (a && typeof a === "object" && "value" in a) return (a as any).value;
+    if (a && typeof a === "object" && "value" in a) return (a as { value: { type: string; [key: string]: unknown } }).value;
     return a;
   }
 
@@ -298,8 +291,6 @@ export default function RequestDetailPage() {
       </main>
     );
   }
-
-  const answers = request.answers || ({} as Record<string, any>);
 
   return (
     <main className="min-h-screen bg-white">

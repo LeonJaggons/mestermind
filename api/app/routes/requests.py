@@ -255,8 +255,8 @@ async def get_my_requests(
     limit: int = Query(100, ge=1, le=500),
     skip: int = Query(0, ge=0),
 ):
-    """Get all requests created by the current user (matched by email)."""
-    q = db.query(RequestModel).filter(RequestModel.contact_email == current_user.email)
+    """Get all requests created by the current user (matched by user_id)."""
+    q = db.query(RequestModel).filter(RequestModel.user_id == current_user.id)
 
     if status is not None:
         status_value = status.strip().upper()

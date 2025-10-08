@@ -42,7 +42,7 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --font-sans: "Open Sans", Arial, Helvetica, sans-serif;
+    --font-sans: "Plus Jakarta Sans", Arial, Helvetica, sans-serif;
     --font-heading: "Outfit", Arial, Helvetica, sans-serif;
     --font-mono: var(--font-geist-mono);
     --color-sidebar-ring: var(--sidebar-ring);
@@ -90,7 +90,7 @@
 body {
     background: var(--background);
     color: var(--foreground);
-    font-family: "Open Sans", Arial, Helvetica, sans-serif;
+    font-family: "Plus Jakarta Sans", Arial, Helvetica, sans-serif;
 }
 
 .dark {
