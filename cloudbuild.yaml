@@ -1,0 +1,54 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--no-cache'
+      - '-t'
+      - '$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - 'api'
+      - '-f'
+      - 'api/Dockerfile'
+    id: 'Build'
+
+  # Push the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+    id: 'Push'
+
+  # Deploy to Cloud Run with environment variables and secrets
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'services'
+      - 'update'
+      - '$_SERVICE_NAME'
+      - '--platform=managed'
+      - '--image=$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - '--labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID'
+      - '--region=$_DEPLOY_REGION'
+      - '--set-secrets=DATABASE_URL=mestermind-secrets:5,REDIS_URL=mestermind-secrets:2,SECRET_KEY=mestermind-secrets:3,FIREBASE_CREDENTIALS=mestermind-secrets:4'
+      - '--add-cloudsql-instances=mestermind-474514:europe-west1:mestermind-postgres'
+      - '--quiet'
+    id: 'Deploy'
+
+substitutions:
+  _AR_HOSTNAME: 'europe-west1-docker.pkg.dev'
+  _AR_PROJECT_ID: 'mestermind-474514'
+  _AR_REPOSITORY: 'cloud-run-source-deploy'
+  _DEPLOY_REGION: 'europe-west1'
+  _PLATFORM: 'managed'
+  _SERVICE_NAME: 'mestermind'
+  _TRIGGER_ID: 'f2c41e0c-8018-4a92-bf1a-d20173d9d9e8'
+
+tags:
+  - 'gcp-cloud-build-deploy-cloud-run'
+  - 'gcp-cloud-build-deploy-cloud-run-managed'
+  - 'mestermind'
+
+options:
+  logging: 'CLOUD_LOGGING_ONLY'
+  substitutionOption: 'ALLOW_LOOSE'

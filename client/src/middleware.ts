@@ -10,8 +10,13 @@ export function middleware(request: NextRequest) {
   // Read lightweight pro flag from cookies (set at login/session init)
   const isPro = request.cookies.get('is_pro')?.value === 'true';
 
-  // Block access to /pro for non-pros
+  // Block access to /pro for non-pros (except onboarding)
   if (pathname.startsWith('/pro')) {
+    // Allow access to onboarding for non-pros
+    if (pathname === '/pro/onboarding' || pathname.startsWith('/pro/onboarding/')) {
+      return NextResponse.next();
+    }
+    
     if (!isPro) {
       const url = request.nextUrl.clone();
       url.pathname = '/login';
