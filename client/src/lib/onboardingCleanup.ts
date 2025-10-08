@@ -146,8 +146,8 @@ export function getCurrentOnboardingDraftId(): string | null {
 /**
  * Set up cleanup on page unload
  */
-export function setupOnboardingCleanupOnUnload(): void {
-  if (typeof window === 'undefined') return;
+export function setupOnboardingCleanupOnUnload(): () => void {
+  if (typeof window === 'undefined') return () => {};
   
   const handleBeforeUnload = async () => {
     const draftId = getCurrentOnboardingDraftId();

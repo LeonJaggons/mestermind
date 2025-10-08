@@ -304,7 +304,7 @@ export default function MesterProfilePage({
                             Business hours
                           </h3>
                           <p className="text-gray-600">
-                            This pro hasn't listed their business hours.
+                            This pro hasn&apos;t listed their business hours.
                           </p>
                         </div>
 
@@ -534,7 +534,7 @@ export default function MesterProfilePage({
                       </div>
                       <div className="text-sm">
                         <p className="text-gray-700">
-                          If you hire this pro, you're covered by a money-back
+                          If you hire this pro, you&apos;re covered by a money-back
                           guarantee.
                           <button className="text-blue-600 hover:underline ml-1">
                             Learn more

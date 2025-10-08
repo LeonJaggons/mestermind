@@ -164,7 +164,7 @@ export default function ProLeadsPage() {
                 <div className="text-sm">
                   <p className="text-gray-900">Review your availability and</p>
                   <button className="text-blue-600 hover:underline">
-                    tell us when you're busy.
+                    tell us when you&apos;re busy.
                   </button>
                 </div>
               </div>
@@ -335,7 +335,7 @@ function LeadCard({
   };
 
   const getCustomerDisplayName = () => {
-    if (request.first_name) {
+    if (request.first_name && request.last_name) {
       return request.first_name[0] + ". " + request.last_name[0] + ".";
     }
     if (request.contact_email) {

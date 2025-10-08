@@ -26,7 +26,11 @@ export default function ProDashboardPage() {
         
         // Fetch pro status to check if profile exists
         const status = await fetchProStatus(user.email);
-        setProStatus(status);
+        setProStatus({
+          mester_id: status.mester_id ?? null,
+          logo_url: status.logo_url ?? null,
+          display_name: status.display_name ?? null
+        });
         
         const prof = await fetchProProfileByEmail(user.email).catch(() => null);
         setProfile(prof || null);

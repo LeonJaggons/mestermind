@@ -22,7 +22,7 @@ interface AvailabilityStepProps {
 
 export default function AvailabilityStep({ value, onChange }: AvailabilityStepProps) {
   const initialWeekly = useMemo<WeeklyAvailability | null>(() => {
-    if (value && (value as any).type === "weekly") return value as WeeklyAvailability;
+    if (value && (value as unknown).type === "weekly") return value as WeeklyAvailability;
     return null;
   }, [value]);
 

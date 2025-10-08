@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
-import { LuSearch } from "react-icons/lu";
 import LocationSearch from "./LocationSearch";
 import { LocationSearchResult, Service } from "@/lib/api";
 import ServiceSearch from "./ServiceSearch";
@@ -29,7 +28,7 @@ export default function Hero() {
     );
   };
 
-  const handlePopularServiceSelect = (service: any) => {
+  const handlePopularServiceSelect = (service: ServiceExplore) => {
     // Convert ServiceExplore to Service format
     const serviceObj: Service = {
       id: service.id,

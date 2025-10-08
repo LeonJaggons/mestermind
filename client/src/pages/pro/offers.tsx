@@ -4,7 +4,7 @@ import { subscribeToAuthChanges } from "@/lib/auth";
 import {
   fetchProStatus,
   listOffers,
-  listCustomerRequests,
+  getRequestById,
   fetchServiceById,
   type Offer,
   type CustomerRequest,
@@ -65,7 +65,7 @@ export default function ProOffersPage() {
     async function load() {
       try {
         // Fetch all offers for this mester
-        const offersList = await listOffers({ mester_id: mesterId });
+        const offersList = await listOffers({ mester_id: mesterId ?? undefined });
         setOffers(offersList);
 
         // Fetch request details for each offer
@@ -75,11 +75,8 @@ export default function ProOffersPage() {
         for (const offer of offersList) {
           try {
             // Fetch the request
-            const requestsList = await listCustomerRequests({
-              id: offer.request_id,
-            });
-            if (requestsList && requestsList.length > 0) {
-              const request = requestsList[0];
+            const request = await getRequestById(offer.request_id);
+            if (request) {
               requestMap.set(offer.request_id, request);
 
               // Fetch the service
@@ -152,7 +149,7 @@ export default function ProOffersPage() {
                 <div className="text-sm">
                   <p className="text-gray-900">Review your availability and</p>
                   <button className="text-blue-600 hover:underline">
-                    tell us when you're busy.
+                    tell us when you&apos;re busy.
                   </button>
                 </div>
               </div>
@@ -183,7 +180,7 @@ export default function ProOffersPage() {
                 Your Offers
               </h1>
               <p className="text-lg text-gray-600">
-                Track all requests where you've sent offers.
+                Track all requests where you&apos;ve sent offers.
               </p>
             </div>
 
@@ -205,7 +202,7 @@ export default function ProOffersPage() {
             {!loading && !error && offers.length === 0 && (
               <div className="text-center py-12">
                 <div className="text-gray-600 mb-4">
-                  You haven't sent any offers yet.
+                  You haven&apos;t sent any offers yet.
                 </div>
                 <p className="text-sm text-gray-500">
                   When you send an offer to a customer request, it will appear
@@ -271,7 +268,7 @@ function OfferCard({
   };
 
   const getCustomerDisplayName = () => {
-    if (request?.first_name) {
+    if (request?.first_name && request?.last_name) {
       return request.first_name[0] + ". " + request.last_name[0] + ".";
     }
     if (request?.contact_email) {

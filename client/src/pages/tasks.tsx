@@ -284,7 +284,7 @@ export default function TasksPage() {
           ) : filteredRequests.length === 0 ? (
             <div className="bg-white rounded-lg shadow-sm p-12 text-center">
               <p className="text-gray-500 text-lg">
-                You haven't made any requests yet
+                You haven&apos;t made any requests yet
               </p>
               <p className="text-gray-400 mt-2">
                 Start by searching for a service you need

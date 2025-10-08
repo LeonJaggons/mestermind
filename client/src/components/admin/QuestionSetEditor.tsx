@@ -591,7 +591,7 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
               <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                 <div>
                   <label className="text-sm font-medium text-gray-700">
-                    Allow "Other" option
+                    Allow &quot;Other&quot; option
                   </label>
                   <p className="text-xs text-gray-500">
                     Let users enter a custom answer
@@ -615,7 +615,7 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
               {formData.options?.allow_other && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    "Other" Option Label
+                    &quot;Other&quot; Option Label
                   </label>
                   <Input
                     value={formData.options?.other_label || ''}
@@ -677,7 +677,7 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
                   }))}
                   className="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded border"
                 >
-                  With "Other"
+                  With &quot;Other&quot;
                 </button>
                 <button
                   type="button"
@@ -805,7 +805,7 @@ function QuestionForm({ question, onSave, onCancel }: QuestionFormProps) {
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open={true} onOpenChange={onCancel}>
       <DialogContent className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           {question ? 'Edit Question' : 'Add Question'}

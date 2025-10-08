@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { subscribeToAuthChanges } from "@/lib/auth";
 import {
   getCustomerRequest,
@@ -375,7 +376,7 @@ export default function RequestDetailPage() {
               </div>
               <div className="mt-4 p-3 bg-blue-50 rounded-md">
                 <p className="text-xs text-blue-700">
-                  You'll only pay if the customer responds. Opportunities are
+                  You&apos;ll only pay if the customer responds. Opportunities are
                   priced separately from other leads.{" "}
                   <button className="text-blue-600 hover:underline">
                     View price
@@ -496,12 +497,12 @@ export default function RequestDetailPage() {
                 </div>
                 <div className="text-center text-sm text-gray-600">
                   This request has been moved to your{" "}
-                  <a
+                  <Link
                     href="/pro/offers"
                     className="text-blue-600 hover:text-blue-700 underline"
                   >
                     Offers page
-                  </a>
+                  </Link>
                 </div>
               </div>
             ) : (
@@ -607,7 +608,7 @@ export default function RequestDetailPage() {
                               Tips to write winning messages
                             </DialogTitle>
                             <DialogDescription>
-                              Your message forms your customer's first
+                              Your message forms your customer&apos;s first
                               impression of you and your business. They love to
                               hire pros who:
                             </DialogDescription>
@@ -619,7 +620,7 @@ export default function RequestDetailPage() {
                                 Talk about your relevant past work,
                                 qualifications, and expertise.
                               </li>
-                              <li>Describe what's included in the price.</li>
+                              <li>Describe what&apos;s included in the price.</li>
                               <li>
                                 Encourage them to take the next step and follow
                                 up!

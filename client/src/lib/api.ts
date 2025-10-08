@@ -1588,6 +1588,8 @@ export interface ProProfileLite {
   display_name?: string | null;
 }
 
+export type ProProfile = ProProfileLite;
+
 export async function fetchProProfileByEmail(
   email: string,
 ): Promise<ProProfileLite | null> {

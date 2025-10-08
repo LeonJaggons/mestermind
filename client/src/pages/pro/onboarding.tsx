@@ -980,7 +980,7 @@ function BudgetStep({ data, onSave, onBack, onSubmit }: { data: Record<string, a
             <label className="flex items-start gap-3 cursor-pointer">
               <input type="radio" name="budget-mode" checked={budgetMode === 'unlimited'} onChange={() => setBudgetMode('unlimited')} className="mt-1" />
               <div>
-                <div className="font-medium">Don't limit my budget</div>
+                <div className="font-medium">Don&apos;t limit my budget</div>
                 <div className="text-sm text-gray-600 mt-1">This allows you to get all the leads that fit your job preferences. You can always change this later.</div>
               </div>
             </label>
@@ -991,7 +991,7 @@ function BudgetStep({ data, onSave, onBack, onSubmit }: { data: Record<string, a
               <input type="radio" name="budget-mode" checked={budgetMode === 'limited'} onChange={() => setBudgetMode('limited')} className="mt-1" />
               <div>
                 <div className="font-medium">Limit my budget</div>
-                <div className="text-sm text-gray-600 mt-1">Set a limit on how much you'll spend per week.</div>
+                <div className="text-sm text-gray-600 mt-1">Set a limit on how much you&apos;ll spend per week.</div>
               </div>
             </label>
 
@@ -1015,7 +1015,7 @@ function BudgetStep({ data, onSave, onBack, onSubmit }: { data: Record<string, a
 
 
                 <div className="text-xs text-gray-600 mt-4">
-                  Tip: A ${weeklyBudget} budget will still help you establish your business quickly, but won't get you as many leads as possible. The minimum budget is $80.
+                  Tip: A ${weeklyBudget} budget will still help you establish your business quickly, but won&apos;t get you as many leads as possible. The minimum budget is $80.
                 </div>
                 <div className="text-xs text-blue-700 mt-1">You can change your budget anytime. Learn more about weekly budgets.</div>
               </div>

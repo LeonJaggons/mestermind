@@ -50,7 +50,7 @@ export default function LoginPage() {
           error={error}
         />
         <p className="text-sm text-muted-foreground">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/signup" className="text-primary">
             Create one
           </Link>
