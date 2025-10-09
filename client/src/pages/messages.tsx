@@ -116,7 +116,7 @@ export default function CustomerMessagesPage() {
     <main className="min-h-screen bg-white">
       <div className="flex flex-col lg:flex-row h-screen">
         {/* Left pane: search + thread list */}
-        <div className="w-full lg:w-96 border-r border-gray-200 flex flex-col">
+        <div className="w-full lg:w-96 border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col">
           <div className="p-4 border-b border-gray-200">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -136,7 +136,13 @@ export default function CustomerMessagesPage() {
             {!loading && filteredThreads.map((t) => (
               <button
                 key={t.id}
-                onClick={() => setSelectedThreadId(t.id)}
+                onClick={() => {
+                  if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                    router.push(`/messages/${t.id}`);
+                  } else {
+                    setSelectedThreadId(t.id);
+                  }
+                }}
                 className={`w-full text-left p-4 border-b border-gray-100 hover:bg-gray-50 ${selectedThreadId === t.id ? 'bg-gray-50' : ''}`}
               >
                 <div className="text-sm text-gray-900 truncate">{t.last_message_preview || 'New conversation'}</div>
@@ -168,9 +174,9 @@ export default function CustomerMessagesPage() {
                   <div className="text-xs text-gray-500 truncate max-w-md">{selectedService?.name || 'Service'}</div>
                 </div>
               </div>
-              <div className="flex-1 overflow-auto p-4 sm:p-6 space-y-4">
+          <div className="flex-1 overflow-auto p-4 sm:p-6 space-y-4">
                 {messages.map((m) => (
-                  <div key={m.id} className={`max-w-xs sm:max-w-md ${m.sender_type === 'customer' ? 'ml-auto text-right' : ''}`}>
+              <div key={m.id} className={`max-w-[85%] sm:max-w-md ${m.sender_type === 'customer' ? 'ml-auto text-right' : ''}`}>
                     <div className={`inline-block px-3 py-2 rounded-lg ${m.sender_type === 'customer' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}`}>
                       <div className="text-sm">{m.body}</div>
                     </div>

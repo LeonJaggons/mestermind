@@ -174,8 +174,7 @@ export default function ProMessagesPage() {
   }, [messages]);
 
   return (
-    <main className=" bg-white"  style={{maxHeight: "calc(100vh - 64px)"}}
-  >
+    <main className="min-h-screen bg-white">
       <PaywallModal
         open={showPaywall}
         onClose={() => setShowPaywall(false)}
@@ -188,9 +187,9 @@ export default function ProMessagesPage() {
         bodyOverride={paywallContext?.body}
         ctaOverride={paywallContext?.cta}
       />
-      <div className="flex" style={{maxHeight: "calc(100vh - 64px)", overflow: "hidden"}}>
+      <div className="flex flex-col lg:flex-row min-h-screen">
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 p-4">
+        <aside className="hidden lg:block lg:w-64 bg-white border-r border-gray-200 p-4 flex-shrink-0">
           <nav className="space-y-2">
             <div className="flex items-center space-x-3 p-2 rounded-lg bg-blue-50">
               <Inbox className="h-5 w-5 text-blue-600" />
@@ -216,9 +215,9 @@ export default function ProMessagesPage() {
         </aside>
 
         {/* Thread list + Conversation + Details */}
-        <section className="flex-1 flex">
+        <section className="flex-1 flex flex-col lg:flex-row">
           {/* Left pane: search + thread list */}
-          <div className="w-96 border-r border-gray-200 flex flex-col">
+          <div className="w-full lg:w-96 border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col">
             <div className="p-4 border-b border-gray-200">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -243,7 +242,13 @@ export default function ProMessagesPage() {
                 return (
                   <button
                     key={t.id}
-                    onClick={() => setSelectedThreadId(t.id)}
+                    onClick={() => {
+                      if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                        router.push(`/pro/messages/${t.id}`);
+                      } else {
+                        setSelectedThreadId(t.id);
+                      }
+                    }}
                     className={`w-full text-left p-4 border-b border-gray-100 hover:bg-gray-50 ${isSelected ? 'bg-gray-50' : ''}`}
                   >
                     <div className="flex items-start gap-3">
@@ -351,13 +356,15 @@ export default function ProMessagesPage() {
             )}
           </div>
 
-          <RequestOfferSidebar
-            request={selectedRequest as CustomerRequest}
-            service={selectedService}
-            offer={selectedOffer}
-            mapLocation={selectedLocation || undefined}
-            onProposeTime={(msg) => setNewMessage((prev) => (prev ? prev + '\n' : '') + msg)}
-          />
+          <div className="hidden lg:block lg:w-96 border-l border-gray-200 flex-shrink-0">
+            <RequestOfferSidebar
+              request={selectedRequest as CustomerRequest}
+              service={selectedService}
+              offer={selectedOffer}
+              mapLocation={selectedLocation || undefined}
+              onProposeTime={(msg) => setNewMessage((prev) => (prev ? prev + '\n' : '') + msg)}
+            />
+          </div>
         </section>
       </div>
     </main>

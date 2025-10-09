@@ -297,7 +297,8 @@ class NotificationService:
         else:
             preview_body = message.body[:100] + ("..." if len(message.body) > 100 else "")
 
-        # 7. Create in-app notification
+        # 7. Create in-app notification with role-aware action URL
+        action_url = "/messages" if recipient_user_id else "/pro/messages"
         notification = self._create_notification(
             mester_id=recipient_mester_id,
             user_id=recipient_user_id,
@@ -306,7 +307,7 @@ class NotificationService:
             body=preview_body,
             request_id=thread.request_id,
             message_id=message.id,
-            action_url=f"/messages",  # Or specific thread page
+            action_url=action_url,  # Customer -> /messages, Mester -> /pro/messages
             data={
                 "message_id": str(message.id),
                 "thread_id": str(thread.id),
@@ -816,7 +817,7 @@ class NotificationService:
             self._log_notification(
                 notification_id=notification.id,
                 channel=NotificationChannel.EMAIL,
-                recipient=recipient_email,
+                recipient=recipient_email or "unknown",
                 status="failed",
                 error_message=str(e),
             )

@@ -131,9 +131,9 @@ export default function ProLeadsPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <div className="flex h-screen">
+      <div className="flex flex-col lg:flex-row min-h-screen">
         {/* Left Sidebar */}
-        <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
+        <div className="hidden lg:flex lg:w-64 bg-white border-r border-gray-200 flex-col flex-shrink-0">
           {/* Navigation */}
           <div className="p-6">
             <nav className="space-y-2">
@@ -187,8 +187,8 @@ export default function ProLeadsPage() {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col items-center justify-start p-12">
-          <div className="max-w-2xl w-full">
+        <div className="flex-1 flex flex-col items-center justify-start p-6 md:p-12">
+          <div className="w-full max-w-2xl">
             {/* Welcome Message */}
             <div className="text-center mb-8">
               <h1 className="text-3xl font-semibold text-gray-900 mb-4">
