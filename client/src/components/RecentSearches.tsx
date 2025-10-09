@@ -92,7 +92,7 @@ export default function RecentSearches({
   return (
     <div className="w-full">
       <div className="mb-6">
-        <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
+        <h2 className="text-sm font-semibold text-white mb-4 flex items-center">
           Pick up where you left off
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -100,7 +100,7 @@ export default function RecentSearches({
             <button
               key={search.id}
               onClick={() => handleSearchClick(search)}
-              className="group p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200 text-left"
+              className="group p-4 bg-white/90 backdrop-blur-sm border border-white/20 rounded-lg shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200 text-left"
             >
               <div className="flex items-start space-x-3">
                 <div className="flex-shrink-0">

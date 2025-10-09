@@ -49,43 +49,55 @@ export default function Hero() {
 
   return (
     <>
-      <section className="w-full bg-white min-h-screen">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center h-full flex flex-col">
-          {/* Content Section - Positioned in the middle */}
-          <div className="flex flex-col items-center flex-1 justify-center py-8">
+      <section className="w-full relative">
+        {/* Hero Image Background - dynamically sized to contain all content */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/img/hero.jpg')",
+            minHeight: "100%",
+          }}
+        />
+        {/* Dark overlay for better text readability */}
+        {/* <div className="absolute inset-0 bg-black bg-opacity-40" /> */}
+        
+        {/* Content */}
+        <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16">
+          {/* Content Section */}
+          <div className="flex flex-col items-center py-24">
             {/* Main Heading */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight px-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight px-4">
               The easiest way to hire with confidence.
             </h1>
 
             {/* Search Bar */}
             <div className="w-full max-w-6xl mx-auto mb-6 px-4">
-              <div className="relative flex flex-col sm:flex-row items-stretch bg-white border border-gray-200 rounded-lg shadow-sm min-h-16">
+              <div className="relative flex flex-col sm:flex-row items-stretch bg-white border border-gray-200 rounded-lg shadow-sm ">
                 <ServiceSearch
                   onSelect={(svc) => setSelectedService(svc)}
                   selectedService={selectedService}
                   onClearSelected={() => setSelectedService(null)}
-                  className="flex-1 min-h-16"
+                  className="flex-1"
                 />
                 <div className="hidden sm:block w-px bg-gray-200"></div>
                 <LocationSearch
                   selectedLocation={selectedLocation}
                   onLocationSelect={setSelectedLocation}
                   placeholder="Enter location..."
-                  className="sm:min-w-[180px]"
+                  className="sm:min-w-[180px] h-16"
                 />
                 <div className="hidden sm:block w-px bg-gray-200"></div>
                 <Button
                   id="search-button"
                   onClick={handleSearch}
                   disabled={!selectedService || !selectedLocation}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-4 sm:py-6 disabled:opacity-50 disabled:cursor-not-allowed min-h-16 rounded-t-none sm:rounded-t-lg sm:rounded-l-none rounded-b-lg sm:rounded-b-lg"
+                  className="bg-blue-600 h-16 hover:bg-blue-700 text-white px-6 sm:px-8 py-4 sm:py-6 disabled:opacity-50 disabled:cursor-not-allowed min-h-17 rounded-t-none sm:rounded-t-lg sm:rounded-l-none rounded-b-lg sm:rounded-b-lg"
                 >
                   Search
                 </Button>
               </div>
             </div>
-            <div className="text-sm text-gray-500 font-medium mb-8 sm:mb-12 px-4">
+            <div className="text-sm text-white/90 font-medium mb-8 sm:mb-12 px-4">
               Trusted by over 4.5M customers with 98% satisfaction rate.
             </div>
 
@@ -95,19 +107,7 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Hero Image - Positioned at the bottom */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            <div className="relative">
-              <img
-                src="/img/2560.webp"
-                alt="Professional service providers at work"
-                className="w-full h-auto object-cover rounded-lg"
-              />
-            </div>
-          </div>
         </div>
-        {/* Full-width divider below the hero image */}
-        <div className="w-full border-b border-gray-200" />
       </section>
 
       {/* Popular Services Near You - Separate Section */}

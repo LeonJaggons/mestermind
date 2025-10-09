@@ -3,23 +3,36 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { LuChevronDown, LuLogOut, LuMenu } from "react-icons/lu";
-import ServicesDropdown from "./ServicesDropdown";
+import ServicesPopover from "./ServicesPopover";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { subscribeToAuthChanges, logout, getAuthToken } from "@/lib/auth";
 import { fetchIsProByEmail, fetchProProfileByEmail, getNotifications } from "@/lib/api";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { NotificationBell } from "./NotificationBell";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 
 export default function Header() {
+  const router = useRouter();
+  const isHomePage = router.pathname === "/";
+  
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
-  const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
@@ -32,22 +45,11 @@ export default function Header() {
   const [userName, setUserName] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string>("");
 
-  const handleServicesButtonClick = () => {
-    setIsServicesDropdownOpen(!isServicesDropdownOpen);
-  };
-
-  const handleServicesDropdownClose = () => {
-    setIsServicesDropdownOpen(false);
-  };
-
-  const handleAvatarClick = () => {
-    setIsAvatarDropdownOpen(!isAvatarDropdownOpen);
-  };
+  
 
   const handleSignOut = async () => {
     try {
       await logout();
-      setIsAvatarDropdownOpen(false);
       setIsMobileMenuOpen(false);
       // Clear pro flag cookie so middleware stops treating user as pro
       try {
@@ -127,41 +129,58 @@ export default function Header() {
   }, [authToken]);
 
   return (
-    <header className="w-full bg-white border-b border-gray-200 relative overflow-visible">
+    <header className={`w-full relative overflow-visible ${
+      isHomePage 
+        ? "absolute top-0 left-0 z-30 border-b border-white/20" 
+        : "bg-white/90 backdrop-blur-sm border-b border-gray-200"
+    }`}
+    style={{
+      position: isHomePage ? "absolute" : "relative",
+      borderBottomWidth: isHomePage ? 0 : 1,
+    }}>
       <div className="px-4 sm:px-6 lg:px-8 overflow-visible">
         <div className="flex justify-between items-center h-16 overflow-visible">
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <span
               style={{ fontFamily: "var(--font-heading)" }}
-              className="text-lg sm:text-xl font-bold text-gray-800"
+              className={`text-lg sm:text-xl font-bold ${
+                isHomePage ? "text-white" : "text-gray-800"
+              }`}
             >
               Mestermind
             </span>
-            <span className="text-xs text-gray-500 ml-[1px]">®</span>
+            <span className={`text-xs ml-[1px] ${
+              isHomePage ? "text-white/70" : "text-gray-500"
+            }`}>®</span>
           </Link>
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center space-x-2">
             {isSignedIn && authToken && (
-              <NotificationBell token={authToken} />
+              <NotificationBell token={authToken} onDark={isHomePage} />
             )}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="p-2">
+                <Button variant="ghost" size="sm" className={`p-2 ${
+                  isHomePage ? "text-white hover:text-white/80" : ""
+                }`}>
                   <LuMenu className="h-5 w-5" />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80">
+              <SheetContent side="right" className="w-80 ">
                 <SheetHeader>
                   <SheetTitle className="text-left">
                     {isSignedIn ? `Welcome, ${userName || 'User'}` : 'Menu'}
                   </SheetTitle>
+                  <SheetDescription>
+                    {isSignedIn ? userEmail : 'Menu'}
+                  </SheetDescription>
                 </SheetHeader>
-                <div className="mt-6 space-y-6">
+                <div className="space-y-2">
                   {/* User Info */}
-                  {isSignedIn && (
+                  {/* {isSignedIn && (
                     <div className="flex items-center space-x-3 pb-4 border-b">
                       <Avatar>
                         {avatarUrl ? (
@@ -179,7 +198,7 @@ export default function Header() {
                         )}
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Navigation Links */}
                   <div className="space-y-2">
@@ -286,26 +305,33 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-0">
             <div className="relative overflow-visible" ref={buttonRef}>
-              <Button
-                variant="ghost"
-                className="font-normal text-sm text-gray-600 hover:text-gray-900 flex items-center"
-                onClick={handleServicesButtonClick}
-              >
-                Explore Services
-                <LuChevronDown className="w-4 h-4 ml-1" />
-              </Button>
-              <ServicesDropdown
-                isOpen={isServicesDropdownOpen}
-                onClose={handleServicesDropdownClose}
-                buttonRef={buttonRef}
-              />
+              <Popover open={isServicesDropdownOpen} onOpenChange={setIsServicesDropdownOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className={`z-40 font-semibold text-sm flex items-center ${
+                      isHomePage 
+                        ? "text-white hover:text-white/80" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Explore Services
+                    <LuChevronDown className="w-4 h-4 ml-1" />
+                  </Button>
+                </PopoverTrigger>
+                <ServicesPopover />
+              </Popover>
             </div>
             {isSignedIn && isPro && (
               <>
                 <Link href="/pro/leads">
                   <Button
                     variant="ghost"
-                    className="font-normal text-sm text-gray-600 hover:text-gray-900"
+                    className={`font-normal text-sm ${
+                      isHomePage 
+                        ? "text-white hover:text-white/80" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
                   >
                     Jobs
                   </Button>
@@ -313,7 +339,11 @@ export default function Header() {
                 <Link href="/pro/messages">
                   <Button
                     variant="ghost"
-                    className="relative font-normal text-sm text-gray-600 hover:text-gray-900"
+                    className={`relative font-normal text-sm ${
+                      isHomePage 
+                        ? "text-white hover:text-white/80" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
                   >
                     Messages
                     {unreadCount > 0 && (
@@ -326,7 +356,11 @@ export default function Header() {
                 <Link href="/pro/services">
                   <Button
                     variant="ghost"
-                    className="font-normal text-sm text-gray-600 hover:text-gray-900"
+                    className={`font-normal text-sm ${
+                      isHomePage 
+                        ? "text-white hover:text-white/80" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
                   >
                     Services
                   </Button>
@@ -334,7 +368,11 @@ export default function Header() {
                 <Link href="/pro/calendar">
                   <Button
                     variant="ghost"
-                    className="font-normal text-sm text-gray-600 hover:text-gray-900"
+                    className={`font-normal text-sm ${
+                      isHomePage 
+                        ? "text-white hover:text-white/80" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
                   >
                     Calendar
                   </Button>
@@ -342,7 +380,11 @@ export default function Header() {
                 <Link href="/pro/profile">
                   <Button
                     variant="ghost"
-                    className="font-normal text-sm text-gray-600 hover:text-gray-900"
+                    className={`font-normal text-sm ${
+                      isHomePage 
+                        ? "text-white hover:text-white/80" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
                   >
                     Profile
                   </Button>
@@ -354,7 +396,11 @@ export default function Header() {
                 <Link href="/tasks">
                   <Button
                     variant="ghost"
-                    className="font-normal text-sm text-gray-600 hover:text-gray-900"
+                    className={`font-normal text-sm ${
+                      isHomePage 
+                        ? "text-white hover:text-white/80" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
                   >
                     My Requests
                   </Button>
@@ -362,7 +408,11 @@ export default function Header() {
                 <Link href="/messages">
                   <Button
                     variant="ghost"
-                    className="relative font-normal text-sm text-gray-600 hover:text-gray-900"
+                    className={`relative font-normal text-sm ${
+                      isHomePage 
+                        ? "text-white hover:text-white/80" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
                   >
                     Messages
                     {unreadCount > 0 && (
@@ -378,7 +428,11 @@ export default function Header() {
               <Link href="/pro/onboarding">
                 <Button
                   variant="ghost"
-                  className="text-gray-600 hover:text-gray-900"
+                  className={`font-semibold text-sm ${
+                    isHomePage 
+                      ? "text-white hover:text-white/80" 
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
                 >
                   Join as a pro
                 </Button>
@@ -386,56 +440,60 @@ export default function Header() {
             )}
             {isSignedIn && authToken && (
               <div className="ml-2">
-                <NotificationBell token={authToken} />
+                <NotificationBell token={authToken} onDark={isHomePage} />
               </div>
             )}
             {isSignedIn && (
               <div className="ml-2 relative" ref={avatarRef}>
-                <button
-                  onClick={handleAvatarClick}
-                  className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full"
-                >
-                  <Avatar>
-                    {avatarUrl ? (
-                      <AvatarImage src={avatarUrl} alt="Profile" />
-                    ) : (
-                      <AvatarFallback>{userInitials || "U"}</AvatarFallback>
-                    )}
-                  </Avatar>
-                </button>
-
-                {isAvatarDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                    <div className="px-4 py-2 text-sm text-gray-600 border-b border-gray-100">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full">
+                      <Avatar>
+                        {avatarUrl ? (
+                          <AvatarImage src={avatarUrl} alt="Profile" />
+                        ) : (
+                          <AvatarFallback>{userInitials || "U"}</AvatarFallback>
+                        )}
+                      </Avatar>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-64">
+                    <DropdownMenuLabel>
                       <div className="font-medium text-gray-900 truncate">
                         {userName ? `Welcome, ${userName}` : "Welcome"}
                       </div>
                       {userEmail && (
                         <div className="text-gray-500 truncate">{userEmail}</div>
                       )}
-                    </div>
-                    <button
-                      onClick={handleSignOut}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-700">
                       <LuLogOut className="w-4 h-4 mr-3" />
                       Sign out
-                    </button>
-                  </div>
-                )}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             )}
             {!isSignedIn && (
               <>
                 <Link href="/signup">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md">
+                  <Button className={`px-6 py-2 rounded-md ${
+                    isHomePage 
+                      ? "bg-white text-gray-900 hover:bg-white/90" 
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  }`}>
                     Sign up
                   </Button>
                 </Link>
                 <Link href="/login">
                   <Button
                     variant="ghost"
-                    className="text-gray-600 hover:text-gray-900"
+                    className={`${
+                      isHomePage 
+                        ? "text-white hover:text-white/80" 
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
                   >
                     Log in
                   </Button>

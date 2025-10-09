@@ -283,9 +283,9 @@ export default function PopularServicesNearYou({
   }
 
   return (
-    <div className="w-full mt-12">
+    <div className="w-full">
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+        <h2 className="text-3xl font-semibold text-gray-900 mb-6 flex items-center">
           Popular services near{" "}
           <span className="text-primary ml-2">Budapest</span>
           {selectedLocation && (

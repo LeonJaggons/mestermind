@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { LuMapPin, LuChevronDown } from 'react-icons/lu';
 import { searchLocations, LocationSearchResult } from '@/lib/api';
+import { Input } from './ui/input';
 
 interface LocationSearchProps {
   selectedLocation: LocationSearchResult | null;
@@ -130,23 +131,18 @@ export default function LocationSearch({
   };
 
   return (
-    <div className={`relative ${className} w-full sm:max-w-[180px]`}>
+    <div className={`relative  ${className} w-full sm:max-w-[180px]`}>
       <div className="relative">
-        <div className="flex items-center px-3 sm:px-4 border-l border-gray-200 h-full">
-          <LuMapPin className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2" />
-          <input
+          <Input
             ref={inputRef}
             type="text"
             value={query}
             onChange={handleInputChange}
             onFocus={handleInputFocus}
             placeholder={placeholder}
-            className="text-sm sm:text-md text-gray-600 bg-transparent border-0 outline-none w-full min-w-[50px] h-full"
+            className="text-md text-gray-800 bg-transparent border-0 outline-none w-full min-w-[50px] min-h-16 focus-visible:ring-0"
+            style={{ fontSize: "16px" }}
           />
-          <LuChevronDown
-            className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
-          />
-        </div>
       </div>
 
       {/* Dropdown */}
