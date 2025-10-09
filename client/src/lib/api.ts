@@ -1198,6 +1198,7 @@ export interface CustomerRequest {
   contact_phone?: string | null;
   postal_code?: string | null;
   message_to_pro?: string | null;
+  budget_estimate?: number | null;
   mester_id?: string | null;
   current_step: number;
   answers?: Record<string, unknown> | null;
@@ -1224,6 +1225,7 @@ export interface CustomerRequestCreate {
   contact_phone?: string;
   postal_code?: string;
   message_to_pro?: string;
+  budget_estimate?: number;
   mester_id?: string;
   current_step?: number;
   answers?: Record<string, unknown>;
@@ -1247,6 +1249,7 @@ export interface CustomerRequestUpdate {
   contact_phone?: string;
   postal_code?: string;
   message_to_pro?: string;
+  budget_estimate?: number;
   mester_id?: string;
 }
 

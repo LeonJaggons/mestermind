@@ -241,7 +241,12 @@ export default function QuestionSetModal({
             const existing = await getCustomerRequest(existingId);
             if (existing.question_set_id === latest.id) {
               setRequest(existing);
-              setFormData(existing.answers || {});
+              const baseAnswers = existing.answers || {};
+              const withBudget =
+                existing.budget_estimate != null
+                  ? { ...baseAnswers, budget_estimate: String(existing.budget_estimate) }
+                  : baseAnswers;
+              setFormData(withBudget);
               setFirstName(existing.first_name || "");
               setLastName(existing.last_name || "");
               setContactEmail(existing.contact_email || "");
@@ -266,6 +271,11 @@ export default function QuestionSetModal({
           contact_phone: contactPhone || undefined,
           postal_code: postalCode || undefined,
           message_to_pro: messageToPro || undefined,
+          budget_estimate: (() => {
+            const raw = formData["budget_estimate"];
+            const num = typeof raw === "string" ? Number(raw) : (raw as number | undefined);
+            return typeof num === "number" && !isNaN(num) ? num : undefined;
+          })(),
           current_step: 0,
           answers: {},
         });
@@ -340,9 +350,10 @@ export default function QuestionSetModal({
   const stepSize = 1;
   const baseTotalSteps = Math.max(1, Math.ceil(questions.length / stepSize));
   const availabilityStepIndex = baseTotalSteps; // availability after questions
-  const contactStepIndex = baseTotalSteps + 1; // contact details
-  const messageStepIndex = baseTotalSteps + 2; // message to pro (separate)
-  const totalSteps = baseTotalSteps + 3;
+  const budgetStepIndex = baseTotalSteps + 1; // budget estimate step
+  const contactStepIndex = baseTotalSteps + 2; // contact details
+  const messageStepIndex = baseTotalSteps + 3; // message to pro (separate)
+  const totalSteps = baseTotalSteps + 4;
   const currentQuestions =
     currentStep < baseTotalSteps
       ? questions.slice(currentStep * stepSize, (currentStep + 1) * stepSize)
@@ -397,6 +408,10 @@ export default function QuestionSetModal({
     } else if (currentStep === contactStepIndex) {
       // Contact step - require at least email or phone
       return contactEmail.trim() !== "" || contactPhone.trim() !== "";
+    } else if (currentStep === budgetStepIndex) {
+      const val = formData["budget_estimate"];
+      const num = typeof val === "string" ? Number(val) : (val as number | undefined);
+      return typeof num === "number" && !isNaN(num) && num > 0;
     } else if (currentStep === messageStepIndex) {
       // Message step is optional (always valid)
       return true;
@@ -411,6 +426,7 @@ export default function QuestionSetModal({
     baseTotalSteps,
     availabilityStepIndex,
     contactStepIndex,
+    budgetStepIndex,
   ]);
 
   if (!open) return null;
@@ -472,10 +488,9 @@ export default function QuestionSetModal({
                         {(service.price_hour_min || service.price_hour_max) && (
                           <div className="text-sm text-gray-700 mt-2">
                             <span className="font-medium">
-                              ${service.price_hour_min}
-                              {service.price_hour_max &&
-                              service.price_hour_max !== service.price_hour_min
-                                ? ` - $${service.price_hour_max}`
+                              {new Intl.NumberFormat('hu-HU').format(service.price_hour_min || 0)} Ft
+                              {service.price_hour_max && service.price_hour_max !== service.price_hour_min
+                                ? ` - ${new Intl.NumberFormat('hu-HU').format(service.price_hour_max)} Ft`
                                 : ""}
                               /hour
                             </span>
@@ -526,6 +541,33 @@ export default function QuestionSetModal({
                       setFormData((prev) => ({ ...prev, availability: val }))
                     }
                   />
+                )}
+
+                {currentQuestions.length === 0 && currentStep === budgetStepIndex && (
+                  <div className="space-y-5 ">
+                    <div className="text-center">
+                      <h2 className="text-2xl font-semibold text-gray-900 mb-2">Estimated budget</h2>
+                      <p className="text-gray-600">Tell us your estimated budget so pros can respond appropriately.</p>
+                    </div>
+                    <div className="mx-auto w-full sm:w-80">
+                      <label className="text-sm font-medium text-gray-900">Amount</label>
+                      <Input
+                        type="number"
+                        inputMode="decimal"
+                        min={0}
+                        step="0.01"
+                        placeholder="e.g. 30000"
+                        value={String(formData["budget_estimate"] ?? "")}
+                        onChange={(e) => {
+                          const raw = (e.target as HTMLInputElement).value;
+                          setFormData((prev) => ({ ...prev, budget_estimate: raw }));
+                        }}
+                      />
+                      {!isCurrentStepValid && (
+                        <p className="text-sm text-red-600 mt-1">Please enter a valid budget greater than 0.</p>
+                      )}
+                    </div>
+                  </div>
                 )}
 
                 {currentQuestions.length === 0 && currentStep === contactStepIndex && (
@@ -692,6 +734,11 @@ export default function QuestionSetModal({
                             contact_phone: contactPhone || undefined,
                             postal_code: postalCode || undefined,
                             message_to_pro: messageToPro || undefined,
+                            budget_estimate: (() => {
+                              const raw = formData["budget_estimate"];
+                              const num = typeof raw === "string" ? Number(raw) : (raw as number | undefined);
+                              return typeof num === "number" && !isNaN(num) ? num : undefined;
+                            })(),
                           });
                         }
                       } else {
@@ -739,6 +786,11 @@ export default function QuestionSetModal({
                               contact_phone: contactPhone || undefined,
                               postal_code: postalCode || undefined,
                               message_to_pro: messageToPro || undefined,
+                              budget_estimate: (() => {
+                                const raw = formData["budget_estimate"];
+                                const num = typeof raw === "string" ? Number(raw) : (raw as number | undefined);
+                                return typeof num === "number" && !isNaN(num) ? num : undefined;
+                              })(),
                               current_step: currentStep,
                               answers: formData,
                             });
@@ -774,6 +826,11 @@ export default function QuestionSetModal({
                               contact_phone: contactPhone || undefined,
                               postal_code: postalCode || undefined,
                               message_to_pro: messageToPro || undefined,
+                              budget_estimate: (() => {
+                                const raw = formData["budget_estimate"];
+                                const num = typeof raw === "string" ? Number(raw) : (raw as number | undefined);
+                                return typeof num === "number" && !isNaN(num) ? num : undefined;
+                              })(),
                             };
 
                             // ONLY set to OPEN if on final step with contact info

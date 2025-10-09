@@ -367,6 +367,7 @@ class RequestBase(BaseModel):
     contact_phone: Optional[str] = None
     postal_code: Optional[str] = None
     message_to_pro: Optional[str] = None
+    budget_estimate: Optional[float] = None
     answers: Optional[Dict[str, Any]] = None
 
 class WeeklyAvailability(BaseModel):
@@ -393,6 +394,7 @@ class RequestUpdate(BaseModel):
     contact_phone: Optional[str] = None
     postal_code: Optional[str] = None
     message_to_pro: Optional[str] = None
+    budget_estimate: Optional[float] = None
 
 
 class RequestResponse(BaseModel):
@@ -408,6 +410,7 @@ class RequestResponse(BaseModel):
     contact_phone: Optional[str] = None
     postal_code: Optional[str] = None
     message_to_pro: Optional[str] = None
+    budget_estimate: Optional[float] = None
     current_step: int
     answers: Optional[Dict[str, Any]]
     availability: Optional[WeeklyAvailability] = None

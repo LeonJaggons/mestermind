@@ -93,6 +93,9 @@ export default function ProLeadsPage() {
           if (!matchesOnly.find((x) => x.id === r.id)) matchesOnly.push(r);
         }
 
+        console.log(dedupAssigned);
+        console.log(matchesOnly);
+
         setAssignedRequests(dedupAssigned);
         setMatchingRequests(matchesOnly);
 
@@ -413,6 +416,17 @@ function LeadCard({
             <MapPin className="h-4 w-4 text-gray-400" />
             <span className="text-sm text-gray-600">
               Postal code: {request.postal_code}
+            </span>
+          </div>
+        )}
+        {console.log(request.budget_estimate)}
+
+        {/* Estimated Budget */}
+        {typeof request.budget_estimate === "number" && !isNaN(request.budget_estimate) && (
+          <div className="flex items-center space-x-3">
+            <DollarSign className="h-4 w-4 text-gray-400" />
+            <span className="text-sm text-gray-600">
+              Estimated budget: {new Intl.NumberFormat("hu-HU").format(request.budget_estimate)} Ft
             </span>
           </div>
         )}

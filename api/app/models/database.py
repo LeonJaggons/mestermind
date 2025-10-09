@@ -453,6 +453,10 @@ class Request(Base):
     contact_phone: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     postal_code: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     message_to_pro: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # Customer's estimated budget for the request (stored as currency amount)
+    budget_estimate: Mapped[Optional[float]] = mapped_column(
+        Numeric(precision=10, scale=2), nullable=True
+    )
     current_step: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     answers: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
     status: Mapped[RequestStatus] = mapped_column(
@@ -1205,3 +1209,77 @@ class NotificationLog(Base):
     notification: Mapped[Optional["Notification"]] = relationship("Notification")
 
     __table_args__ = (Index("ix_notification_logs_status", "status", "sent_at"),)
+
+
+# -----------------------------
+# Pricing models (Price Bands)
+# -----------------------------
+
+
+class PriceBand(Base):
+    """Defines a pricing band (A-D) with metadata and constraints in HUF."""
+
+    __tablename__ = "price_bands"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    code: Mapped[str] = mapped_column(String(10), nullable=False, unique=True, index=True)
+    label: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    currency: Mapped[str] = mapped_column(String(3), nullable=False, default="HUF")
+
+    typical_job_value_min_huf: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    typical_job_value_max_huf: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    typical_close_rate_min: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    typical_close_rate_max: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    target_take_of_expected_value: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    price_floor_huf: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    price_cap_huf: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    seats_per_lead: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    metadata_json: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()")
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+
+
+class PriceBandMapping(Base):
+    """Maps category/subcategory pairs to a price band."""
+
+    __tablename__ = "price_band_mappings"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    category_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("categories.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    subcategory_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("subcategories.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    price_band_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("price_bands.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()")
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+
+    # Relationships
+    category: Mapped["Category"] = relationship("Category")
+    subcategory: Mapped["Subcategory"] = relationship("Subcategory")
+    price_band: Mapped["PriceBand"] = relationship("PriceBand")
+
+    __table_args__ = (
+        UniqueConstraint("category_id", "subcategory_id", name="uq_price_band_cat_subcat"),
+        Index("ix_price_band_mapping_band", "price_band_id"),
+    )

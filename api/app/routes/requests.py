@@ -138,6 +138,7 @@ async def create_request(
         contact_phone=payload.contact_phone,
         postal_code=payload.postal_code,
         message_to_pro=payload.message_to_pro,
+        budget_estimate=payload.budget_estimate,
         answers=structured_answers,
         current_step=0,
         status="DRAFT",
@@ -206,6 +207,7 @@ async def create_request(
         contact_phone=req.contact_phone,
         postal_code=req.postal_code,
         message_to_pro=req.message_to_pro,
+        budget_estimate=float(req.budget_estimate) if req.budget_estimate is not None else None,
         current_step=req.current_step,
         answers=req.answers,
         availability=availability_payload,
@@ -284,6 +286,7 @@ async def get_my_requests(
                 contact_phone=req.contact_phone,
                 postal_code=req.postal_code,
                 message_to_pro=req.message_to_pro,
+                budget_estimate=float(req.budget_estimate) if req.budget_estimate is not None else None,
                 current_step=req.current_step,
                 answers=req.answers,
                 status=req.status.value,
@@ -316,6 +319,7 @@ async def get_request(request_id: str, db: Session = Depends(get_db)):
         contact_phone=req.contact_phone,
         postal_code=req.postal_code,
         message_to_pro=req.message_to_pro,
+        budget_estimate=float(req.budget_estimate) if req.budget_estimate is not None else None,
         current_step=req.current_step,
         answers=req.answers,
         status=str(req.status),
@@ -430,6 +434,8 @@ async def update_request(
         req.postal_code = payload.postal_code
     if payload.message_to_pro is not None:
         req.message_to_pro = payload.message_to_pro
+    if getattr(payload, "budget_estimate", None) is not None:
+        req.budget_estimate = payload.budget_estimate
 
     if payload.status is not None:
         incoming_status = str(payload.status).strip()
@@ -547,6 +553,7 @@ async def update_request(
         contact_phone=req.contact_phone,
         postal_code=req.postal_code,
         message_to_pro=req.message_to_pro,
+        budget_estimate=float(req.budget_estimate) if req.budget_estimate is not None else None,
         current_step=req.current_step,
         answers=req.answers,
         availability=availability_payload,
@@ -692,6 +699,7 @@ async def list_requests(
                 contact_phone=req.contact_phone,
                 postal_code=req.postal_code,
                 message_to_pro=req.message_to_pro,
+                budget_estimate=float(req.budget_estimate) if req.budget_estimate is not None else None,
                 current_step=req.current_step,
                 answers=req.answers,
                 status=req.status.value,

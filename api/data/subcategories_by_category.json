@@ -1,0 +1,127 @@
+{
+  "Other": [
+    "Assembly",
+    "Construction",
+    "Finishing",
+    "General",
+    "Installation",
+    "Installation & Repair",
+    "Organizing",
+    "Removal",
+    "Repair"
+  ],
+  "Pools / Spas / Water Features": [
+    "Cleaning",
+    "Construction",
+    "Inspection",
+    "Installation",
+    "Moving",
+    "Removal",
+    "Repair"
+  ],
+  "Inspections & Environmental": [
+    "General",
+    "Inspection",
+    "Removal"
+  ],
+  "Specialty & Professional Services": [
+    "Design",
+    "General"
+  ],
+  "Masonry / Concrete / Stucco": [
+    "Construction",
+    "General",
+    "Installation",
+    "Removal",
+    "Repair"
+  ],
+  "Remodeling & General Contracting": [
+    "Construction",
+    "General",
+    "Installation & Repair",
+    "Remodel"
+  ],
+  "Pest Control": [
+    "General",
+    "Inspection",
+    "Removal"
+  ],
+  "Carpentry & Woodwork": [
+    "Finishing",
+    "General",
+    "Installation",
+    "Remodel",
+    "Removal",
+    "Repair"
+  ],
+  "Flooring": [
+    "Cleaning",
+    "Finishing",
+    "General",
+    "Installation",
+    "Removal",
+    "Repair"
+  ],
+  "HVAC (Heating / Cooling)": [
+    "Cleaning",
+    "Installation",
+    "Repair"
+  ],
+  "Electrical & Smart Home": [
+    "General",
+    "Installation",
+    "Installation & Repair",
+    "Repair"
+  ],
+  "Cleaning & Maintenance": [
+    "Cleaning",
+    "General",
+    "Removal",
+    "Repair"
+  ],
+  "Windows & Doors": [
+    "Cleaning",
+    "Design",
+    "General",
+    "Installation",
+    "Installation & Repair",
+    "Repair"
+  ],
+  "Moving & Hauling": [
+    "General",
+    "Moving"
+  ],
+  "Plumbing & Water Systems": [
+    "General",
+    "Inspection",
+    "Installation",
+    "Repair"
+  ],
+  "Painting & Finishes": [
+    "Finishing",
+    "General",
+    "Installation & Repair",
+    "Removal"
+  ],
+  "Fences, Gates & Railings": [
+    "Installation",
+    "Repair"
+  ],
+  "Outdoor & Landscaping": [
+    "General",
+    "Installation",
+    "Removal",
+    "Repair"
+  ],
+  "Roofing & Gutters": [
+    "Cleaning",
+    "General",
+    "Inspection",
+    "Installation",
+    "Repair"
+  ],
+  "Security Systems": [
+    "Installation",
+    "Repair"
+  ]
+}

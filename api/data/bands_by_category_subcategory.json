@@ -1,0 +1,127 @@
+{
+  "Other": {
+    "Assembly": "B",
+    "Construction": "C",
+    "Finishing": "B",
+    "General": "B",
+    "Installation": "C",
+    "Installation & Repair": "C",
+    "Organizing": "A",
+    "Removal": "B",
+    "Repair": "B"
+  },
+  "Pools / Spas / Water Features": {
+    "Cleaning": "B",
+    "Construction": "D",
+    "Inspection": "B",
+    "Installation": "D",
+    "Moving": "C",
+    "Removal": "C",
+    "Repair": "C"
+  },
+  "Inspections & Environmental": {
+    "General": "C",
+    "Inspection": "C",
+    "Removal": "D"
+  },
+  "Specialty & Professional Services": {
+    "Design": "D",
+    "General": "D"
+  },
+  "Masonry / Concrete / Stucco": {
+    "Construction": "D",
+    "General": "C",
+    "Installation": "D",
+    "Removal": "C",
+    "Repair": "C"
+  },
+  "Remodeling & General Contracting": {
+    "Construction": "D",
+    "General": "C",
+    "Installation & Repair": "C",
+    "Remodel": "D"
+  },
+  "Pest Control": {
+    "General": "C",
+    "Inspection": "C",
+    "Removal": "C"
+  },
+  "Carpentry & Woodwork": {
+    "Finishing": "B",
+    "General": "B",
+    "Installation": "C",
+    "Remodel": "C",
+    "Removal": "B",
+    "Repair": "B"
+  },
+  "Flooring": {
+    "Cleaning": "B",
+    "Finishing": "B",
+    "General": "B",
+    "Installation": "C",
+    "Removal": "B",
+    "Repair": "B"
+  },
+  "HVAC (Heating / Cooling)": {
+    "Cleaning": "B",
+    "Installation": "C",
+    "Repair": "C"
+  },
+  "Electrical & Smart Home": {
+    "General": "C",
+    "Installation": "C",
+    "Installation & Repair": "C",
+    "Repair": "C"
+  },
+  "Cleaning & Maintenance": {
+    "Cleaning": "B",
+    "General": "B",
+    "Removal": "B",
+    "Repair": "B"
+  },
+  "Windows & Doors": {
+    "Cleaning": "B",
+    "Design": "B",
+    "General": "B",
+    "Installation": "C",
+    "Installation & Repair": "C",
+    "Repair": "B"
+  },
+  "Moving & Hauling": {
+    "General": "B",
+    "Moving": "B"
+  },
+  "Plumbing & Water Systems": {
+    "General": "C",
+    "Inspection": "C",
+    "Installation": "C",
+    "Repair": "C"
+  },
+  "Painting & Finishes": {
+    "Finishing": "B",
+    "General": "B",
+    "Installation & Repair": "B",
+    "Removal": "B"
+  },
+  "Fences, Gates & Railings": {
+    "Installation": "C",
+    "Repair": "B"
+  },
+  "Outdoor & Landscaping": {
+    "General": "B",
+    "Installation": "C",
+    "Removal": "B",
+    "Repair": "B"
+  },
+  "Roofing & Gutters": {
+    "Cleaning": "B",
+    "General": "C",
+    "Inspection": "C",
+    "Installation": "D",
+    "Repair": "C"
+  },
+  "Security Systems": {
+    "Installation": "C",
+    "Repair": "C"
+  }
+}

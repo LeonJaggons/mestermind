@@ -398,6 +398,16 @@ export default function RequestDetailPage() {
                   )}
                 </div>
 
+                {/* Estimated Budget */}
+                {typeof request?.budget_estimate === 'number' && !isNaN(request.budget_estimate) && (
+                  <div className="mt-4 p-3 bg-gray-50 rounded-md">
+                    <div className="text-sm font-medium text-gray-900 mb-2">Estimated Budget</div>
+                    <div className="text-sm text-gray-700">
+                      {new Intl.NumberFormat('hu-HU').format(request.budget_estimate)} Ft
+                    </div>
+                  </div>
+                )}
+
                 {/* Customer Message */}
                 {request?.message_to_pro && (
                   <div className="mt-4 p-3 bg-gray-50 rounded-md">
@@ -456,9 +466,9 @@ export default function RequestDetailPage() {
                   </h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Price:</span>
+                      <span className="text-gray-600">Price (HUF):</span>
                       <span className="text-2xl font-semibold text-gray-900">
-                        ${existingOffer.price} {existingOffer.currency}
+                        {new Intl.NumberFormat('hu-HU').format(existingOffer.price)} Ft
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
@@ -499,17 +509,15 @@ export default function RequestDetailPage() {
               </div>
             ) : (
               <>
-                {/* Price Section */}
+                {/* Price Section (HUF) */}
                 <h3 className="text-lg font-semibold text-gray-900 mb-2 w-[500px]">
-                  Price
+                  Price (HUF)
                 </h3>
                 <div className="border border-gray-200 bg-white rounded-lg w-[500px]">
                   <div className="p-4">
                     <div className="relative flex justify-center">
                       <div className="relative inline-block h-fit my-auto">
-                        <span className="absolute text-black text-3xl left-3 top-12 transform -translate-y-1/2  ">
-                          $
-                        </span>
+                        <span className="absolute text-black text-3xl left-3 top-12 transform -translate-y-1/2  ">Ft</span>
                         <Input
                           type="number"
                           placeholder="0"
@@ -549,7 +557,7 @@ export default function RequestDetailPage() {
                         />
                         <button className="flex items-center justify-center mt-3 absolute bottom-0 left-0 right-0">
                           <span className="text-sm text-gray-600">
-                            Fixed price
+                            Fixed price (HUF)
                           </span>
                           <svg
                             className="w-4 h-4 ml-2 text-gray-400"

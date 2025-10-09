@@ -21,6 +21,8 @@ from .database import (
     MesterProfile,
     MesterCoverageArea,
     MesterReview,
+    PriceBand,
+    PriceBandMapping,
 )
 from .schemas import (
     HealthResponse,
@@ -105,6 +107,8 @@ __all__ = [
     "MesterProfile",
     "MesterCoverageArea",
     "MesterReview",
+    "PriceBand",
+    "PriceBandMapping",
     "HealthResponse",
     "CategoryBase",
     "CategoryCreate",

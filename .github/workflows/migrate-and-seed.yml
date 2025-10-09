@@ -1,0 +1,84 @@
+name: Database Migration and Seeding
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'api/migrations/**'
+      - 'api/scripts/**'
+      - 'api/data/**'
+      - 'api/app/models/**'
+      - 'api/app/core/database.py'
+
+jobs:
+  migrate-and-seed:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          cd api
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY_JSON }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: mestermind-474514
+
+      - name: Download and setup Cloud SQL Proxy
+        run: |
+          curl -sSfL https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.11.3/cloud-sql-proxy.linux.amd64 -o cloud-sql-proxy
+          chmod +x cloud-sql-proxy
+
+      - name: Start Cloud SQL Proxy
+        run: |
+          ./cloud-sql-proxy \
+            --port 5432 \
+            --address 127.0.0.1 \
+            mestermind-474514:europe-west1:mestermind-postgres &
+          sleep 10
+
+      - name: Run Alembic migrations
+        env:
+          DATABASE_URL: postgresql://mestermind_user:${{ secrets.DB_USER_PASSWORD }}@127.0.0.1:5432/mestermind
+        run: |
+          cd api
+          source venv/bin/activate
+          alembic upgrade head
+
+      - name: Verify migration success
+        env:
+          DATABASE_URL: postgresql://mestermind_user:${{ secrets.DB_USER_PASSWORD }}@127.0.0.1:5432/mestermind
+        run: |
+          cd api
+          source venv/bin/activate
+          python -c "
+          from app.core.database import SessionLocal
+          from app.models.database import PriceBand, PriceBandMapping
+          from sqlalchemy import select
+          
+          db = SessionLocal()
+          try:
+              bands = db.execute(select(PriceBand)).scalars().all()
+              mappings = db.execute(select(PriceBandMapping)).scalars().all()
+              print(f'✅ Migration successful: {len(bands)} price bands, {len(mappings)} mappings')
+          finally:
+              db.close()
+          "
