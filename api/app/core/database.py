@@ -3,7 +3,7 @@ Database configuration and connection management for Mestermind API
 """
 
 import os
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, MetaData, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -71,7 +71,7 @@ def check_database_connection():
     """
     try:
         with engine.connect() as connection:
-            connection.execute("SELECT 1")
+            connection.execute(text("SELECT 1"))
         logger.info("Database connection successful")
         return True
     except Exception as e:
@@ -86,7 +86,7 @@ def get_database_health():
     """
     try:
         with engine.connect() as connection:
-            result = connection.execute("SELECT version()")
+            result = connection.execute(text("SELECT version()"))
             version = result.fetchone()[0]
             return {
                 "status": "healthy",
