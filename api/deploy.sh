@@ -12,6 +12,11 @@ REGION=${REGION:-"europe-west1"}
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
 # Cloud SQL instance (for /cloudsql/... socket in DATABASE_URL)
 CLOUD_SQL_INSTANCE=${CLOUD_SQL_INSTANCE:-"mestermind-474514:europe-west1:mestermind-postgres"}
+# CORS configuration
+CORS_ORIGINS=${CORS_ORIGINS:-"https://www.mestermind.com,https://mestermind.com"}
+CORS_ALLOW_CREDENTIALS=${CORS_ALLOW_CREDENTIALS:-"false"}
+# Escape commas for gcloud --set-env-vars
+CORS_ORIGINS_ESCAPED=$(printf "%s" "$CORS_ORIGINS" | sed 's/,/\\,/g')
 
 # Colors for output
 RED='\033[0;31m'
@@ -132,6 +137,13 @@ ensure_secrets() {
 deploy() {
     log_info "Deploying to Cloud Run..."
     
+    # Write envs to a temp file to avoid gcloud escaping issues
+    RUN_ENVS_FILE=$(mktemp)
+    cat > "$RUN_ENVS_FILE" <<EOF
+CORS_ORIGINS: "$CORS_ORIGINS"
+CORS_ALLOW_CREDENTIALS: "$CORS_ALLOW_CREDENTIALS"
+EOF
+    
     # Deploy the service
     gcloud run deploy $SERVICE_NAME \
         --image $IMAGE_NAME:latest \
@@ -145,6 +157,7 @@ deploy() {
         --max-instances 10 \
         --concurrency 100 \
         --timeout 300 \
+        --env-vars-file "$RUN_ENVS_FILE" \
         --set-secrets DATABASE_URL=PROD_DB_URL:latest \
         --set-secrets STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest \
         --set-secrets STRIPE_PUBLISHABLE_KEY=STRIPE_PUBLIC_KEY:latest

@@ -3,6 +3,7 @@ Mestermind API Application
 """
 
 from contextlib import asynccontextmanager
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import create_tables
@@ -57,11 +58,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Configure CORS - Allow any localhost URL for development
+# Configure CORS
+raw_origins = os.getenv("CORS_ORIGINS", "")
+allow_origins = [o.strip() for o in raw_origins.split(",") if o.strip()] or ["*"]
+allow_credentials = os.getenv("CORS_ALLOW_CREDENTIALS", "false").lower() == "true"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development
-    allow_credentials=False,  # Set to False when using wildcard origins
+    allow_origins=allow_origins,
+    allow_credentials=allow_credentials,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
