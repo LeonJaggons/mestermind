@@ -8,6 +8,7 @@ import {
   markThreadRead,
   fetchServiceById,
   fetchMesterById,
+  getRequestById,
   getCurrentUser,
   type MessageThread,
   type Message,
@@ -63,16 +64,16 @@ export default function CustomerMessagesPage() {
     (message) => {
       if (message.data && message.data.thread_id === threadId) {
         const newMsg: Message = {
-          id: message.data.id,
-          thread_id: message.data.thread_id,
-          body: message.data.body,
-          sender_type: message.data.sender_type,
-          sender_user_id: message.data.sender_user_id,
-          sender_mester_id: message.data.sender_mester_id,
+          id: message.data.id as string,
+          thread_id: message.data.thread_id as string,
+          body: message.data.body as string,
+          sender_type: message.data.sender_type as "customer" | "mester",
+          sender_user_id: message.data.sender_user_id as string | null,
+          sender_mester_id: message.data.sender_mester_id as string | null,
           is_read_by_customer: true,
           is_read_by_mester: message.data.sender_type === "mester",
           is_blurred: false,
-          created_at: message.data.created_at,
+          created_at: message.data.created_at as string,
         };
         setMessages((prev) => [...prev, newMsg]);
       }
@@ -108,7 +109,8 @@ export default function CustomerMessagesPage() {
     if (selectedThread) {
       (async () => {
         try {
-          const svc = await fetchServiceById(selectedThread.service_id);
+          const request = await getRequestById(selectedThread.request_id);
+          const svc = await fetchServiceById(request.service_id);
           setSelectedService(svc);
         } catch {
           setSelectedService(null);

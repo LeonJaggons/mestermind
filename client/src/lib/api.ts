@@ -1596,6 +1596,7 @@ export async function fetchIsProByEmail(
 }
 
 export interface ProProfileLite {
+  mester_id?: string | null;
   logo_url?: string | null;
   display_name?: string | null;
 }

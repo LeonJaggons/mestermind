@@ -42,21 +42,22 @@ export function NotificationBell({ token, onDark = false }: NotificationBellProp
   useWebSocketEvent('notification', (message) => {
     console.log('[NotificationBell] Received notification event:', message);
     if (message.data) {
+      const data = message.data as Record<string, unknown>;
       const newNotification: Notification = {
-        id: message.data.id,
-        user_id: message.data.user_id,
-        mester_id: message.data.mester_id,
-        type: message.data.notification_type,
-        title: message.data.title,
-        body: message.data.body,
-        request_id: message.data.request_id,
-        offer_id: message.data.offer_id,
-        message_id: message.data.message_id,
-        action_url: message.data.action_url,
-        data: message.data.data,
-        is_read: message.data.is_read,
-        read_at: message.data.read_at,
-        created_at: message.data.created_at,
+        id: data.id as string,
+        user_id: (data.user_id as string | null) || undefined,
+        mester_id: (data.mester_id as string | null) || undefined,
+        type: data.notification_type as string,
+        title: data.title as string,
+        body: data.body as string,
+        request_id: (data.request_id as string | null) || undefined,
+        offer_id: (data.offer_id as string | null) || undefined,
+        message_id: (data.message_id as string | null) || undefined,
+        action_url: (data.action_url as string | null) || undefined,
+        data: (data.data as Record<string, unknown> | null) || undefined,
+        is_read: data.is_read as boolean,
+        read_at: (data.read_at as string | null) || undefined,
+        created_at: data.created_at as string,
       };
       
       console.log('[NotificationBell] Adding notification to list, current count:', unreadCount);

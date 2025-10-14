@@ -96,12 +96,11 @@ export default function ProCalendarPage() {
 
   // Custom day component to show badges on days with appointments
   function ServerDay(
-    props: PickersDayProps<Dayjs> & { datesWithAppointments?: string[] }
+    props: PickersDayProps & { datesWithAppointments?: string[] }
   ) {
-    const { datesWithAppointments = [], day, outsideCurrentMonth, ...other } =
-      props;
+    const { datesWithAppointments = [], day, outsideCurrentMonth, ...other } = props;
 
-    const dateString = day.format("YYYY-MM-DD");
+    const dateString = dayjs(day as unknown as Date).format("YYYY-MM-DD");
     const hasAppointment = datesWithAppointments.includes(dateString);
 
     return (
@@ -181,7 +180,7 @@ export default function ProCalendarPage() {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateCalendar
                   value={selectedDate}
-                  onChange={(newDate) => newDate && setSelectedDate(newDate)}
+                  onChange={(newDate) => newDate && setSelectedDate(dayjs(newDate as unknown as Date))}
                   loading={loading}
                   slots={{
                     day: ServerDay,
@@ -189,7 +188,7 @@ export default function ProCalendarPage() {
                   slotProps={{
                     day: {
                       datesWithAppointments,
-                    } as any,
+                    } as Record<string, unknown>,
                   }}
                   sx={{
                     width: "100%",

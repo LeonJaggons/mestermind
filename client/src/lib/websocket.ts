@@ -20,7 +20,7 @@ export type WebSocketEventType =
 
 export interface WebSocketMessage {
   type: WebSocketEventType;
-  data?: any;
+  data?: Record<string, unknown>;
   status?: string;
   user_id?: string;
   mester_id?: string;

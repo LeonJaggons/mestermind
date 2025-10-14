@@ -28,34 +28,12 @@ import {
 } from '@/components/ui/table';
 import { 
   AdminCustomer, 
+  CustomerRequest,
+  MessageThread,
   fetchAdminCustomer, 
   fetchAdminCustomerRequests, 
   fetchAdminCustomerMessages 
 } from '@/lib/api';
-
-interface Request {
-  id: string;
-  service_id: string;
-  status: string;
-  first_name?: string;
-  last_name?: string;
-  contact_email?: string;
-  contact_phone?: string;
-  postal_code?: string;
-  message_to_pro?: string;
-  budget_estimate?: number;
-  created_at: string;
-  updated_at?: string;
-}
-
-interface MessageThread {
-  id: string;
-  request_id: string;
-  mester_id: string;
-  last_message_at?: string;
-  last_message_preview?: string;
-  created_at: string;
-}
 
 interface CustomerDetailProps {
   customerId: string;
@@ -64,7 +42,7 @@ interface CustomerDetailProps {
 export default function CustomerDetail({ customerId }: CustomerDetailProps) {
   const router = useRouter();
   const [customer, setCustomer] = useState<AdminCustomer | null>(null);
-  const [requests, setRequests] = useState<Request[]>([]);
+  const [requests, setRequests] = useState<CustomerRequest[]>([]);
   const [messages, setMessages] = useState<MessageThread[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -296,7 +274,7 @@ export default function CustomerDetail({ customerId }: CustomerDetailProps) {
                   <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <div className="text-gray-600 mb-2">No requests found</div>
                   <div className="text-sm text-gray-500">
-                    This customer hasn't made any service requests yet
+                    This customer hasn&apos;t made any service requests yet
                   </div>
                 </div>
               ) : (
@@ -371,7 +349,7 @@ export default function CustomerDetail({ customerId }: CustomerDetailProps) {
                   <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <div className="text-gray-600 mb-2">No messages found</div>
                   <div className="text-sm text-gray-500">
-                    This customer hasn't sent any messages yet
+                    This customer hasn&apos;t sent any messages yet
                   </div>
                 </div>
               ) : (

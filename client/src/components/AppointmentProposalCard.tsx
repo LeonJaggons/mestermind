@@ -12,7 +12,7 @@ interface AppointmentProposalCardProps {
   proposal: AppointmentProposal;
   viewerType: "customer" | "mester";
   viewerId: string; // customer user ID or mester ID
-  onProposalUpdated: () => void;
+  onProposalUpdated?: () => void;
 }
 
 export function AppointmentProposalCard({
@@ -44,7 +44,7 @@ export function AppointmentProposalCard({
       await acceptAppointmentProposal(proposal.id, viewerId, {
         response_message: responseMessage || undefined,
       });
-      onProposalUpdated();
+      onProposalUpdated?.();
     } catch (err) {
       console.error("Error accepting proposal:", err);
       setError(
@@ -67,7 +67,7 @@ export function AppointmentProposalCard({
       await rejectAppointmentProposal(proposal.id, viewerId, {
         response_message: responseMessage || undefined,
       });
-      onProposalUpdated();
+      onProposalUpdated?.();
     } catch (err) {
       console.error("Error rejecting proposal:", err);
       setError(
@@ -88,7 +88,7 @@ export function AppointmentProposalCard({
 
     try {
       await cancelAppointmentProposal(proposal.id, viewerId);
-      onProposalUpdated();
+      onProposalUpdated?.();
     } catch (err) {
       console.error("Error canceling proposal:", err);
       setError(

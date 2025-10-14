@@ -130,11 +130,8 @@ export default function ProProfilePage() {
               )}
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
-                  {profile?.business_name || proStatus?.display_name || mesterData?.full_name || 'Your Business'}
+                  {proStatus?.display_name || mesterData?.full_name || 'Your Business'}
                 </h1>
-                {profile?.business_name && proStatus?.display_name && profile.business_name !== proStatus.display_name && (
-                  <p className="text-sm text-gray-600">{proStatus.display_name}</p>
-                )}
                 <div className="flex items-center gap-2 mt-1">
                   {rating > 0 ? (
                     <>
@@ -263,7 +260,7 @@ export default function ProProfilePage() {
             </div>
 
             <p className="text-sm text-gray-600">
-              You're on your way to {profileTier === 'Top Pro' ? 'maintaining' : ''} {profileTier} status.{' '}
+              You&apos;re on your way to {profileTier === 'Top Pro' ? 'maintaining' : ''} {profileTier} status.{' '}
               <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">
                 View details.
               </Link>
@@ -280,7 +277,7 @@ export default function ProProfilePage() {
               <div className="flex-1">
                 <div className="text-sm font-medium text-gray-700">Phone</div>
                 <div className="text-sm text-gray-900 mt-0.5">
-                  {profile?.contact_phone || mesterData?.phone || 'Not provided'}
+                  {mesterData?.phone || 'Not provided'}
                 </div>
               </div>
             </div>
@@ -291,7 +288,7 @@ export default function ProProfilePage() {
               <div className="flex-1">
                 <div className="text-sm font-medium text-gray-700">Email</div>
                 <div className="text-sm text-gray-900 mt-0.5">
-                  {profile?.contact_email || mesterData?.email || userEmail || 'Not provided'}
+                  {mesterData?.email || userEmail || 'Not provided'}
                 </div>
               </div>
             </div>
@@ -302,37 +299,7 @@ export default function ProProfilePage() {
               <div className="flex-1">
                 <div className="text-sm font-medium text-gray-700">Address</div>
                 <div className="text-sm text-gray-900 mt-0.5">
-                  {profile?.address?.street ? (
-                    <>
-                      {profile.address.street}
-                      {profile.address.city && `, ${profile.address.city}`}
-                      {profile.address.zip && ` ${profile.address.zip}`}
-                    </>
-                  ) : (
-                    'Not provided'
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Year Founded */}
-            <div className="flex items-start gap-3">
-              <CalendarIcon className="h-5 w-5 text-gray-400 mt-0.5" />
-              <div className="flex-1">
-                <div className="text-sm font-medium text-gray-700">Year founded</div>
-                <div className="text-sm text-gray-900 mt-0.5">
-                  {profile?.year_founded || 'Not provided'}
-                </div>
-              </div>
-            </div>
-
-            {/* Number of Employees */}
-            <div className="flex items-start gap-3">
-              <Users className="h-5 w-5 text-gray-400 mt-0.5" />
-              <div className="flex-1">
-                <div className="text-sm font-medium text-gray-700">Number of employees</div>
-                <div className="text-sm text-gray-900 mt-0.5">
-                  {profile?.employees_count || 'Not provided'}
+                  {'Not provided'}
                 </div>
               </div>
             </div>
@@ -364,7 +331,7 @@ export default function ProProfilePage() {
               </Link>
             </div>
             <p className="text-sm text-gray-700 leading-relaxed">
-              {profile?.intro || mesterData?.bio || 'Add an introduction to tell customers about your business and what makes you stand out.'}
+              {mesterData?.bio || 'Add an introduction to tell customers about your business and what makes you stand out.'}
             </p>
             
             {/* Skills */}

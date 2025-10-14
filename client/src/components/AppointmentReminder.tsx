@@ -53,7 +53,7 @@ export function AppointmentReminder({
             Ready to schedule an appointment?
           </h3>
           <p className="text-sm text-blue-700 mb-3">
-            You've been chatting for a while. Move this conversation forward by
+            You&apos;ve been chatting for a while. Move this conversation forward by
             proposing an appointment time and sending a price quote.
           </p>
           

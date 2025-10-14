@@ -612,7 +612,7 @@ export default function PaywallModal({
                 {/* Key Benefits */}
                 <div className="rounded-lg border border-gray-200 p-4 bg-white">
                   <div className="text-sm font-semibold text-gray-900 mb-3">
-                    What's included
+                    What&apos;s included
                   </div>
                   <ul className="space-y-2">
                     {bullets.map((b) => (

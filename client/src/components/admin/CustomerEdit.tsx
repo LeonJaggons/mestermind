@@ -74,7 +74,7 @@ export default function CustomerEdit({ customerId }: CustomerEditProps) {
       setError(null);
       
       // Prepare update payload (only include changed fields)
-      const updatePayload: any = {};
+      const updatePayload: Record<string, string | null> = {};
       if (formData.first_name !== customer?.first_name) {
         updatePayload.first_name = formData.first_name;
       }

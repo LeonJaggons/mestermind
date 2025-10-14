@@ -80,7 +80,7 @@ export default function ProJobDashboard({ mesterId }: Props) {
         const data = await response.json();
         setStats(data);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching stats:', err);
     }
   };
@@ -125,9 +125,9 @@ export default function ProJobDashboard({ mesterId }: Props) {
         const data = await response.json();
         setJobs(data);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching jobs:', err);
-      setError(err.message || 'Failed to load jobs');
+      setError(err instanceof Error ? err.message : 'Failed to load jobs');
     } finally {
       setLoading(false);
     }
@@ -151,9 +151,9 @@ export default function ProJobDashboard({ mesterId }: Props) {
       
       fetchJobs();
       fetchData();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error updating job status:', err);
-      alert(err.message || 'Failed to update job status');
+      alert(err instanceof Error ? err.message : 'Failed to update job status');
     }
   };
 

@@ -240,7 +240,7 @@ export function AppointmentProposalModal({
                   className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Explain what's included in the price
+                  Explain what&apos;s included in the price
                 </p>
               </div>
             </div>

@@ -66,7 +66,7 @@ export default function AppointmentDetail({
   const [showReschedule, setShowReschedule] = useState(false);
   const [showCancel, setShowCancel] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
-  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [selectedSlot, setSelectedSlot] = useState<{ start: string; end: string; duration_minutes: number } | null>(null);
 
   useEffect(() => {
     fetchAppointment();

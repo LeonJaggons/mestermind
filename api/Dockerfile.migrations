@@ -1,0 +1,32 @@
+# Dockerfile for running migrations as a Cloud Run Job
+FROM python:3.13-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+# Set work directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application code (needed for models)
+COPY . .
+
+# Copy and set up migration script
+COPY run_migrations.sh /app/
+RUN chmod +x /app/run_migrations.sh
+
+# Run migrations
+CMD ["/app/run_migrations.sh"]
+

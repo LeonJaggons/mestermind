@@ -429,7 +429,7 @@ export default function RequestDetailPage() {
                         Offer Sent
                       </h3>
                       <p className="text-gray-700 mb-3">
-                        You've sent an offer of{" "}
+                        You&apos;ve sent an offer of{" "}
                         <span className="font-bold">
                           {new Intl.NumberFormat("hu-HU").format(existingOffer.price)} Ft
                         </span>

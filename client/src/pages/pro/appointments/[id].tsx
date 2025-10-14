@@ -12,7 +12,6 @@ export default function ProAppointmentDetailPage() {
   const { id } = router.query;
   const [checking, setChecking] = useState(true);
   const [mesterId, setMesterId] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const unsub = subscribeToAuthChanges(async (user) => {
@@ -26,7 +25,6 @@ export default function ProAppointmentDetailPage() {
         return;
       }
       setMesterId(status.mester_id);
-      setUserId(status.user_id || null);
       setChecking(false);
     });
     return () => { if (unsub) unsub(); };

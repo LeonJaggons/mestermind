@@ -70,9 +70,9 @@ export default function CustomerJobDashboard({ customerId }: Props) {
 
       const data = await response.json();
       setJobs(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching jobs:', err);
-      setError(err.message || 'Failed to load jobs');
+      setError(err instanceof Error ? err.message : 'Failed to load jobs');
     } finally {
       setLoading(false);
     }

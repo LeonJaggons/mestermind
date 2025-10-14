@@ -388,7 +388,7 @@ function LeadCard({
         {lead.message_to_pro && (
           <div className="mt-4 p-3 bg-gray-50 rounded-md border border-gray-200">
             <p className="text-sm text-gray-700 line-clamp-2">
-              "{lead.message_to_pro}"
+              &quot;{lead.message_to_pro}&quot;
             </p>
           </div>
         )}

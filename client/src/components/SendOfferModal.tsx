@@ -51,14 +51,18 @@ export default function SendOfferModal({
     setIsSubmitting(true);
 
     try {
+      // Build message from description, timeline, and duration
+      const messageParts = [];
+      if (description) messageParts.push(description);
+      if (estimatedDuration) messageParts.push(`Estimated duration: ${estimatedDuration} hours`);
+      if (timeline) messageParts.push(`Timeline: ${timeline}`);
+      
       await createOffer({
         request_id: requestId,
-        mester_id: mesterId,
         price: Number(price),
-        estimated_duration: estimatedDuration || undefined,
-        description: description || undefined,
-        timeline: timeline || undefined,
-      });
+        currency: 'HUF',
+        message: messageParts.length > 0 ? messageParts.join('\n\n') : undefined,
+      }, mesterId);
 
       // Reset form
       setPrice("");
@@ -185,7 +189,7 @@ export default function SendOfferModal({
                 onChange={(e) => setDescription(e.target.value)}
               />
               <p className="text-xs text-gray-500">
-                Help the customer understand what they're getting
+                Help the customer understand what they&apos;re getting
               </p>
             </div>
 
@@ -203,7 +207,7 @@ export default function SendOfferModal({
               </h4>
               <ul className="text-xs text-blue-800 space-y-1">
                 <li>• Be competitive but fair with your pricing</li>
-                <li>• Clearly explain what's included</li>
+                <li>• Clearly explain what&apos;s included</li>
                 <li>• Mention any relevant experience or certifications</li>
                 <li>• Be specific about timing and availability</li>
               </ul>

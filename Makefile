@@ -39,6 +39,12 @@ help:
 	@echo "  seed-db         Seed database with all data from JSON files"
 	@echo "  reset-db        Reset the database (WARNING: destroys all data)"
 	@echo ""
+	@echo "🗄️  Migrations:"
+	@echo "  migrate-local   Run migrations on local database"
+	@echo "  migrate-prod    Run migrations on production CloudSQL (via Cloud SQL Proxy)"
+	@echo "  migrate-job     Deploy and run migrations as a Cloud Run Job"
+	@echo "  new-migration   Create a new migration file"
+	@echo ""
 
 # Installation targets
 install-api:
@@ -186,3 +192,34 @@ quick-start: dev-setup start-all
 	@echo "📍 API: http://localhost:8000"
 	@echo "📍 Client: http://localhost:3000"
 	@echo "📖 API Docs: http://localhost:8000/docs"
+
+# Migration management
+migrate-local:
+	@echo "🗄️  Running migrations on local database..."
+	@cd api && \
+	source venv/bin/activate && \
+	alembic upgrade head
+	@echo "✅ Local migrations completed"
+
+migrate-prod:
+	@echo "🗄️  Running migrations on production CloudSQL..."
+	@echo "⚠️  Make sure Cloud SQL Proxy is running!"
+	@echo "⚠️  Run: cloud-sql-proxy --port 5432 PROJECT_ID:REGION:INSTANCE_NAME"
+	@read -p "Press Enter when proxy is ready, or Ctrl+C to cancel..."
+	@read -p "Enter production DATABASE_URL: " db_url && \
+	cd api && \
+	source venv/bin/activate && \
+	alembic -x db_url="$$db_url" upgrade head
+	@echo "✅ Production migrations completed"
+
+migrate-job:
+	@echo "🗄️  Deploying and running migrations as Cloud Run Job..."
+	@cd api && ./deploy_migrations.sh
+	@echo "✅ Migration job completed"
+
+new-migration:
+	@read -p "Enter migration message: " message && \
+	cd api && \
+	source venv/bin/activate && \
+	alembic revision --autogenerate -m "$$message"
+	@echo "✅ Migration file created"

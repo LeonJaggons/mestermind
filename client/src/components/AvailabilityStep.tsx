@@ -91,7 +91,7 @@ export default function AvailabilityStep({ value, onChange }: AvailabilityStepPr
                 <label className="text-sm font-medium text-gray-900">Daily start</label>
                 <TimePicker
                   value={weeklyStart}
-                  onChange={(t) => setWeeklyStart(t)}
+                  onChange={(t) => setWeeklyStart(t as Dayjs | null)}
                   ampm={false}
                   views={["hours", "minutes"]}
                   minutesStep={5}
@@ -105,7 +105,7 @@ export default function AvailabilityStep({ value, onChange }: AvailabilityStepPr
                 <label className="text-sm font-medium text-gray-900">Daily end</label>
                 <TimePicker
                   value={weeklyEnd}
-                  onChange={(t) => setWeeklyEnd(t)}
+                  onChange={(t) => setWeeklyEnd(t as Dayjs | null)}
                   ampm={false}
                   views={["hours", "minutes"]}
                   minutesStep={5}

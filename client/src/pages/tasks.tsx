@@ -69,11 +69,13 @@ export default function TasksPage() {
   // Real-time offer updates
   useWebSocketEvent('new_offer', async (message) => {
     if (message.data) {
-      const requestId = message.data.request_id;
+      const requestId = message.data.request_id as string | undefined;
       
       // Refresh offers for the affected request
       try {
-        const updatedOffers = await listOffers({ request_id: requestId });
+        const updatedOffers = await listOffers(
+          requestId ? { request_id: requestId } : undefined
+        );
         setRequests(prev => prev.map(req => 
           req.id === requestId 
             ? { ...req, offers: updatedOffers }

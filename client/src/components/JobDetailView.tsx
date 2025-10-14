@@ -126,7 +126,7 @@ export default function JobDetailView({ jobId, userType }: JobDetailProps) {
       setDocuments(await documentsRes.json());
       setNotes(await notesRes.json());
       setStatusHistory(await historyRes.json());
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching job details:', err);
     } finally {
       setLoading(false);
@@ -147,8 +147,8 @@ export default function JobDetailView({ jobId, userType }: JobDetailProps) {
       
       if (!response.ok) throw new Error('Failed to update status');
       fetchJobDetails();
-    } catch (err: any) {
-      alert(err.message || 'Failed to update status');
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Failed to update status');
     }
   };
 
@@ -177,8 +177,8 @@ export default function JobDetailView({ jobId, userType }: JobDetailProps) {
       setNewNoteTitle('');
       setNewNotePrivate(false);
       fetchJobDetails();
-    } catch (err: any) {
-      alert(err.message || 'Failed to add note');
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Failed to add note');
     }
   };
 
@@ -207,8 +207,8 @@ export default function JobDetailView({ jobId, userType }: JobDetailProps) {
       fetchJobDetails();
       setRating(0);
       setFeedback('');
-    } catch (err: any) {
-      alert(err.message || 'Failed to submit feedback');
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Failed to submit feedback');
     }
   };
 

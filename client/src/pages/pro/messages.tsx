@@ -66,16 +66,16 @@ export default function ProMessagesPage() {
     (message) => {
       if (message.data && message.data.thread_id === threadId) {
         const newMsg: Message = {
-          id: message.data.id,
-          thread_id: message.data.thread_id,
-          body: message.data.body,
-          sender_type: message.data.sender_type,
-          sender_user_id: message.data.sender_user_id,
-          sender_mester_id: message.data.sender_mester_id,
+          id: message.data.id as string,
+          thread_id: message.data.thread_id as string,
+          body: message.data.body as string,
+          sender_type: message.data.sender_type as "customer" | "mester",
+          sender_user_id: message.data.sender_user_id as string | null,
+          sender_mester_id: message.data.sender_mester_id as string | null,
           is_read_by_customer: message.data.sender_type === "customer",
           is_read_by_mester: true,
-          is_blurred: message.data.is_blurred || false,
-          created_at: message.data.created_at,
+          is_blurred: (message.data as { is_blurred?: boolean })?.is_blurred || false,
+          created_at: message.data.created_at as string,
         };
         setMessages((prev) => [...prev, newMsg]);
       }

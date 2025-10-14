@@ -36,8 +36,6 @@ export default function LocationSearch({
 
   // Handle search with debouncing
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    
     if (query.length < 2) {
       setResults([]);
       return;
@@ -45,11 +43,11 @@ export default function LocationSearch({
 
     setLoading(true);
 
-    timeout = setTimeout(async () => {
+    const timeout = setTimeout(async () => {
       try {
         const searchResults = await searchLocations(query, 8);
         setResults(searchResults);
-      } catch (err) {
+      } catch {
         setResults([]);
       } finally {
         setLoading(false);

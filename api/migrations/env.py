@@ -42,7 +42,13 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url")
+    # Allow database URL to be overridden via command line or environment variable
+    url = context.get_x_argument(as_dictionary=True).get('db_url')
+    if not url:
+        url = os.environ.get('DATABASE_URL')
+    if not url:
+        url = config.get_main_option("sqlalchemy.url")
+    
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -61,8 +67,16 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+    # Allow database URL to be overridden via command line or environment variable
+    configuration = config.get_section(config.config_ini_section, {})
+    db_url = context.get_x_argument(as_dictionary=True).get('db_url')
+    if not db_url:
+        db_url = os.environ.get('DATABASE_URL')
+    if db_url:
+        configuration['sqlalchemy.url'] = db_url
+    
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        configuration,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
