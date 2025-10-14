@@ -289,11 +289,6 @@ export default function Header() {
                             My Requests
                           </Button>
                         </Link>
-                        <Link href="/jobs" onClick={closeMobileMenu}>
-                          <Button variant="ghost" className="w-full justify-start">
-                            My Jobs
-                          </Button>
-                        </Link>
                         <Link href="/appointments" onClick={closeMobileMenu}>
                           <Button variant="ghost" className="w-full justify-start">
                             My Appointments
@@ -449,17 +444,6 @@ export default function Header() {
                       }`}
                   >
                     My Requests
-                  </Button>
-                </Link>
-                <Link href="/jobs">
-                  <Button
-                    variant="ghost"
-                    className={`font-normal text-sm ${isHomePage
-                        ? "text-white hover:text-white/80"
-                        : "text-gray-600 hover:text-gray-900"
-                      }`}
-                  >
-                    My Jobs
                   </Button>
                 </Link>
                 <Link href="/appointments">

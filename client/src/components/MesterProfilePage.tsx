@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -208,23 +209,19 @@ export default function MesterProfilePage({
               </div>
 
               {/* Navigation Tabs */}
-              <div className="border-b border-gray-200">
-                <nav className="flex space-x-8">
+              <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)} className="mt-2">
+                <TabsList>
                   {tabs.map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                        activeTab === tab.id
-                          ? "border-blue-500 text-blue-600"
-                          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                      }`}
-                    >
+                    <TabsTrigger key={tab.id} value={tab.id}>
                       {tab.label}
-                    </button>
+                    </TabsTrigger>
                   ))}
-                </nav>
-              </div>
+                </TabsList>
+                <TabsContent value="about" />
+                <TabsContent value="photos" />
+                <TabsContent value="services" />
+                <TabsContent value="credentials" />
+              </Tabs>
 
               {/* Tab Content */}
               <div className="space-y-8">

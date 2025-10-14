@@ -2739,3 +2739,29 @@ export async function getAcceptedAppointments(
   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
   return await response.json();
 }
+
+export async function combinedAcceptRequest(
+  requestId: string,
+  payload: { offer_id?: string; proposal_id?: string; message?: string }
+): Promise<{ ok: boolean }> {
+  const res = await fetch(`${API_BASE_URL}/requests/${requestId}/accept`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+  return await res.json();
+}
+
+export async function combinedDeclineRequest(
+  requestId: string,
+  payload: { offer_id?: string; proposal_id?: string; message?: string }
+): Promise<{ ok: boolean }> {
+  const res = await fetch(`${API_BASE_URL}/requests/${requestId}/decline`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+  return await res.json();
+}

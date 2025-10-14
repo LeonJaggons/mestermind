@@ -10,6 +10,12 @@ import {
   type CustomerRequest,
   type Service,
   type Offer,
+  combinedAcceptRequest,
+  combinedDeclineRequest,
+  listAppointmentProposals,
+  type AppointmentProposal,
+  listThreads,
+  type MessageThread,
 } from "@/lib/api";
 import { useWebSocket, useWebSocketEvent } from "@/lib/useWebSocket";
 import { subscribeToAuthChanges } from "@/lib/auth";
@@ -22,6 +28,7 @@ import {
   LuDollarSign,
   LuMessageSquare,
 } from "react-icons/lu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LucideAlertCircle } from "lucide-react";
 
 interface RequestWithService extends CustomerRequest {
@@ -30,6 +37,9 @@ interface RequestWithService extends CustomerRequest {
 
 interface RequestWithOffers extends RequestWithService {
   offers?: Offer[];
+  // attach first proposal for UI (if any)
+  proposal?: AppointmentProposal | null;
+  thread_id?: string | null;
 }
 
 export default function TasksPage() {
@@ -101,9 +111,22 @@ export default function TasksPage() {
             try {
               const service = await fetchServiceById(request.service_id);
               const offers = await listOffers({ request_id: request.id });
-              return { ...request, service, offers };
+              // Load first thread and proposed proposal (if any)
+              let proposal: AppointmentProposal | null = null;
+              let threadId: string | null = null;
+              try {
+                const threads: MessageThread[] = await listThreads({ request_id: request.id, viewer_type: 'customer' });
+                if (threads && threads.length > 0) {
+                  threadId = threads[0].id;
+                  const proposals = await listAppointmentProposals(threads[0].id, 'proposed');
+                  if (proposals && proposals.length > 0) {
+                    proposal = proposals[0];
+                  }
+                }
+              } catch {}
+              return { ...request, service, offers, proposal, thread_id: threadId } as RequestWithOffers;
             } catch {
-              return request;
+              return { ...request, proposal: null } as RequestWithOffers;
             }
           }),
         );
@@ -233,6 +256,49 @@ export default function TasksPage() {
     }
   };
 
+  const handleCombined = async (
+    requestId: string,
+    offerId: string,
+    proposalId: string | undefined,
+    action: "accept" | "decline",
+    e: React.MouseEvent,
+  ) => {
+    e.stopPropagation();
+    setProcessingOffer(offerId);
+    try {
+      if (action === "accept") {
+        await combinedAcceptRequest(requestId, {
+          offer_id: offerId,
+          proposal_id: proposalId,
+        });
+      } else {
+        await combinedDeclineRequest(requestId, {
+          offer_id: offerId,
+          proposal_id: proposalId,
+        });
+      }
+      // Refresh list
+      const data = await getMyRequests();
+      const refreshed = await Promise.all(
+        data.map(async (request) => {
+          try {
+            const service = await fetchServiceById(request.service_id);
+            const offers = await listOffers({ request_id: request.id });
+            return { ...request, service, offers } as RequestWithOffers;
+          } catch {
+            return request as RequestWithOffers;
+          }
+        }),
+      );
+      setRequests(refreshed);
+    } catch (err) {
+      console.error("Error updating decision:", err);
+      alert("Failed to update. Please try again.");
+    } finally {
+      setProcessingOffer(null);
+    }
+  };
+
   const filteredRequests = requests.filter((request) => {
     if (activeTab === "active") {
       return !["CANCELLED", "EXPIRED", "BOOKED"].includes(request.status);
@@ -267,43 +333,24 @@ export default function TasksPage() {
           </div>
 
           {/* Tabs */}
-          <div className="mb-6 border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              <button
-                onClick={() => setActiveTab("active")}
-                className={`${
-                  activeTab === "active"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors`}
-              >
-                Active (
-                {
-                  requests.filter(
-                    (r) =>
-                      !["CANCELLED", "EXPIRED", "BOOKED"].includes(r.status),
-                  ).length
-                }
-                )
-              </button>
-              <button
-                onClick={() => setActiveTab("completed")}
-                className={`${
-                  activeTab === "completed"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors`}
-              >
-                Completed (
-                {
-                  requests.filter((r) =>
-                    ["CANCELLED", "EXPIRED", "BOOKED"].includes(r.status),
-                  ).length
-                }
-                )
-              </button>
-            </nav>
-          </div>
+          <Tabs
+            value={activeTab}
+            onValueChange={(v) => setActiveTab(v as "active" | "completed")}
+            className="mb-6"
+          >
+            <TabsList>
+              <TabsTrigger value="active">
+                Active ({
+                  requests.filter((r) => !["CANCELLED", "EXPIRED", "BOOKED"].includes(r.status)).length
+                })
+              </TabsTrigger>
+              <TabsTrigger value="completed">
+                Completed ({
+                  requests.filter((r) => ["CANCELLED", "EXPIRED", "BOOKED"].includes(r.status)).length
+                })
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
           {loading ? (
             <div className="flex justify-center items-center py-12">
@@ -454,31 +501,44 @@ export default function TasksPage() {
                                       </span>
                                     )}
                                   </div>
+                                  {/* Invitation details (if proposal exists) */}
+                                  {request.proposal && (
+                                    <div className="mt-3 text-sm text-gray-700">
+                                      <div className="font-medium">Proposed appointment</div>
+                                      <div className="mt-1 flex flex-wrap gap-4 text-gray-600">
+                                        <span>
+                                          Date: {new Date(request.proposal.proposed_date).toLocaleString()}
+                                        </span>
+                                        {request.proposal.duration_minutes && (
+                                          <span>Duration: {request.proposal.duration_minutes} mins</span>
+                                        )}
+                                        {request.proposal.location && (
+                                          <span>Location: {request.proposal.location}</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
 
                                 {offer.status === "PENDING" && (
                                   <div className="flex gap-2">
                                     <button
                                       onClick={(e) =>
-                                        handleRejectOffer(offer.id, e)
+                                        handleCombined(request.id, offer.id, request.proposal?.id, "decline", e)
                                       }
                                       disabled={processingOffer === offer.id}
                                       className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     >
-                                      {processingOffer === offer.id
-                                        ? "..."
-                                        : "Decline"}
+                                      {processingOffer === offer.id ? "..." : "Decline"}
                                     </button>
                                     <button
                                       onClick={(e) =>
-                                        handleAcceptOffer(offer.id, e)
+                                        handleCombined(request.id, offer.id, request.proposal?.id, "accept", e)
                                       }
                                       disabled={processingOffer === offer.id}
                                       className="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     >
-                                      {processingOffer === offer.id
-                                        ? "..."
-                                        : "Accept Quote"}
+                                      {processingOffer === offer.id ? "..." : "Accept"}
                                     </button>
                                   </div>
                                 )}

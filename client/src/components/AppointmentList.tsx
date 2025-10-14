@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, MapPin, User } from 'lucide-react';
 import { format } from 'date-fns';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -100,30 +101,14 @@ export default function AppointmentList({ userId, userType }: AppointmentListPro
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
-      <div className="flex gap-2">
-        <Button
-          variant={filter === 'all' ? 'default' : 'outline'}
-          onClick={() => setFilter('all')}
-          size="sm"
-        >
-          All
-        </Button>
-        <Button
-          variant={filter === 'confirmed' ? 'default' : 'outline'}
-          onClick={() => setFilter('confirmed')}
-          size="sm"
-        >
-          Confirmed
-        </Button>
-        <Button
-          variant={filter === 'completed' ? 'default' : 'outline'}
-          onClick={() => setFilter('completed')}
-          size="sm"
-        >
-          Completed
-        </Button>
-      </div>
+      {/* Filters (standardized Tabs) */}
+      <Tabs value={filter} onValueChange={setFilter} className="-mt-2">
+        <TabsList>
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="confirmed">Confirmed</TabsTrigger>
+          <TabsTrigger value="completed">Completed</TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       {/* Upcoming Appointments */}
       {upcomingAppointments.length > 0 && (

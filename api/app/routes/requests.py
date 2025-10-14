@@ -27,6 +27,10 @@ from app.models.schemas import (
     WeeklyAvailability,
 )
 from app.services.notifications import NotificationService
+from app.services.appointments import AppointmentService
+from app.models.database import Offer as OfferModel, OfferStatus
+from app.services.websocket import manager
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/requests", tags=["requests"])
 
@@ -327,6 +331,117 @@ async def get_request(request_id: str, db: Session = Depends(get_db)):
         created_at=req.created_at,
         updated_at=req.updated_at,
     )
+
+
+# ---------------------------------------------
+# Combined Offer + Appointment acceptance/decline
+# ---------------------------------------------
+
+class CombinedDecisionPayload(BaseModel):
+    offer_id: str | None = None
+    proposal_id: str | None = None
+    message: str | None = None
+
+
+@router.post("/{request_id}/accept")
+async def accept_request_combined(
+    request_id: str,
+    payload: CombinedDecisionPayload,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
+    req: Optional[RequestModel] = (
+        db.query(RequestModel).filter(RequestModel.id == request_id).first()
+    )
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+
+    # Accept appointment proposal first (this will also mark linked offer ACCEPTED)
+    if payload.proposal_id:
+        if not req.user_id:
+            raise HTTPException(status_code=400, detail="Request has no customer user_id")
+        service = AppointmentService(db)
+        proposal = service.accept_proposal(
+            proposal_id=_uuid.UUID(payload.proposal_id),
+            customer_user_id=req.user_id,
+            response_message=payload.message,
+        )
+
+        # Notify mester and broadcast similar to appointments route
+        notification_service = NotificationService(db)
+        try:
+            await notification_service.notify_appointment_accepted(
+                proposal_id=proposal.id,
+                background_tasks=background_tasks,
+            )
+        except Exception as e:  # noqa: BLE001
+            print(f"[APPOINTMENT] Notification error for accepted proposal {proposal.id}: {e}")
+
+        ws_event = {
+            "type": "appointment_accepted",
+            "data": {
+                "proposal_id": str(proposal.id),
+                "thread_id": str(proposal.thread_id),
+                "request_id": str(proposal.request_id),
+                "mester_id": str(proposal.mester_id),
+                "customer_user_id": str(proposal.customer_user_id) if proposal.customer_user_id else None,
+                "scheduled_start": proposal.proposed_date.isoformat() if proposal.proposed_date else None,
+            },
+        }
+        try:
+            await manager.send_to_mester(str(proposal.mester_id), ws_event)
+        except Exception as e:  # noqa: BLE001
+            print(f"[WEBSOCKET] Error broadcasting appointment acceptance: {e}")
+
+    # If no proposal provided but offer provided, accept the offer directly
+    if payload.offer_id and not payload.proposal_id:
+        offer = db.query(OfferModel).filter(OfferModel.id == _uuid.UUID(payload.offer_id)).first()
+        if not offer:
+            raise HTTPException(status_code=404, detail="Offer not found")
+        if offer.request_id != req.id:
+            raise HTTPException(status_code=400, detail="Offer does not belong to this request")
+        offer.status = OfferStatus.ACCEPTED
+        db.add(offer)
+        db.commit()
+
+    return {"ok": True}
+
+
+@router.post("/{request_id}/decline")
+async def decline_request_combined(
+    request_id: str,
+    payload: CombinedDecisionPayload,
+    db: Session = Depends(get_db),
+):
+    req: Optional[RequestModel] = (
+        db.query(RequestModel).filter(RequestModel.id == request_id).first()
+    )
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+
+    # Decline appointment proposal if provided
+    if payload.proposal_id:
+        if not req.user_id:
+            raise HTTPException(status_code=400, detail="Request has no customer user_id")
+        service = AppointmentService(db)
+        _ = service.reject_proposal(
+            proposal_id=_uuid.UUID(payload.proposal_id),
+            customer_user_id=req.user_id,
+            response_message=payload.message,
+        )
+
+    # Decline offer
+    if payload.offer_id:
+        offer = db.query(OfferModel).filter(OfferModel.id == _uuid.UUID(payload.offer_id)).first()
+        if not offer:
+            raise HTTPException(status_code=404, detail="Offer not found")
+        if offer.request_id != req.id:
+            raise HTTPException(status_code=400, detail="Offer does not belong to this request")
+        offer.status = OfferStatus.REJECTED
+        db.add(offer)
+        db.commit()
+
+    return {"ok": True}
 
 
 @router.patch("/{request_id}", response_model=RequestResponse)

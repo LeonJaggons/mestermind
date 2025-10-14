@@ -39,6 +39,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Block access to customer jobs; redirect to tasks
+  if (pathname === '/jobs' || pathname.startsWith('/jobs/')) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/tasks';
+    return NextResponse.redirect(url);
+  }
+
   // Block access to /messages for pros; redirect to pro messages
   if (pathname === '/messages' || pathname.startsWith('/messages/')) {
     if (isPro) {

@@ -24,9 +24,70 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 from sqlalchemy.orm import Session
+from tempfile import NamedTemporaryFile
 from faker import Faker
 
-# Add the parent directory to the path so we can import our modules
+# Optional: Google Secret Manager support (to avoid manual env vars in Cloud Shell)
+try:
+    from google.cloud import secretmanager  # type: ignore
+    _GSM_AVAILABLE = True
+except Exception:
+    _GSM_AVAILABLE = False
+
+
+def _resolve_secret_text(env_resource_var: str, env_name_var: str, default_name: str | None = None) -> str | None:
+    """Fetch secret payload from Google Secret Manager.
+
+    Precedence:
+      1) If env_resource_var is set to full resource path (projects/.../secrets/.../versions/latest)
+      2) Else if env_name_var is set (secret name only), use GOOGLE_CLOUD_PROJECT for project
+      3) Else if default_name provided and GOOGLE_CLOUD_PROJECT set
+    Returns secret payload string or None if not available.
+    """
+    if not _GSM_AVAILABLE:
+        return None
+    resource = os.getenv(env_resource_var)
+    if resource:
+        client = secretmanager.SecretManagerServiceClient()
+        response = client.access_secret_version(name=resource)
+        return response.payload.data.decode("utf-8")
+    name = os.getenv(env_name_var) or default_name
+    project = os.getenv("GOOGLE_CLOUD_PROJECT")
+    if name and project:
+        client = secretmanager.SecretManagerServiceClient()
+        resource = f"projects/{project}/secrets/{name}/versions/latest"
+        response = client.access_secret_version(name=resource)
+        return response.payload.data.decode("utf-8")
+    return None
+
+
+# Resolve DATABASE_URL from Secret Manager if not already set
+if not os.getenv("DATABASE_URL"):
+    db_url = _resolve_secret_text(
+        env_resource_var="DB_URL_SECRET_RESOURCE",
+        env_name_var="DB_URL_SECRET_NAME",
+        default_name=None,
+    )
+    if db_url:
+        os.environ["DATABASE_URL"] = db_url.strip()
+
+# Resolve Firebase credentials JSON from Secret Manager if FIREBASE_CREDENTIALS_PATH not set
+if not os.getenv("FIREBASE_CREDENTIALS_PATH"):
+    firebase_json = _resolve_secret_text(
+        env_resource_var="FIREBASE_CREDENTIALS_SECRET_RESOURCE",
+        env_name_var="FIREBASE_CREDENTIALS_SECRET_NAME",
+        default_name=None,
+    )
+    if firebase_json:
+        try:
+            with NamedTemporaryFile("w", delete=False, suffix=".json") as tf:
+                tf.write(firebase_json)
+                temp_path = tf.name
+            os.environ["FIREBASE_CREDENTIALS_PATH"] = temp_path
+        except Exception:
+            pass
+
+# Add the parent directory to the path so we can import our modules (after env is set)
 sys.path.append(str(Path(__file__).parent.parent))
 
 from app.core.database import engine

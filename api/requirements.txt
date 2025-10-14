@@ -29,6 +29,9 @@ pytz==2024.2
 # Fake data generation for testing
 faker==30.8.2
 
+# Google Cloud Secret Manager (optional for secrets fetching)
+google-cloud-secret-manager==2.22.0
+
 # Testing (optional - uncomment if needed)
 # pytest==7.4.3
 # pytest-asyncio==0.21.1
