@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { subscribeToAuthChanges } from "@/lib/auth";
 import {
@@ -6,42 +6,50 @@ import {
   listMessages,
   sendMessage,
   markThreadRead,
-  getRequestById,
   fetchServiceById,
   fetchMesterById,
+  getCurrentUser,
   type MessageThread,
   type Message,
-  type CustomerRequest,
   type Service,
   type MesterDetailResponse,
 } from "@/lib/api";
-import { Input } from "@/components/ui/input";
+import MessageThreadList from "@/components/MessageThreadList";
+import MessageConversation from "@/components/MessageConversation";
+import { useWebSocket, useWebSocketEvent } from "@/lib/useWebSocket";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 export default function CustomerMessagesPage() {
   const router = useRouter();
-  const [userId, setUserId] = useState<string | null>(null);
+  const { threadId } = router.query as { threadId?: string };
   const [checking, setChecking] = useState(true);
 
   const [threads, setThreads] = useState<MessageThread[]>([]);
-  const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
-  const [selectedThread, setSelectedThread] = useState<MessageThread | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [search, setSearch] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState<CustomerRequest | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedMesterName, setSelectedMesterName] = useState<string | null>(null);
+  const [customerUserId, setCustomerUserId] = useState<string | null>(null);
 
+  // WebSocket connection
+  useWebSocket({ userId: customerUserId || undefined });
+
+  // Auth check
   useEffect(() => {
     const unsub = subscribeToAuthChanges(async (u) => {
       if (!u) {
         router.replace("/login");
         return;
       }
-      setUserId(u.uid);
+
+      const currentUser = await getCurrentUser();
+      if (currentUser?.id) {
+        setCustomerUserId(currentUser.id);
+      }
+
       setChecking(false);
     });
     return () => {
@@ -49,6 +57,30 @@ export default function CustomerMessagesPage() {
     };
   }, [router]);
 
+  // Real-time message updates
+  useWebSocketEvent(
+    "new_message",
+    (message) => {
+      if (message.data && message.data.thread_id === threadId) {
+        const newMsg: Message = {
+          id: message.data.id,
+          thread_id: message.data.thread_id,
+          body: message.data.body,
+          sender_type: message.data.sender_type,
+          sender_user_id: message.data.sender_user_id,
+          sender_mester_id: message.data.sender_mester_id,
+          is_read_by_customer: true,
+          is_read_by_mester: message.data.sender_type === "mester",
+          is_blurred: false,
+          created_at: message.data.created_at,
+        };
+        setMessages((prev) => [...prev, newMsg]);
+      }
+    },
+    !!customerUserId
+  );
+
+  // Load threads
   useEffect(() => {
     if (checking) return;
     setLoading(true);
@@ -57,54 +89,46 @@ export default function CustomerMessagesPage() {
       .finally(() => setLoading(false));
   }, [checking]);
 
+  // Load messages and metadata for selected thread
   useEffect(() => {
-    if (!selectedThreadId) return;
-    const thread = threads.find((t) => t.id === selectedThreadId) || null;
-    setSelectedThread(thread);
-    listMessages(selectedThreadId).then((ms) => setMessages(ms));
-    // mark as read for customer
-    void markThreadRead(selectedThreadId, "customer");
-  }, [selectedThreadId]);
+    if (!threadId) {
+      setMessages([]);
+      setSelectedService(null);
+      setSelectedMesterName(null);
+      return;
+    }
 
-  useEffect(() => {
-    (async () => {
-      if (!selectedThread) {
-        setSelectedRequest(null);
-        setSelectedService(null);
-        setSelectedMesterName(null);
-        return;
-      }
-      try {
-        const req = await getRequestById(selectedThread.request_id);
-        setSelectedRequest(req);
+    const selectedThread = threads.find((t) => t.id === threadId);
+
+    // Load messages
+    listMessages(threadId).then((ms) => setMessages(ms));
+    void markThreadRead(threadId, "customer");
+
+    // Load thread metadata
+    if (selectedThread) {
+      (async () => {
         try {
-          const svc = await fetchServiceById(req.service_id);
+          const svc = await fetchServiceById(selectedThread.service_id);
           setSelectedService(svc);
-        } catch {}
+        } catch {
+          setSelectedService(null);
+        }
+
         try {
-          const md: MesterDetailResponse = await fetchMesterById(selectedThread.mester_id);
-          const name = md?.mester?.full_name || "Pro";
-          setSelectedMesterName(name);
+          const md: MesterDetailResponse = await fetchMesterById(
+            selectedThread.mester_id
+          );
+          setSelectedMesterName(md?.mester?.full_name || "Pro");
         } catch {
           setSelectedMesterName("Pro");
         }
-      } catch {
-        setSelectedRequest(null);
-        setSelectedService(null);
-        setSelectedMesterName(null);
-      }
-    })();
-  }, [selectedThread]);
-
-  const filteredThreads = useMemo(() => {
-    if (!search.trim()) return threads;
-    const q = search.toLowerCase();
-    return threads.filter((t) => (t.last_message_preview || "").toLowerCase().includes(q));
-  }, [threads, search]);
+      })();
+    }
+  }, [threadId, threads]);
 
   const onSend = async () => {
-    if (!selectedThreadId || !newMessage.trim() || !userId) return;
-    const msg = await sendMessage(selectedThreadId, {
+    if (!threadId || !newMessage.trim()) return;
+    const msg = await sendMessage(threadId, {
       body: newMessage.trim(),
       sender_type: "customer",
     });
@@ -112,93 +136,93 @@ export default function CustomerMessagesPage() {
     setNewMessage("");
   };
 
-  return (
-    <main className="min-h-screen bg-white">
-      <div className="flex flex-col lg:flex-row h-screen">
-        {/* Left pane: search + thread list */}
-        <div className="w-full lg:w-96 border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col">
-          <div className="p-4 border-b border-gray-200">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search conversations"
-                className="pl-9"
-              />
-            </div>
+  // Render header content
+  const renderHeader = () => {
+    const selectedThread = threads.find((t) => t.id === threadId);
+    const n = (selectedMesterName || "").trim();
+    const parts = n.split(" ").filter(Boolean);
+    const initials = (parts[0]?.[0] || "") + (parts[1]?.[0] || "");
+    const displayInitials = (initials || (n[0] || "P")).toUpperCase();
+
+    return (
+      <>
+        <div className="h-10 w-10 rounded-full bg-gray-900 text-white flex items-center justify-center text-sm font-semibold">
+          {displayInitials}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-medium text-gray-900 truncate">
+            {selectedMesterName || "Pro"}
           </div>
-          <div className="flex-1 overflow-auto">
-            {loading && <div className="p-4 text-sm text-gray-500">Loading…</div>}
-            {!loading && filteredThreads.length === 0 && (
-              <div className="p-6 text-sm text-gray-500">No conversations yet.</div>
-            )}
-            {!loading && filteredThreads.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => {
-                  if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-                    router.push(`/messages/${t.id}`);
-                  } else {
-                    setSelectedThreadId(t.id);
-                  }
-                }}
-                className={`w-full text-left p-4 border-b border-gray-100 hover:bg-gray-50 ${selectedThreadId === t.id ? 'bg-gray-50' : ''}`}
-              >
-                <div className="text-sm text-gray-900 truncate">{t.last_message_preview || 'New conversation'}</div>
-                <div className="text-xs text-gray-500 mt-1">{t.last_message_at ? new Date(t.last_message_at).toLocaleString() : ''}</div>
-              </button>
-            ))}
+          <div className="text-xs text-gray-500 truncate">
+            {selectedService?.name || "Service"}
           </div>
         </div>
+        {selectedThread && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(`/tasks#${selectedThread.request_id}`)}
+          >
+            <ExternalLink className="h-4 w-4 mr-2" />
+            View Request
+          </Button>
+        )}
+      </>
+    );
+  };
 
-        {/* Right pane: conversation */}
-        <div className="flex-1 flex flex-col">
-          {!selectedThreadId ? (
-            <div className="flex-1 flex items-center justify-center p-4">
-              <div className="text-center text-gray-500 text-sm">Select a conversation to view messages.</div>
-            </div>
-          ) : (
-            <>
-              <div className="border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-semibold">
-                  {(() => {
-                    const n = (selectedMesterName || '').trim();
-                    const parts = n.split(" ").filter(Boolean);
-                    const initials = (parts[0]?.[0] || '') + (parts[1]?.[0] || '');
-                    return (initials || (n[0] || 'P')).toUpperCase();
-                  })()}
-                </div>
-                <div className="min-w-0">
-                  <div className="text-sm font-medium text-gray-900 truncate">{selectedMesterName || 'Pro'}</div>
-                  <div className="text-xs text-gray-500 truncate max-w-md">{selectedService?.name || 'Service'}</div>
-                </div>
+  return (
+    <main className="h-[calc(100vh-4rem)] bg-white overflow-hidden">
+      <div className="flex flex-col lg:flex-row h-full">
+        {/* Thread List */}
+        <div
+          className={`${
+            threadId ? "hidden lg:flex" : "flex"
+          } flex-col w-full lg:w-auto min-h-0`}
+        >
+          <MessageThreadList
+            threads={threads}
+            selectedThreadId={threadId || null}
+            loading={loading}
+            searchValue={search}
+            onSearchChange={setSearch}
+            basePath="/messages"
+            emptyMessage="No conversations yet."
+          />
+        </div>
+
+        {/* Conversation */}
+        <div
+          className={`${
+            !threadId ? "hidden lg:flex" : "flex"
+          } flex-1 min-h-0`}
+        >
+          <MessageConversation
+            threadId={threadId || null}
+            messages={messages}
+            proposals={[]}
+            newMessage={newMessage}
+            onNewMessageChange={setNewMessage}
+            onSendMessage={onSend}
+            viewerType="customer"
+            viewerId={customerUserId || ""}
+            header={renderHeader()}
+            showBackButton={true}
+            basePath="/messages"
+            emptyState={
+              <div className="text-center text-gray-500 text-sm">
+                <p className="mb-4">Select a conversation to view messages</p>
+                <Button
+                  variant="outline"
+                  onClick={() => router.push("/tasks")}
+                >
+                  View My Requests
+                </Button>
               </div>
-          <div className="flex-1 overflow-auto p-4 sm:p-6 space-y-4">
-                {messages.map((m) => (
-              <div key={m.id} className={`max-w-[85%] sm:max-w-md ${m.sender_type === 'customer' ? 'ml-auto text-right' : ''}`}>
-                    <div className={`inline-block px-3 py-2 rounded-lg ${m.sender_type === 'customer' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'}`}>
-                      <div className="text-sm">{m.body}</div>
-                    </div>
-                    <div className="text-[11px] text-gray-400 mt-1">{new Date(m.created_at).toLocaleString()}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="border-t border-gray-200 p-4 flex items-center space-x-2">
-                <Input
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type a message"
-                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void onSend(); } }}
-                />
-                <Button onClick={() => void onSend()}>Send</Button>
-              </div>
-            </>
-          )}
+            }
+          />
         </div>
       </div>
     </main>
   );
 }
-
-

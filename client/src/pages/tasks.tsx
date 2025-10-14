@@ -6,10 +6,12 @@ import {
   listOffers,
   acceptOffer,
   rejectOffer,
+  getCurrentUser,
   type CustomerRequest,
   type Service,
   type Offer,
 } from "@/lib/api";
+import { useWebSocket, useWebSocketEvent } from "@/lib/useWebSocket";
 import { subscribeToAuthChanges } from "@/lib/auth";
 import SendMessageModal from "@/components/SendMessageModal";
 import {
@@ -36,6 +38,7 @@ export default function TasksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<{ email?: string | null } | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"active" | "completed">("active");
   const [processingOffer, setProcessingOffer] = useState<string | null>(null);
   const [showMessageModal, setShowMessageModal] = useState(false);
@@ -45,14 +48,42 @@ export default function TasksPage() {
     serviceName: string;
   } | null>(null);
 
+  // WebSocket connection
+  useWebSocket({ userId: userId || undefined });
+
   useEffect(() => {
-    const unsubscribe = subscribeToAuthChanges((currentUser) => {
+    const unsubscribe = subscribeToAuthChanges(async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        const userData = await getCurrentUser();
+        if (userData?.id) {
+          setUserId(userData.id);
+        }
+      }
     });
     return () => {
       if (unsubscribe) unsubscribe();
     };
   }, []);
+
+  // Real-time offer updates
+  useWebSocketEvent('new_offer', async (message) => {
+    if (message.data) {
+      const requestId = message.data.request_id;
+      
+      // Refresh offers for the affected request
+      try {
+        const updatedOffers = await listOffers({ request_id: requestId });
+        setRequests(prev => prev.map(req => 
+          req.id === requestId 
+            ? { ...req, offers: updatedOffers }
+            : req
+        ));
+      } catch (err) {
+        console.error('Failed to refresh offers:', err);
+      }
+    }
+  }, !!userId);
 
   useEffect(() => {
     if (!user) return;

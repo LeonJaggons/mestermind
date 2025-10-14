@@ -79,8 +79,9 @@ class NotificationService:
                 continue
 
             # Create in-app notification
-            notification = self._create_notification(
+            notification = await self._create_notification_async(
                 mester_id=mester.id,
+                user_id=mester.user_id if mester.user_id else None,  # Include mester's user_id
                 notification_type=NotificationType.NEW_REQUEST,
                 title=f"New {service.name} lead in {request.postal_code or 'your area'}",
                 body=self._build_request_body(request, service),
@@ -178,7 +179,7 @@ class NotificationService:
             return None
 
         # 7. Create in-app notification
-        notification = self._create_notification(
+        notification = await self._create_notification_async(
             mester_id=None,
             user_id=request.user_id,
             notification_type=NotificationType.NEW_OFFER,
@@ -250,16 +251,25 @@ class NotificationService:
         if message.sender_type == "customer":
             # Message from customer, notify mester
             recipient_mester_id = thread.mester_id
-            mester = self.db.query(Mester).filter(Mester.id == thread.mester_id).first()
-            if mester:
-                sender_name = mester.full_name or "Customer"
+            
+            # Try to get customer name from request first, then user
+            req = self.db.query(Request).filter(Request.id == thread.request_id).first()
+            if req and req.first_name and req.last_name:
+                sender_name = f"{req.first_name} {req.last_name}".strip()
+            elif req and req.first_name:
+                sender_name = req.first_name.strip()
+            elif thread.customer_user_id:
+                user = self.db.query(User).filter(User.id == thread.customer_user_id).first()
+                if user:
+                    sender_name = f"{user.first_name} {user.last_name}".strip() or "Customer"
+            else:
+                sender_name = "Customer"
         else:
             # Message from mester, notify customer
             recipient_user_id = thread.customer_user_id
-            if thread.customer_user_id:
-                user = self.db.query(User).filter(User.id == thread.customer_user_id).first()
-                if user:
-                    sender_name = user.full_name or "Professional"
+            mester = self.db.query(Mester).filter(Mester.id == thread.mester_id).first()
+            if mester:
+                sender_name = mester.full_name or "Professional"
 
         if not recipient_user_id and not recipient_mester_id:
             logger.warning(f"No recipient found for message {message_id}")
@@ -299,7 +309,7 @@ class NotificationService:
 
         # 7. Create in-app notification with role-aware action URL
         action_url = "/messages" if recipient_user_id else "/pro/messages"
-        notification = self._create_notification(
+        notification = await self._create_notification_async(
             mester_id=recipient_mester_id,
             user_id=recipient_user_id,
             notification_type=NotificationType.NEW_MESSAGE,
@@ -344,6 +354,441 @@ class NotificationService:
         )
         return notification
 
+    async def notify_appointment_proposal(
+        self, proposal_id: _uuid.UUID, background_tasks: BackgroundTasks
+    ) -> Optional[Notification]:
+        """
+        Notify a customer when they receive a new appointment proposal.
+
+        Args:
+            proposal_id: UUID of the appointment proposal
+            background_tasks: FastAPI background tasks for async operations
+
+        Returns:
+            Created notification or None if customer not found
+        """
+        from app.models.database import AppointmentProposal, MessageThread
+
+        # Fetch the proposal
+        proposal = (
+            self.db.query(AppointmentProposal)
+            .filter(AppointmentProposal.id == proposal_id)
+            .first()
+        )
+        if not proposal:
+            logger.warning(f"Proposal {proposal_id} not found for notifications")
+            return None
+
+        if not proposal.customer_user_id:
+            logger.warning(f"Proposal {proposal_id} has no customer_user_id")
+            return None
+
+        # Fetch the mester
+        mester = self.db.query(Mester).filter(Mester.id == proposal.mester_id).first()
+        if not mester:
+            logger.warning(f"Mester {proposal.mester_id} not found")
+            return None
+
+        # Fetch the thread to get request info
+        thread = (
+            self.db.query(MessageThread)
+            .filter(MessageThread.id == proposal.thread_id)
+            .first()
+        )
+        if not thread:
+            logger.warning(f"Thread {proposal.thread_id} not found")
+            return None
+
+        # Format date
+        from datetime import datetime
+
+        proposal_date = proposal.proposed_date.strftime("%B %d, %Y at %I:%M %p") if proposal.proposed_date else "TBD"
+        
+        # Get price from linked offer
+        price_text = ""
+        if proposal.offer:
+            price_formatted = f"{int(proposal.offer.price):,} {proposal.offer.currency or 'HUF'}"
+            price_text = f" for {price_formatted}"
+
+        # Check if customer wants this notification
+        if not self._should_notify_user(
+            proposal.customer_user_id, NotificationType.BOOKING_CONFIRMED
+        ):
+            logger.info(
+                f"Skipping notification for user {proposal.customer_user_id} (preferences)"
+            )
+            return None
+
+        # Create in-app notification
+        notification = await self._create_notification_async(
+            mester_id=None,
+            user_id=proposal.customer_user_id,
+            notification_type=NotificationType.BOOKING_CONFIRMED,
+            title=f"Appointment proposal from {mester.full_name}",
+            body=f"{mester.full_name} proposed an appointment for {proposal_date}{price_text}",
+            request_id=thread.request_id,
+            action_url=f"/messages/{thread.id}",
+            data={
+                "proposal_id": str(proposal.id),
+                "thread_id": str(thread.id),
+                "mester_id": str(mester.id),
+                "mester_name": mester.full_name,
+                "proposed_date": proposal.proposed_date.isoformat()
+                if proposal.proposed_date
+                else None,
+                "duration_minutes": proposal.duration_minutes,
+                "location": proposal.location,
+                "price": float(proposal.offer.price) if proposal.offer else None,
+                "currency": proposal.offer.currency if proposal.offer else None,
+                "offer_message": proposal.offer.message if proposal.offer else None,
+            },
+        )
+
+        # Queue async email notification
+        prefs = self._get_preferences(user_id=proposal.customer_user_id)
+        if prefs.get("booking_confirmed", {}).get("email", True):
+            background_tasks.add_task(
+                self._send_appointment_proposal_email,
+                proposal=proposal,
+                mester=mester,
+                notification=notification,
+            )
+
+        logger.info(
+            f"Created notification for appointment proposal {proposal_id} to user {proposal.customer_user_id}"
+        )
+        return notification
+
+    async def _send_appointment_proposal_email(
+        self, proposal, mester: Mester, notification: Notification
+    ):
+        """Send email notification for new appointment proposal"""
+        try:
+            # Get customer email
+            user = (
+                self.db.query(User)
+                .filter(User.id == proposal.customer_user_id)
+                .first()
+            )
+            if not user or not user.email:
+                logger.warning(f"No email found for user {proposal.customer_user_id}")
+                return
+
+            proposal_date = (
+                proposal.proposed_date.strftime("%B %d, %Y at %I:%M %p")
+                if proposal.proposed_date
+                else "TBD"
+            )
+
+            subject = f"Appointment Proposal from {mester.full_name} - Mestermind"
+
+            html_body = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>Appointment Proposal</title>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: #4F46E5; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }}
+                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }}
+                    .proposal-box {{ background: white; border: 2px solid #4F46E5; border-radius: 8px; padding: 20px; margin: 20px 0; }}
+                    .button {{ display: inline-block; background: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 15px 0; }}
+                    .footer {{ text-align: center; padding: 20px; font-size: 12px; color: #666; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>📅 New Appointment Proposal</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hi {user.first_name or "there"},</p>
+
+                        <p><strong>{mester.full_name}</strong> has proposed an appointment for your service request!</p>
+
+                        <div class="proposal-box">
+                            <h3>Appointment Details:</h3>
+                            <p><strong>Date & Time:</strong> {proposal_date}</p>
+                            <p><strong>Duration:</strong> {proposal.duration_minutes} minutes</p>
+                            {f'<p><strong>Location:</strong> {proposal.location}</p>' if proposal.location else ''}
+                            {f'<p><strong>Notes:</strong> {proposal.notes}</p>' if proposal.notes else ''}
+                        </div>
+
+                        <p style="text-align: center;">
+                            <a href="https://mestermind.hu{notification.action_url}" class="button">
+                                View & Respond to Proposal
+                            </a>
+                        </p>
+
+                        <p style="color: #666; font-size: 14px;">
+                            You can accept or suggest changes to this appointment from your messages.
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p>
+                            <a href="https://mestermind.hu/settings/notifications">
+                                Update your notification preferences
+                            </a>
+                        </p>
+                        <p>© 2025 Mestermind. All rights reserved.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+
+            # Send via email provider
+            success = await send_email(
+                to=user.email, subject=subject, html_body=html_body
+            )
+
+            # Log success/failure
+            self._log_notification(
+                notification_id=notification.id,
+                channel=NotificationChannel.EMAIL,
+                recipient=user.email,
+                status="sent" if success else "failed",
+                error_message=None if success else "Email send failed",
+            )
+
+        except Exception as e:
+            logger.error(
+                f"Error sending appointment proposal email to {user.email}: {str(e)}"
+            )
+            self._log_notification(
+                notification_id=notification.id,
+                channel=NotificationChannel.EMAIL,
+                recipient=user.email if user else "unknown",
+                status="failed",
+                error_message=str(e),
+            )
+
+    async def notify_appointment_accepted(
+        self, proposal_id: _uuid.UUID, background_tasks: BackgroundTasks
+    ) -> Optional[Notification]:
+        """
+        Notify a mester when customer accepts their appointment proposal.
+
+        Args:
+            proposal_id: UUID of the appointment proposal
+            background_tasks: FastAPI background tasks for async operations
+
+        Returns:
+            Created notification or None if mester not found
+        """
+        from app.models.database import AppointmentProposal, MessageThread
+
+        # Fetch the proposal
+        proposal = (
+            self.db.query(AppointmentProposal)
+            .filter(AppointmentProposal.id == proposal_id)
+            .first()
+        )
+        if not proposal:
+            logger.warning(f"Proposal {proposal_id} not found for notifications")
+            return None
+
+        # Fetch the mester
+        mester = self.db.query(Mester).filter(Mester.id == proposal.mester_id).first()
+        if not mester:
+            logger.warning(f"Mester {proposal.mester_id} not found")
+            return None
+
+        # Fetch the thread to get request info
+        thread = (
+            self.db.query(MessageThread)
+            .filter(MessageThread.id == proposal.thread_id)
+            .first()
+        )
+        if not thread:
+            logger.warning(f"Thread {proposal.thread_id} not found")
+            return None
+
+        # Get customer name - try request first, then user
+        customer_name = "Customer"
+        
+        # First, try to get name from the request
+        req = (
+            self.db.query(Request)
+            .filter(Request.id == thread.request_id)
+            .first()
+        )
+        if req and req.first_name and req.last_name:
+            customer_name = f"{req.first_name} {req.last_name}".strip()
+        elif req and req.first_name:
+            customer_name = req.first_name.strip()
+        elif proposal.customer_user_id:
+            # Fallback to user table
+            user = (
+                self.db.query(User)
+                .filter(User.id == proposal.customer_user_id)
+                .first()
+            )
+            if user:
+                customer_name = f"{user.first_name} {user.last_name}".strip() or "Customer"
+
+        # Format date
+        proposal_date = (
+            proposal.proposed_date.strftime("%B %d, %Y at %I:%M %p")
+            if proposal.proposed_date
+            else "TBD"
+        )
+
+        # Check if mester wants this notification
+        if not self._should_notify(
+            proposal.mester_id, NotificationType.BOOKING_CONFIRMED
+        ):
+            logger.info(
+                f"Skipping notification for mester {proposal.mester_id} (preferences)"
+            )
+            return None
+
+        # Get mester's user_id for notification
+        mester_user_id = mester.user_id if mester.user_id else None
+
+        # Create in-app notification
+        notification = await self._create_notification_async(
+            mester_id=proposal.mester_id,
+            user_id=mester_user_id,  # Include mester's user_id so they see it when logged in
+            notification_type=NotificationType.BOOKING_CONFIRMED,
+            title=f"Appointment confirmed with {customer_name}",
+            body=f"{customer_name} accepted your appointment proposal for {proposal_date}",
+            request_id=thread.request_id,
+            action_url=f"/pro/messages/{thread.id}",
+            data={
+                "proposal_id": str(proposal.id),
+                "thread_id": str(thread.id),
+                "customer_user_id": str(proposal.customer_user_id)
+                if proposal.customer_user_id
+                else None,
+                "customer_name": customer_name,
+                "proposed_date": proposal.proposed_date.isoformat()
+                if proposal.proposed_date
+                else None,
+                "duration_minutes": proposal.duration_minutes,
+                "location": proposal.location,
+            },
+        )
+
+        # Queue async email notification
+        prefs = self._get_preferences(mester_id=proposal.mester_id)
+        if prefs.get("booking_confirmed", {}).get("email", True):
+            background_tasks.add_task(
+                self._send_appointment_accepted_email,
+                proposal=proposal,
+                mester=mester,
+                customer_name=customer_name,
+                notification=notification,
+            )
+
+        logger.info(
+            f"Created notification for appointment acceptance {proposal_id} to mester {proposal.mester_id}"
+        )
+        return notification
+
+    async def _send_appointment_accepted_email(
+        self, proposal, mester: Mester, customer_name: str, notification: Notification
+    ):
+        """Send email notification when appointment is accepted"""
+        try:
+            if not mester.email:
+                logger.warning(f"Mester {mester.id} has no email address")
+                return
+
+            proposal_date = (
+                proposal.proposed_date.strftime("%B %d, %Y at %I:%M %p")
+                if proposal.proposed_date
+                else "TBD"
+            )
+
+            subject = f"Appointment Confirmed with {customer_name} - Mestermind"
+
+            html_body = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>Appointment Confirmed</title>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: #10B981; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }}
+                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }}
+                    .confirmation-box {{ background: white; border: 2px solid #10B981; border-radius: 8px; padding: 20px; margin: 20px 0; }}
+                    .button {{ display: inline-block; background: #10B981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 15px 0; }}
+                    .footer {{ text-align: center; padding: 20px; font-size: 12px; color: #666; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>✅ Appointment Confirmed!</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hi {mester.full_name},</p>
+
+                        <p>Great news! <strong>{customer_name}</strong> has accepted your appointment proposal!</p>
+
+                        <div class="confirmation-box">
+                            <h3>Confirmed Appointment:</h3>
+                            <p><strong>Customer:</strong> {customer_name}</p>
+                            <p><strong>Date & Time:</strong> {proposal_date}</p>
+                            <p><strong>Duration:</strong> {proposal.duration_minutes} minutes</p>
+                            {f'<p><strong>Location:</strong> {proposal.location}</p>' if proposal.location else ''}
+                            {f'<p><strong>Response:</strong> {proposal.response_message}</p>' if proposal.response_message else ''}
+                        </div>
+
+                        <p style="text-align: center;">
+                            <a href="https://mestermind.hu{notification.action_url}" class="button">
+                                View Appointment Details
+                            </a>
+                        </p>
+
+                        <p style="color: #666; font-size: 14px;">
+                            💡 <strong>Tip:</strong> Make sure to prepare for the appointment and arrive on time to provide excellent service!
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p>
+                            <a href="https://mestermind.hu/pro/settings/notifications">
+                                Update your notification preferences
+                            </a>
+                        </p>
+                        <p>© 2025 Mestermind. All rights reserved.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+
+            # Send via email provider
+            success = await send_email(
+                to=mester.email, subject=subject, html_body=html_body
+            )
+
+            # Log success/failure
+            self._log_notification(
+                notification_id=notification.id,
+                channel=NotificationChannel.EMAIL,
+                recipient=mester.email,
+                status="sent" if success else "failed",
+                error_message=None if success else "Email send failed",
+            )
+
+        except Exception as e:
+            logger.error(
+                f"Error sending appointment accepted email to {mester.email}: {str(e)}"
+            )
+            self._log_notification(
+                notification_id=notification.id,
+                channel=NotificationChannel.EMAIL,
+                recipient=mester.email if mester else "unknown",
+                status="failed",
+                error_message=str(e),
+            )
+
     def _should_notify_user(
         self, user_id: _uuid.UUID, notification_type: NotificationType
     ) -> bool:
@@ -375,7 +820,7 @@ class NotificationService:
         mesters = self.db.execute(query).scalars().all()
         return list(mesters)
 
-    def _create_notification(
+    async def _create_notification_async(
         self,
         mester_id: Optional[_uuid.UUID],
         notification_type: NotificationType,
@@ -388,7 +833,7 @@ class NotificationService:
         data: Optional[Dict[str, Any]] = None,
         user_id: Optional[_uuid.UUID] = None,
     ) -> Notification:
-        """Create an in-app notification"""
+        """Create an in-app notification and broadcast via WebSocket"""
         notification = Notification(
             mester_id=mester_id,
             user_id=user_id,
@@ -404,8 +849,75 @@ class NotificationService:
         self.db.add(notification)
         self.db.commit()
         self.db.refresh(notification)
-        logger.info(f"Created notification {notification.id} for mester {mester_id}")
+        logger.info(f"Created notification {notification.id} for {'user' if user_id else 'mester'} {user_id or mester_id}")
+        
+        # Broadcast notification via WebSocket
+        await self._broadcast_notification_ws(notification)
+        
         return notification
+    
+    def _create_notification(
+        self,
+        mester_id: Optional[_uuid.UUID],
+        notification_type: NotificationType,
+        title: str,
+        body: str,
+        request_id: Optional[_uuid.UUID] = None,
+        offer_id: Optional[_uuid.UUID] = None,
+        message_id: Optional[_uuid.UUID] = None,
+        action_url: Optional[str] = None,
+        data: Optional[Dict[str, Any]] = None,
+        user_id: Optional[_uuid.UUID] = None,
+    ) -> Notification:
+        """Create an in-app notification (sync version without WebSocket broadcast)"""
+        notification = Notification(
+            mester_id=mester_id,
+            user_id=user_id,
+            type=notification_type,
+            title=title,
+            body=body,
+            request_id=request_id,
+            offer_id=offer_id,
+            message_id=message_id,
+            action_url=action_url,
+            data=data,
+        )
+        self.db.add(notification)
+        self.db.commit()
+        self.db.refresh(notification)
+        logger.info(f"Created notification {notification.id} for {'user' if user_id else 'mester'} {user_id or mester_id}")
+        return notification
+    
+    async def _broadcast_notification_ws(self, notification: Notification):
+        """Broadcast notification via WebSocket"""
+        try:
+            from app.services.websocket import manager
+            
+            ws_notification = {
+                "type": "notification",
+                "data": {
+                    "id": str(notification.id),
+                    "notification_type": notification.type.value,
+                    "title": notification.title,
+                    "body": notification.body,
+                    "request_id": str(notification.request_id) if notification.request_id else None,
+                    "offer_id": str(notification.offer_id) if notification.offer_id else None,
+                    "message_id": str(notification.message_id) if notification.message_id else None,
+                    "action_url": notification.action_url,
+                    "data": notification.data,
+                    "is_read": notification.is_read,
+                    "created_at": notification.created_at.isoformat() if notification.created_at else None,
+                }
+            }
+            
+            # Send to appropriate recipient
+            if notification.user_id:
+                await manager.send_to_user(str(notification.user_id), ws_notification)
+            elif notification.mester_id:
+                await manager.send_to_mester(str(notification.mester_id), ws_notification)
+                
+        except Exception as e:
+            logger.error(f"Error broadcasting notification via WebSocket: {e}")
 
     def _should_notify(
         self, mester_id: _uuid.UUID, notification_type: NotificationType
@@ -731,7 +1243,7 @@ class NotificationService:
                 user = self.db.query(User).filter(User.id == user_id).first()
                 if user:
                     recipient_email = user.email
-                    recipient_name = user.full_name or "Customer"
+                    recipient_name = f"{user.first_name} {user.last_name}".strip() or "Customer"
             elif mester_id:
                 mester = self.db.query(Mester).filter(Mester.id == mester_id).first()
                 if mester:

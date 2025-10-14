@@ -48,7 +48,7 @@
       ],
       "target_take_of_expected_value": 0.3,
       "price_floor_huf": 800,
-      "price_cap_huf": 12000,
+      "price_cap_huf": 9000,
       "seats_per_lead": 3
     },
     "D": {
@@ -64,7 +64,7 @@
       ],
       "target_take_of_expected_value": 0.35,
       "price_floor_huf": 1200,
-      "price_cap_huf": 30000,
+      "price_cap_huf": 9000,
       "seats_per_lead": 3
     }
   }

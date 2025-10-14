@@ -16,6 +16,12 @@ from .users import router as users_router
 from .messages import router as messages_router
 from .offers import router as offers_router
 from .notifications import router as notifications_router
+from .admin import router as admin_router
+from .pricing import router as pricing_router
+from .payments import router as payments_router
+from .appointments import router as appointments_router
+from .jobs import router as jobs_router
+from .websocket import router as websocket_router
 
 __all__ = [
     "categories_router",
@@ -32,4 +38,10 @@ __all__ = [
     "messages_router",
     "offers_router",
     "notifications_router",
+    "admin_router",
+    "pricing_router",
+    "payments_router",
+    "appointments_router",
+    "jobs_router",
+    "websocket_router",
 ]

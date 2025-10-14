@@ -7,6 +7,7 @@ import {
   markAllNotificationsRead,
   type Notification,
 } from "@/lib/api";
+import { useWebSocketEvent } from "@/lib/useWebSocket";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 interface NotificationBellProps {
@@ -23,10 +24,6 @@ export function NotificationBell({ token, onDark = false }: NotificationBellProp
 
   useEffect(() => {
     loadNotifications();
-
-    // Poll every 30 seconds for new notifications
-    const interval = setInterval(loadNotifications, 30000);
-    return () => clearInterval(interval);
   }, [token]);
 
   async function loadNotifications() {
@@ -40,6 +37,43 @@ export function NotificationBell({ token, onDark = false }: NotificationBellProp
       console.error("Failed to load notifications:", error);
     }
   }
+
+  // Real-time notification updates via WebSocket
+  useWebSocketEvent('notification', (message) => {
+    console.log('[NotificationBell] Received notification event:', message);
+    if (message.data) {
+      const newNotification: Notification = {
+        id: message.data.id,
+        user_id: message.data.user_id,
+        mester_id: message.data.mester_id,
+        type: message.data.notification_type,
+        title: message.data.title,
+        body: message.data.body,
+        request_id: message.data.request_id,
+        offer_id: message.data.offer_id,
+        message_id: message.data.message_id,
+        action_url: message.data.action_url,
+        data: message.data.data,
+        is_read: message.data.is_read,
+        read_at: message.data.read_at,
+        created_at: message.data.created_at,
+      };
+      
+      console.log('[NotificationBell] Adding notification to list, current count:', unreadCount);
+      
+      // Add to top of notifications list
+      setNotifications(prev => [newNotification, ...prev.slice(0, 19)]);
+      
+      // Increment unread count if not read
+      if (!newNotification.is_read) {
+        setUnreadCount(prev => {
+          const newCount = prev + 1;
+          console.log('[NotificationBell] Incrementing unread count:', prev, '->', newCount);
+          return newCount;
+        });
+      }
+    }
+  }, !!token);
 
   async function handleNotificationClick(notification: Notification) {
     try {

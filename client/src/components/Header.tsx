@@ -7,9 +7,11 @@ import ServicesPopover from "./ServicesPopover";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { subscribeToAuthChanges, logout, getAuthToken } from "@/lib/auth";
-import { fetchIsProByEmail, fetchProProfileByEmail, getNotifications } from "@/lib/api";
+import { fetchIsProByEmail, fetchProProfileByEmail, getNotifications, getCurrentUser } from "@/lib/api";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { NotificationBell } from "./NotificationBell";
+import { useWebSocket } from "@/lib/useWebSocket";
+import HeaderSearchBar from "./HeaderSearchBar";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import {
   DropdownMenu,
@@ -31,7 +33,7 @@ import {
 export default function Header() {
   const router = useRouter();
   const isHomePage = router.pathname === "/";
-  
+
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
@@ -44,8 +46,21 @@ export default function Header() {
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [userName, setUserName] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string>("");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [mesterId, setMesterId] = useState<string | null>(null);
 
-  
+ 
+  // Establish WebSocket connection based on user type
+  useWebSocket({ 
+    userId: !isPro && userId ? userId : undefined,
+    mesterId: isPro && mesterId ? mesterId : undefined,
+    onConnect: () => console.log('[Header] WebSocket connected'),
+    onDisconnect: () => console.log('[Header] WebSocket disconnected'),
+  });
+
+
+
+
 
   const handleSignOut = async () => {
     try {
@@ -54,7 +69,7 @@ export default function Header() {
       // Clear pro flag cookie so middleware stops treating user as pro
       try {
         document.cookie = "is_pro=; Path=/; Max-Age=0; SameSite=Lax";
-      } catch {}
+      } catch { }
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -76,10 +91,26 @@ export default function Header() {
           const { is_pro } = await fetchIsProByEmail(user.email);
           const pro = Boolean(is_pro);
           setIsPro(pro);
+
+          // Get user/mester ID for WebSocket connection
+          if (pro) {
+            const proProfile = await fetchProProfileByEmail(user.email);
+            if (proProfile?.mester_id) {
+              setMesterId(proProfile.mester_id);
+              console.log('[Header] Set mester ID for WebSocket:', proProfile.mester_id);
+            }
+          } else {
+            const currentUser = await getCurrentUser();
+            if (currentUser?.id) {
+              setUserId(currentUser.id);
+              console.log('[Header] Set user ID for WebSocket:', currentUser.id);
+            }
+          }
           // Write lightweight pro flag cookie for middleware-based routing
           try {
             document.cookie = `is_pro=${pro ? 'true' : 'false'}; Path=/; SameSite=Lax`;
-          } catch {}
+            document.cookie = `is_authenticated=true; Path=/; SameSite=Lax`;
+          } catch { }
           const profile = await fetchProProfileByEmail(user.email);
           setAvatarUrl(profile?.logo_url || null);
           const name =
@@ -106,6 +137,11 @@ export default function Header() {
         setAuthToken(null);
         setUserName("");
         setUserEmail("");
+        // Clear authentication cookies
+        try {
+          document.cookie = `is_pro=false; Path=/; SameSite=Lax`;
+          document.cookie = `is_authenticated=false; Path=/; SameSite=Lax`;
+        } catch { }
       }
     });
     return () => {
@@ -128,32 +164,39 @@ export default function Header() {
     })();
   }, [authToken]);
 
+  if(router.pathname.startsWith("/pro")) {
+    return null;
+  }
   return (
-    <header className={`w-full relative overflow-visible ${
-      isHomePage 
-        ? "absolute top-0 left-0 z-30 border-b border-white/20" 
+    <header className={`w-full relative overflow-visible ${isHomePage
+        ? "absolute top-0 left-0 z-30 border-b border-white/20"
         : "bg-white/90 backdrop-blur-sm border-b border-gray-200"
-    }`}
-    style={{
-      position: isHomePage ? "absolute" : "relative",
-      borderBottomWidth: isHomePage ? 0 : 1,
-    }}>
+      }`}
+      style={{
+        position: isHomePage ? "absolute" : "relative",
+        borderBottomWidth: isHomePage ? 0 : 1,
+      }}>
       <div className="px-4 sm:px-6 lg:px-8 overflow-visible">
         <div className="flex justify-between items-center h-16 overflow-visible">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center flex-shrink-0">
             <span
               style={{ fontFamily: "var(--font-heading)" }}
-              className={`text-lg sm:text-xl font-bold ${
-                isHomePage ? "text-white" : "text-gray-800"
-              }`}
+              className={`text-lg sm:text-xl font-bold ${isHomePage ? "text-white" : "text-gray-800"
+                }`}
             >
               Mestermind
             </span>
-            <span className={`text-xs ml-[1px] ${
-              isHomePage ? "text-white/70" : "text-gray-500"
-            }`}>®</span>
+            <span className={`text-xs ml-[1px] ${isHomePage ? "text-white/70" : "text-gray-500"
+              }`}>®</span>
           </Link>
+
+          {/* Search Bar (visible when not on home page, on desktop only) */}
+          {!isHomePage && (
+            <div className="hidden lg:flex flex-1 justify-center px-8 max-w-3xl">
+              <HeaderSearchBar />
+            </div>
+          )}
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center space-x-2">
@@ -162,9 +205,8 @@ export default function Header() {
             )}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className={`p-2 ${
-                  isHomePage ? "text-white hover:text-white/80" : ""
-                }`}>
+                <Button variant="ghost" size="sm" className={`p-2 ${isHomePage ? "text-white hover:text-white/80" : ""
+                  }`}>
                   <LuMenu className="h-5 w-5" />
                   <span className="sr-only">Open menu</span>
                 </Button>
@@ -208,17 +250,17 @@ export default function Header() {
                       <>
                         <Link href="/pro/leads" onClick={closeMobileMenu}>
                           <Button variant="ghost" className="w-full justify-start">
+                            Leads
+                          </Button>
+                        </Link>
+                        <Link href="/pro/jobs" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
                             Jobs
                           </Button>
                         </Link>
                         <Link href="/pro/messages" onClick={closeMobileMenu}>
                           <Button variant="ghost" className="w-full justify-start">
                             Messages
-                            {unreadCount > 0 && (
-                              <span className="ml-auto inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-semibold leading-none text-white bg-red-600 rounded-full min-w-[18px]">
-                                {unreadCount > 99 ? '99+' : unreadCount}
-                              </span>
-                            )}
                           </Button>
                         </Link>
                         <Link href="/pro/services" onClick={closeMobileMenu}>
@@ -247,14 +289,19 @@ export default function Header() {
                             My Requests
                           </Button>
                         </Link>
+                        <Link href="/jobs" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            My Jobs
+                          </Button>
+                        </Link>
+                        <Link href="/appointments" onClick={closeMobileMenu}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            My Appointments
+                          </Button>
+                        </Link>
                         <Link href="/messages" onClick={closeMobileMenu}>
                           <Button variant="ghost" className="w-full justify-start">
                             Messages
-                            {unreadCount > 0 && (
-                              <span className="ml-auto inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-semibold leading-none text-white bg-red-600 rounded-full min-w-[18px]">
-                                {unreadCount > 99 ? '99+' : unreadCount}
-                              </span>
-                            )}
                           </Button>
                         </Link>
                       </>
@@ -309,11 +356,10 @@ export default function Header() {
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
-                    className={`z-40 font-semibold text-sm flex items-center ${
-                      isHomePage 
-                        ? "text-white hover:text-white/80" 
+                    className={`z-40 font-semibold text-sm flex items-center ${isHomePage
+                        ? "text-white hover:text-white/80"
                         : "text-gray-600 hover:text-gray-900"
-                    }`}
+                      }`}
                   >
                     Explore Services
                     <LuChevronDown className="w-4 h-4 ml-1" />
@@ -327,11 +373,21 @@ export default function Header() {
                 <Link href="/pro/leads">
                   <Button
                     variant="ghost"
-                    className={`font-normal text-sm ${
-                      isHomePage 
-                        ? "text-white hover:text-white/80" 
+                    className={`font-normal text-sm ${isHomePage
+                        ? "text-white hover:text-white/80"
                         : "text-gray-600 hover:text-gray-900"
-                    }`}
+                      }`}
+                  >
+                    Leads
+                  </Button>
+                </Link>
+                <Link href="/pro/jobs">
+                  <Button
+                    variant="ghost"
+                    className={`font-normal text-sm ${isHomePage
+                        ? "text-white hover:text-white/80"
+                        : "text-gray-600 hover:text-gray-900"
+                      }`}
                   >
                     Jobs
                   </Button>
@@ -339,28 +395,21 @@ export default function Header() {
                 <Link href="/pro/messages">
                   <Button
                     variant="ghost"
-                    className={`relative font-normal text-sm ${
-                      isHomePage 
-                        ? "text-white hover:text-white/80" 
+                    className={`relative font-normal text-sm ${isHomePage
+                        ? "text-white hover:text-white/80"
                         : "text-gray-600 hover:text-gray-900"
-                    }`}
+                      }`}
                   >
                     Messages
-                    {unreadCount > 0 && (
-                      <span className="ml-2 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-semibold leading-none text-white bg-red-600 rounded-full min-w-[18px]">
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </span>
-                    )}
                   </Button>
                 </Link>
                 <Link href="/pro/services">
                   <Button
                     variant="ghost"
-                    className={`font-normal text-sm ${
-                      isHomePage 
-                        ? "text-white hover:text-white/80" 
+                    className={`font-normal text-sm ${isHomePage
+                        ? "text-white hover:text-white/80"
                         : "text-gray-600 hover:text-gray-900"
-                    }`}
+                      }`}
                   >
                     Services
                   </Button>
@@ -368,11 +417,10 @@ export default function Header() {
                 <Link href="/pro/calendar">
                   <Button
                     variant="ghost"
-                    className={`font-normal text-sm ${
-                      isHomePage 
-                        ? "text-white hover:text-white/80" 
+                    className={`font-normal text-sm ${isHomePage
+                        ? "text-white hover:text-white/80"
                         : "text-gray-600 hover:text-gray-900"
-                    }`}
+                      }`}
                   >
                     Calendar
                   </Button>
@@ -380,11 +428,10 @@ export default function Header() {
                 <Link href="/pro/profile">
                   <Button
                     variant="ghost"
-                    className={`font-normal text-sm ${
-                      isHomePage 
-                        ? "text-white hover:text-white/80" 
+                    className={`font-normal text-sm ${isHomePage
+                        ? "text-white hover:text-white/80"
                         : "text-gray-600 hover:text-gray-900"
-                    }`}
+                      }`}
                   >
                     Profile
                   </Button>
@@ -396,30 +443,45 @@ export default function Header() {
                 <Link href="/tasks">
                   <Button
                     variant="ghost"
-                    className={`font-normal text-sm ${
-                      isHomePage 
-                        ? "text-white hover:text-white/80" 
+                    className={`font-normal text-sm ${isHomePage
+                        ? "text-white hover:text-white/80"
                         : "text-gray-600 hover:text-gray-900"
-                    }`}
+                      }`}
                   >
                     My Requests
+                  </Button>
+                </Link>
+                <Link href="/jobs">
+                  <Button
+                    variant="ghost"
+                    className={`font-normal text-sm ${isHomePage
+                        ? "text-white hover:text-white/80"
+                        : "text-gray-600 hover:text-gray-900"
+                      }`}
+                  >
+                    My Jobs
+                  </Button>
+                </Link>
+                <Link href="/appointments">
+                  <Button
+                    variant="ghost"
+                    className={`font-normal text-sm ${isHomePage
+                        ? "text-white hover:text-white/80"
+                        : "text-gray-600 hover:text-gray-900"
+                      }`}
+                  >
+                    My Appointments
                   </Button>
                 </Link>
                 <Link href="/messages">
                   <Button
                     variant="ghost"
-                    className={`relative font-normal text-sm ${
-                      isHomePage 
-                        ? "text-white hover:text-white/80" 
+                    className={`relative font-normal text-sm ${isHomePage
+                        ? "text-white hover:text-white/80"
                         : "text-gray-600 hover:text-gray-900"
-                    }`}
+                      }`}
                   >
                     Messages
-                    {unreadCount > 0 && (
-                      <span className="ml-2 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-semibold leading-none text-white bg-red-600 rounded-full min-w-[18px]">
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </span>
-                    )}
                   </Button>
                 </Link>
               </>
@@ -428,11 +490,10 @@ export default function Header() {
               <Link href="/pro/onboarding">
                 <Button
                   variant="ghost"
-                  className={`font-semibold text-sm ${
-                    isHomePage 
-                      ? "text-white hover:text-white/80" 
+                  className={`font-semibold text-sm ${isHomePage
+                      ? "text-white hover:text-white/80"
                       : "text-gray-600 hover:text-gray-900"
-                  }`}
+                    }`}
                 >
                   Join as a pro
                 </Button>
@@ -478,22 +539,20 @@ export default function Header() {
             {!isSignedIn && (
               <>
                 <Link href="/signup">
-                  <Button className={`px-6 py-2 rounded-md ${
-                    isHomePage 
-                      ? "bg-white text-gray-900 hover:bg-white/90" 
+                  <Button className={`px-6 py-2 rounded-md ${isHomePage
+                      ? "bg-white text-gray-900 hover:bg-white/90"
                       : "bg-blue-600 hover:bg-blue-700 text-white"
-                  }`}>
+                    }`}>
                     Sign up
                   </Button>
                 </Link>
                 <Link href="/login">
                   <Button
                     variant="ghost"
-                    className={`${
-                      isHomePage 
-                        ? "text-white hover:text-white/80" 
+                    className={`${isHomePage
+                        ? "text-white hover:text-white/80"
                         : "text-gray-600 hover:text-gray-900"
-                    }`}
+                      }`}
                   >
                     Log in
                   </Button>

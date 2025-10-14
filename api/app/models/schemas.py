@@ -370,6 +370,7 @@ class RequestBase(BaseModel):
     budget_estimate: Optional[float] = None
     answers: Optional[Dict[str, Any]] = None
 
+
 class WeeklyAvailability(BaseModel):
     type: Literal["weekly"] = "weekly"
     days: List[int]
@@ -850,6 +851,7 @@ class MessageResponse(BaseModel):
     sender_mester_id: Optional[str] = None
     is_read_by_customer: bool
     is_read_by_mester: bool
+    is_blurred: bool = False
     created_at: datetime
 
     class Config:
@@ -923,3 +925,530 @@ class NotificationPreferenceUpdate(BaseModel):
     preferences: Dict[str, Any]
     quiet_hours_start: Optional[str] = None
     quiet_hours_end: Optional[str] = None
+
+
+# -----------------------------
+# Pricing schemas
+# -----------------------------
+
+
+class LeadPriceBreakdown(BaseModel):
+    """Detailed breakdown of how the lead price was calculated"""
+
+    expected_job_value: float
+    value_source: str  # "customer_estimate", "typical_range_midpoint", "fallback_floor"
+    target_take_rate: float
+    base_price_before_constraints: float
+    price_floor: float
+    price_cap: float
+    final_price: float
+    applied_constraint: Optional[str] = None  # "floor", "cap", or None
+
+
+class JobMetrics(BaseModel):
+    """Detailed metrics about the job opportunity"""
+
+    estimated_job_value_min: float
+    estimated_job_value_max: float
+    estimated_job_value_midpoint: float
+    customer_budget: Optional[float] = None
+    has_customer_budget: bool
+    expected_roi: float  # Expected return on investment (job value / lead price)
+    expected_profit_min: float
+    expected_profit_max: float
+    win_rate_min: float
+    win_rate_max: float
+    win_rate_avg: float
+    expected_value: float  # job_value * win_rate
+    competition_level: str  # "low", "medium", "high"
+    urgency_score: int  # 1-10 based on how recently posted
+
+
+class LeadPriceResponse(BaseModel):
+    """Response model for lead pricing"""
+
+    request_id: str
+    price: float
+    currency: str = "HUF"
+    band_code: str
+    band_label: str
+    band_description: Optional[str] = None
+    seats_available: int
+    estimated_close_rate: float
+    breakdown: LeadPriceBreakdown
+    job_metrics: JobMetrics
+    value_proposition: str  # Human-readable value prop
+
+
+# -----------------------------
+# Payment schemas (Stripe)
+# -----------------------------
+
+
+class PaymentIntentCreate(BaseModel):
+    """Request to create a payment intent"""
+
+    request_id: str
+    thread_id: Optional[str] = None
+    return_url: Optional[str] = None
+
+
+class PaymentIntentResponse(BaseModel):
+    """Response containing Stripe payment intent details"""
+
+    payment_id: str
+    client_secret: str
+    amount: int
+    currency: str
+    status: str
+
+
+class PaymentConfirm(BaseModel):
+    """Confirmation of successful payment"""
+
+    payment_intent_id: str
+
+
+class PaymentResponse(BaseModel):
+    """Payment record response"""
+
+    id: str
+    mester_id: str
+    amount: int
+    currency: str
+    status: str
+    stripe_payment_intent_id: Optional[str] = None
+    description: Optional[str] = None
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class LeadPurchaseResponse(BaseModel):
+    """Lead purchase record response"""
+
+    id: str
+    payment_id: str
+    mester_id: str
+    request_id: str
+    thread_id: Optional[str] = None
+    price_paid: int
+    currency: str
+    price_band_code: Optional[str] = None
+    unlocked_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# -----------------------------
+# Saved Payment Method schemas
+# -----------------------------
+
+
+class SavedPaymentMethodBase(BaseModel):
+    """Base saved payment method schema"""
+
+    card_brand: Optional[str] = None
+    card_last4: Optional[str] = None
+    card_exp_month: Optional[int] = None
+    card_exp_year: Optional[int] = None
+    is_default: bool = False
+
+
+class SavedPaymentMethodCreate(BaseModel):
+    """Request to save a payment method"""
+
+    stripe_payment_method_id: str
+    is_default: bool = False
+
+
+class SavedPaymentMethodUpdate(BaseModel):
+    """Request to update a saved payment method"""
+
+    is_default: Optional[bool] = None
+
+
+class SavedPaymentMethodResponse(SavedPaymentMethodBase):
+    """Saved payment method response"""
+
+    id: str
+    mester_id: str
+    stripe_payment_method_id: str
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class SavedPaymentMethodListResponse(BaseModel):
+    """List of saved payment methods"""
+
+    payment_methods: list[SavedPaymentMethodResponse]
+    total: int
+
+
+class PaymentIntentCreateWithMethod(BaseModel):
+    """Request to create a payment intent with optional saved payment method"""
+
+    request_id: str
+    thread_id: Optional[str] = None
+    return_url: Optional[str] = None
+    payment_method_id: Optional[str] = None  # Stripe payment method ID
+    save_payment_method: bool = False  # Whether to save this payment method
+
+
+# -----------------------------
+# Appointment Proposal schemas
+# -----------------------------
+
+
+class AppointmentProposalStatus(str, Enum):
+    """Appointment proposal status enum"""
+
+    PROPOSED = "proposed"
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+    CANCELLED = "cancelled"
+    EXPIRED = "expired"
+
+
+class AppointmentProposalCreate(BaseModel):
+    """Request to create an appointment proposal"""
+
+    proposed_date: datetime
+    duration_minutes: Optional[int] = None
+    location: Optional[str] = None
+    notes: Optional[str] = None
+    
+    # Offer details (price quote)
+    price: float
+    currency: str = "HUF"
+    offer_message: Optional[str] = None
+
+
+class AppointmentProposalResponse(BaseModel):
+    """Appointment proposal response"""
+
+    id: str
+    thread_id: str
+    mester_id: str
+    request_id: str
+    customer_user_id: Optional[str] = None
+    proposed_date: datetime
+    duration_minutes: Optional[int] = None
+    location: Optional[str] = None
+    notes: Optional[str] = None
+    status: str
+    response_message: Optional[str] = None
+    responded_at: Optional[datetime] = None
+    expires_at: Optional[datetime] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    appointment_id: Optional[str] = None  # ID of the confirmed appointment if accepted
+    
+    # Offer details (if linked)
+    offer_id: Optional[str] = None
+    price: Optional[float] = None
+    currency: Optional[str] = None
+    offer_message: Optional[str] = None
+    offer_status: Optional[str] = None
+    
+    # Request details
+    request_service_id: Optional[str] = None
+    request_service_name: Optional[str] = None
+    request_customer_name: Optional[str] = None
+    request_postal_code: Optional[str] = None
+    request_message: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class AppointmentProposalAccept(BaseModel):
+    """Request to accept an appointment proposal"""
+
+    response_message: Optional[str] = None
+
+
+class AppointmentProposalReject(BaseModel):
+    """Request to reject an appointment proposal"""
+
+    response_message: Optional[str] = None
+
+
+# -----------------------------
+# Appointment Schemas
+# -----------------------------
+
+
+class AppointmentStatus(str, Enum):
+    """Appointment status enum"""
+    CONFIRMED = "confirmed"
+    RESCHEDULED = "rescheduled"
+    CANCELLED_BY_CUSTOMER = "cancelled_by_customer"
+    CANCELLED_BY_MESTER = "cancelled_by_mester"
+    COMPLETED = "completed"
+    NO_SHOW = "no_show"
+
+
+class AppointmentCreate(BaseModel):
+    """Request to create an appointment (from accepted proposal)"""
+    
+    proposal_id: str
+    location_address: Optional[str] = None
+    location_coordinates: Optional[str] = None
+    customer_notes: Optional[str] = None
+
+
+class AppointmentReschedule(BaseModel):
+    """Request to reschedule an appointment"""
+    
+    new_start: datetime
+    new_duration_minutes: Optional[int] = None
+    reason: Optional[str] = None
+
+
+class AppointmentCancel(BaseModel):
+    """Request to cancel an appointment"""
+    
+    reason: str
+    cancelled_by: str  # "customer" or "mester"
+
+
+class AppointmentComplete(BaseModel):
+    """Request to mark appointment as completed"""
+    
+    notes: Optional[str] = None
+
+
+class AppointmentResponse(BaseModel):
+    """Appointment response"""
+    
+    id: str
+    proposal_id: str
+    thread_id: str
+    mester_id: str
+    request_id: str
+    customer_user_id: str
+    
+    scheduled_start: datetime
+    scheduled_end: datetime
+    duration_minutes: int
+    
+    location: str
+    location_address: Optional[str] = None
+    location_coordinates: Optional[str] = None
+    
+    mester_notes: Optional[str] = None
+    customer_notes: Optional[str] = None
+    internal_notes: Optional[str] = None
+    
+    status: str
+    
+    cancelled_at: Optional[datetime] = None
+    cancellation_reason: Optional[str] = None
+    completed_at: Optional[datetime] = None
+    
+    rescheduled_from_id: Optional[str] = None
+    rescheduled_to_id: Optional[str] = None
+    
+    confirmed_by_customer_at: Optional[datetime] = None
+    confirmed_by_mester_at: Optional[datetime] = None
+    
+    google_calendar_event_id: Optional[str] = None
+    ical_uid: Optional[str] = None
+    
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
+
+# -----------------------------
+# Calendar & Availability Schemas
+# -----------------------------
+
+
+class MesterCalendarCreate(BaseModel):
+    """Request to create mester calendar settings"""
+    
+    timezone: str = "Europe/Budapest"
+    default_working_hours: Optional[Dict[str, Any]] = None
+    buffer_minutes: int = 15
+    min_advance_hours: int = 24
+    max_advance_days: int = 90
+    default_duration_minutes: int = 60
+    allow_online_booking: bool = True
+
+
+class MesterCalendarUpdate(BaseModel):
+    """Request to update mester calendar settings"""
+    
+    timezone: Optional[str] = None
+    default_working_hours: Optional[Dict[str, Any]] = None
+    buffer_minutes: Optional[int] = None
+    min_advance_hours: Optional[int] = None
+    max_advance_days: Optional[int] = None
+    default_duration_minutes: Optional[int] = None
+    allow_online_booking: Optional[bool] = None
+
+
+class MesterCalendarResponse(BaseModel):
+    """Mester calendar response"""
+    
+    id: str
+    mester_id: str
+    timezone: str
+    default_working_hours: Optional[Dict[str, Any]] = None
+    buffer_minutes: int
+    min_advance_hours: int
+    max_advance_days: int
+    default_duration_minutes: int
+    allow_online_booking: bool
+    google_calendar_enabled: bool
+    google_calendar_id: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class AvailabilitySlotCreate(BaseModel):
+    """Request to create an availability slot"""
+    
+    start_time: datetime
+    end_time: datetime
+    is_available: bool = True
+    reason: Optional[str] = None
+    notes: Optional[str] = None
+    is_recurring: bool = False
+    recurrence_pattern: Optional[Dict[str, Any]] = None
+
+
+class AvailabilitySlotUpdate(BaseModel):
+    """Request to update an availability slot"""
+    
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
+    is_available: Optional[bool] = None
+    reason: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class AvailabilitySlotResponse(BaseModel):
+    """Availability slot response"""
+    
+    id: str
+    mester_id: str
+    start_time: datetime
+    end_time: datetime
+    is_available: bool
+    reason: Optional[str] = None
+    notes: Optional[str] = None
+    is_recurring: bool
+    recurrence_pattern: Optional[Dict[str, Any]] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class AvailableTimeSlot(BaseModel):
+    """Available time slot for booking"""
+    
+    start: datetime
+    end: datetime
+    duration_minutes: int
+
+
+class AvailabilityCheckRequest(BaseModel):
+    """Request to check availability"""
+    
+    date: str  # YYYY-MM-DD
+    duration_minutes: int
+
+
+class AvailabilityCheckResponse(BaseModel):
+    """Response with available time slots"""
+    
+    date: str
+    available_slots: List[AvailableTimeSlot]
+
+
+# -----------------------------
+# Reminder Schemas
+# -----------------------------
+
+
+class ReminderStatus(str, Enum):
+    """Reminder status enum"""
+    SCHEDULED = "scheduled"
+    SENT = "sent"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+
+class AppointmentReminderCreate(BaseModel):
+    """Request to create an appointment reminder"""
+    
+    appointment_id: str
+    recipient_type: str  # "customer" or "mester"
+    recipient_id: str
+    minutes_before: int
+    send_email: bool = True
+    send_sms: bool = False
+    send_push: bool = True
+
+
+class AppointmentReminderResponse(BaseModel):
+    """Appointment reminder response"""
+    
+    id: str
+    appointment_id: str
+    recipient_type: str
+    recipient_id: str
+    remind_at: datetime
+    minutes_before: int
+    send_email: bool
+    send_sms: bool
+    send_push: bool
+    status: str
+    sent_at: Optional[datetime] = None
+    error_message: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
+
+# -----------------------------
+# Calendar Export Schemas
+# -----------------------------
+
+
+class CalendarExportRequest(BaseModel):
+    """Request to export calendar"""
+    
+    format: str = "ical"  # "ical" or "google"
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+
+
+class GoogleCalendarAuthRequest(BaseModel):
+    """Request to authenticate with Google Calendar"""
+    
+    auth_code: str
+
+
+class GoogleCalendarSyncRequest(BaseModel):
+    """Request to sync with Google Calendar"""
+    
+    calendar_id: str

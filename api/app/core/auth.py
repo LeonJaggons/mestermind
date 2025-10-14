@@ -12,7 +12,7 @@ import os
 import logging
 
 from app.core.database import get_db
-from app.models.database import User
+from app.models.database import User, Mester
 
 logger = logging.getLogger(__name__)
 
@@ -173,3 +173,23 @@ async def get_current_user_optional(
         return await get_current_user(credentials, db)
     except HTTPException:
         return None
+
+
+async def get_current_mester(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> Optional[Mester]:
+    """
+    Dependency to get the current user's mester profile.
+    Returns None if the user is not a mester.
+    """
+    # Try to find by user_id first
+    mester = db.query(Mester).filter(Mester.user_id == current_user.id).first()
+    
+    # Fallback: try to find by email (for legacy data)
+    if not mester and current_user.email:
+        from sqlalchemy import func
+        normalized_email = current_user.email.strip().lower()
+        mester = db.query(Mester).filter(func.lower(Mester.email) == normalized_email).first()
+    
+    return mester

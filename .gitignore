@@ -1,3 +1,5 @@
 api/__pycache__/main.cpython-313.pyc
 *.pyc
 MIGRATION_SETUP.md
+api/.env
+api/firebase-crendentials.json

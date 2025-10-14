@@ -87,7 +87,7 @@ export default function MesterCard({
 
   return (
     <Card className="p-4 sm:p-6 lg:p-8 hover:shadow-lg transition-shadow duration-200">
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 px-4">
         {/* Profile Picture */}
         <div className="flex-shrink-0 flex justify-center sm:justify-start">
           <div className="h-20 w-20 sm:h-24 sm:w-24 lg:h-32 lg:w-32 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">

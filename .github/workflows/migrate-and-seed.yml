@@ -47,18 +47,34 @@ jobs:
           curl -sSfL https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.11.3/cloud-sql-proxy.linux.amd64 -o cloud-sql-proxy
           chmod +x cloud-sql-proxy
 
+      - name: Write service account key
+        run: |
+          echo '${{ secrets.GCP_SA_KEY_JSON }}' > $RUNNER_TEMP/cloudsql.json
+
       - name: Start Cloud SQL Proxy
         run: |
           ./cloud-sql-proxy \
             --port 5432 \
             --address 127.0.0.1 \
+            --credentials-file "$RUNNER_TEMP/cloudsql.json" \
             mestermind-474514:europe-west1:mestermind-postgres &
           sleep 15
           
       - name: Check proxy status
         run: |
           ps aux | grep cloud-sql-proxy
-          netstat -tlnp | grep 5432 || echo "Port 5432 not listening"
+          (command -v ss >/dev/null 2>&1 && ss -tlnp | grep 5432) || (command -v netstat >/dev/null 2>&1 && netstat -tlnp | grep 5432) || echo "Port 5432 not listening"
+
+      - name: Install psql client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Test DB login with psql
+        env:
+          PGPASSWORD: ${{ secrets.DB_USER_PASSWORD }}
+        run: |
+          psql "host=127.0.0.1 port=5432 user=mestermind_user dbname=mestermind sslmode=disable" -c "select 1;"
           
       - name: Test database connection
         env:

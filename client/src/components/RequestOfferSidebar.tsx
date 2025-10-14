@@ -38,36 +38,32 @@ function getAvailability(request?: CustomerRequest | null): unknown | null {
 export default function RequestOfferSidebar({ request, service, offer, mapLocation, onProposeTime }: Props) {
   const availability = getAvailability(request);
   return (
-    <aside className="space-y-6 w-[500px] flex flex-col items-center justify-start sticky top-0 h-screen overflow-y-auto border-l border-gray-200 bg-white">
+    <aside className="space-y-6 w-full flex flex-col">
       {!request ? (
-        <div className="w-[500px] text-sm text-gray-600">Select a conversation to view details.</div>
+        <div className="w-full p-4 text-sm text-gray-600">Select a conversation to view details.</div>
       ) : (
         <>
       {/* Map section matching request details page */}
-      <div className="w-[500px] border border-gray-200 min-h-64 overflow-hidden">
+      <div className="w-full border-b border-gray-200 overflow-hidden flex-shrink-0">
         <LocationMap
           postalCode={request?.postal_code || undefined}
           lat={mapLocation?.lat || undefined}
           lon={mapLocation?.lon || undefined}
           locationName={mapLocation?.name || request?.postal_code || undefined}
-          className="h-64"
+          className="h-48 w-full"
         />
         <div className="p-4 bg-transparent">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-lg font-medium text-gray-900">
-                {mapLocation?.name || request.postal_code || "Location not specified"}
-              </div>
-              <div className="text-sm text-gray-500">
-                {mapLocation?.city_name && mapLocation.city_name !== mapLocation.name ? `${mapLocation.city_name}, Hungary` : "Location"}
-              </div>
-            </div>
+          <div className="text-lg font-medium text-gray-900 truncate">
+            {mapLocation?.name || request.postal_code || "Location not specified"}
+          </div>
+          <div className="text-sm text-gray-500 truncate">
+            {mapLocation?.city_name && mapLocation.city_name !== mapLocation.name ? `${mapLocation.city_name}, Hungary` : "Location"}
           </div>
         </div>
       </div>
 
       {offer ? (
-        <div className="w-[500px] space-y-6">
+        <div className="w-full space-y-6">
           {/* <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Offer Sent</h3>
             <div className="space-y-3">
@@ -91,30 +87,30 @@ export default function RequestOfferSidebar({ request, service, offer, mapLocati
               )}
             </div>
           </div> */}
-          <div className="w-full   bg-white rounded-none">
+          <div className="w-full bg-white rounded-none">
             <div className="p-4 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Job Details</h3>
             </div>
             <div className="p-4 space-y-4">
               <div>
                 <div className="text-sm font-medium text-gray-900">Job type</div>
-                <div className="text-sm text-gray-600">{service?.name || "Service Request"}</div>
+                <div className="text-sm text-gray-600 break-words">{service?.name || "Service Request"}</div>
               </div>
               <div className="p-3 bg-gray-50 rounded-md">
                 <div className="text-sm font-medium text-gray-900 mb-1">Availability</div>
-                <div className="text-sm text-gray-700">{formatWeeklyAvailability(availability)}</div>
+                <div className="text-sm text-gray-700 break-words">{formatWeeklyAvailability(availability)}</div>
               </div>
               {request.message_to_pro && (
                 <div className="mt-2 p-3 bg-gray-50 rounded-md">
                   <div className="text-sm font-medium text-gray-900 mb-2">Customer Message</div>
-                  <div className="text-sm text-gray-700">{request.message_to_pro}</div>
+                  <div className="text-sm text-gray-700 break-words">{request.message_to_pro}</div>
                 </div>
               )}
             </div>
           </div>
-          <div className="p-4">
+          <div className="p-4 border-t border-gray-200">
             <div className="text-sm font-medium text-gray-900 mb-1">Next step</div>
-            <p className="text-xs text-gray-600 mb-2">Prompt the customer to pick a time. Use their stated availability.</p>
+            <p className="text-xs text-gray-600 mb-2 break-words">Prompt the customer to pick a time. Use their stated availability.</p>
             <Button
               className="w-full"
               variant="outline"
@@ -132,7 +128,7 @@ export default function RequestOfferSidebar({ request, service, offer, mapLocati
           </div>
         </div>
       ) : (
-        <div className="w-full text-sm text-gray-600">No offer sent yet. Open the request to send a quote.</div>
+        <div className="w-full p-4 text-sm text-gray-600">No offer sent yet. Open the request to send a quote.</div>
       )}
         </>
       )}

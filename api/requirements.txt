@@ -19,6 +19,16 @@ psycopg2-binary==2.9.10  # PostgreSQL - Python 3.13 compatible
 # Authentication
 firebase-admin==6.5.0
 
+# Payment Processing
+stripe==11.1.1
+
+# Calendar integration
+icalendar==6.0.1
+pytz==2024.2
+
+# Fake data generation for testing
+faker==30.8.2
+
 # Testing (optional - uncomment if needed)
 # pytest==7.4.3
 # pytest-asyncio==0.21.1

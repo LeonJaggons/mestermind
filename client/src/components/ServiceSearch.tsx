@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { searchServices, Service } from '@/lib/api';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 
 interface ServiceSearchProps {
   onSelect: (service: Service) => void;
@@ -11,6 +13,7 @@ interface ServiceSearchProps {
   onClearSelected?: () => void;
   placeholder?: string;
   className?: string;
+  compact?: boolean;
 }
 
 export default function ServiceSearch({
@@ -19,13 +22,12 @@ export default function ServiceSearch({
   onClearSelected,
   placeholder = "Describe your project or problem — be as detailed as you'd like.",
   className = "",
+  compact = false,
 }: ServiceSearchProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Service[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const debouncedQuery = useDebounce(query, 200);
 
   // keep input in sync with confirmed selection
   useEffect(() => {
@@ -37,13 +39,13 @@ export default function ServiceSearch({
   useEffect(() => {
     let active = true;
     async function run() {
-      if (!debouncedQuery) {
+      if (!query || query.length < 2) {
         setResults([]);
         return;
       }
       setLoading(true);
       try {
-        const data = await searchServices(debouncedQuery);
+        const data = await searchServices(query);
         if (active) setResults(data.slice(0, 8));
       } catch (_) {
         if (active) setResults([]);
@@ -55,79 +57,77 @@ export default function ServiceSearch({
     return () => {
       active = false;
     };
-  }, [debouncedQuery]);
-
-  useEffect(() => {
-    function onClickOutside(e: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", onClickOutside);
-    return () => document.removeEventListener("mousedown", onClickOutside);
-  }, []);
+  }, [query]);
 
   return (
-    <div ref={containerRef} className={cn("relative w-full", className)}>
-      <Input
-        value={query}
-        onChange={(e) => {
-          const next = e.target.value;
-          setQuery(next);
-          setOpen(true);
-          if (selectedService && next !== selectedService.name) {
-            onClearSelected?.();
-          }
-        }}
-        placeholder={placeholder}
-        className="border-0 w-full focus-visible:ring-0 text-gray-800 py-4 sm:py-6 px-4 sm:px-6 h-full"
-        aria-autocomplete="list"
-        role="combobox"
-        style={{ fontSize: "16px" }}
-        aria-expanded={open}
-      />
-      {open && (results.length > 0 || loading) && (
-        <div className="absolute z-20 mt-2 w-full rounded-md border border-gray-200 bg-white shadow-md">
-          {loading && (
-            <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
-          )}
-          {!loading &&
-            results.map((svc) => (
-              <button
-                key={svc.id}
-                type="button"
-                className="w-full text-left px-4 py-3 hover:bg-gray-50 text-gray-700"
-                onClick={() => {
-                  onSelect(svc);
-                  setQuery(svc.name);
-                  setOpen(false);
-                }}
-              >
-                <div className="font-medium">{svc.name}</div>
-                {svc.description && (
-                  <div className="text-sm text-gray-500 line-clamp-1">
-                    {svc.description}
-                  </div>
-                )}
-              </button>
-            ))}
-          {!loading && results.length === 0 && debouncedQuery && (
-            <div className="px-4 py-3 text-sm text-gray-500">No matches</div>
-          )}
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <div className={cn("relative w-full", compact ? "h-full" : "", className)}>
+          <Input
+            value={query}
+            onChange={(e) => {
+              const next = e.target.value;
+              setQuery(next);
+              setOpen(true);
+              if (selectedService && next !== selectedService.name) {
+                onClearSelected?.();
+              }
+            }}
+            onFocus={() => {
+              if (results.length > 0) setOpen(true);
+            }}
+            placeholder={placeholder}
+            className={cn(
+              "border-0 w-full focus-visible:ring-0 text-gray-800",
+              compact ? "h-full py-2 px-3 text-sm" : "py-4 sm:py-6 px-4 sm:px-6 h-full"
+            )}
+            aria-autocomplete="list"
+            role="combobox"
+            style={{ fontSize: "16px" }}
+            aria-expanded={open}
+          />
         </div>
-      )}
-    </div>
+      </PopoverTrigger>
+      <PopoverContent 
+        className="w-[var(--radix-popover-trigger-width)] p-0" 
+        align="start"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
+        <Command shouldFilter={false}>
+          <CommandList>
+            {loading && (
+              <CommandEmpty>Searching…</CommandEmpty>
+            )}
+            {!loading && results.length === 0 && query.length >= 2 && (
+              <CommandEmpty>No services found</CommandEmpty>
+            )}
+            {!loading && results.length > 0 && (
+              <CommandGroup>
+                {results.map((svc) => (
+                  <CommandItem
+                    key={svc.id}
+                    value={svc.id.toString()}
+                    onSelect={() => {
+                      onSelect(svc);
+                      setQuery(svc.name);
+                      setOpen(false);
+                    }}
+                  >
+                    <div className="flex flex-col">
+                      <div className="font-medium">{svc.name}</div>
+                      {svc.description && (
+                        <div className="text-sm text-gray-500 line-clamp-1">
+                          {svc.description}
+                        </div>
+                      )}
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
-}
-
-function useDebounce<T>(value: T, delay: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const id = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(id);
-  }, [value, delay]);
-  return debounced;
 }

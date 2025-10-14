@@ -15,6 +15,7 @@ import "@fontsource/plus-jakarta-sans/600.css";
 import "@fontsource/plus-jakarta-sans/700.css";
 import "@fontsource/plus-jakarta-sans/800.css";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { useRouter } from "next/router";
 import { Toaster } from "sonner";
 
@@ -23,9 +24,12 @@ export default function App({ Component, pageProps }: AppProps) {
   const pathname = router.pathname;
   const isAdmin = pathname === "/admin";
   return (
-    <div className="font-sans">
+    <div className="font-sans flex flex-col min-h-screen">
       {!isAdmin && <Header />}
-      <Component {...pageProps} />
+      <main className="flex-grow">
+        <Component {...pageProps} />
+      </main>
+      {!isAdmin && <Footer />}
       <Toaster position="top-center" richColors />
     </div>
   );

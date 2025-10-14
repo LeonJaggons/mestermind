@@ -24,10 +24,25 @@ from sqlalchemy.orm import sessionmaker
 
 def load_services_data():
     """Load services data from JSON file"""
-    json_path = Path(__file__).parent.parent / "data" / "thumbtack_handyman_services_full.json"
+    data_dir = Path(__file__).parent.parent / "data"
     
-    if not json_path.exists():
-        raise FileNotFoundError(f"JSON file not found at {json_path}")
+    # Try different possible service data files
+    possible_files = [
+        "thumbtack_handyman_services_full.json",
+        "mestermind-services-taxonomy.json"
+    ]
+    
+    json_path = None
+    for filename in possible_files:
+        file_path = data_dir / filename
+        if file_path.exists():
+            json_path = file_path
+            break
+    
+    if not json_path:
+        raise FileNotFoundError(f"No services JSON file found. Checked: {possible_files}")
+    
+    print(f"📄 Loading services data from: {json_path.name}")
     
     with open(json_path, 'r', encoding='utf-8') as f:
         return json.load(f)

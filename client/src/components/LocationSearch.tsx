@@ -1,13 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
-import { LuMapPin, LuChevronDown } from 'react-icons/lu';
+"use client";
+
+import { useState, useEffect } from 'react';
 import { searchLocations, LocationSearchResult } from '@/lib/api';
 import { Input } from './ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
+import { cn } from '@/lib/utils';
 
 interface LocationSearchProps {
   selectedLocation: LocationSearchResult | null;
   onLocationSelect: (location: LocationSearchResult | null) => void;
   placeholder?: string;
   className?: string;
+  compact?: boolean;
 }
 
 export default function LocationSearch({
@@ -15,16 +20,12 @@ export default function LocationSearch({
   onLocationSelect,
   placeholder = "Enter location...",
   className = "",
+  compact = false,
 }: LocationSearchProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<LocationSearchResult[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const inputRef = useRef<HTMLInputElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Initialize query with selected location
   useEffect(() => {
@@ -35,60 +36,35 @@ export default function LocationSearch({
 
   // Handle search with debouncing
   useEffect(() => {
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-
+    let timeout: NodeJS.Timeout;
+    
     if (query.length < 2) {
       setResults([]);
-      setIsOpen(false);
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
+    setLoading(true);
 
-    searchTimeoutRef.current = setTimeout(async () => {
+    timeout = setTimeout(async () => {
       try {
         const searchResults = await searchLocations(query, 8);
         setResults(searchResults);
-        setIsOpen(true);
       } catch (err) {
-        setError("Failed to search locations");
         setResults([]);
-        setIsOpen(false);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     }, 300);
 
     return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
+      clearTimeout(timeout);
     };
   }, [query]);
-
-  // Handle click outside to close dropdown
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        inputRef.current &&
-        !inputRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
+    setOpen(true);
 
     // Clear selection if user is typing something different
     if (selectedLocation && value !== selectedLocation.name) {
@@ -99,13 +75,7 @@ export default function LocationSearch({
   const handleLocationSelect = (location: LocationSearchResult) => {
     setQuery(location.name);
     onLocationSelect(location);
-    setIsOpen(false);
-  };
-
-  const handleInputFocus = () => {
-    if (results.length > 0) {
-      setIsOpen(true);
-    }
+    setOpen(false);
   };
 
   const formatLocationDisplay = (location: LocationSearchResult) => {
@@ -131,64 +101,63 @@ export default function LocationSearch({
   };
 
   return (
-    <div className={`relative  ${className} w-full sm:max-w-[180px]`}>
-      <div className="relative">
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <div className={cn("relative w-full sm:max-w-[180px]", className)}>
           <Input
-            ref={inputRef}
             type="text"
             value={query}
             onChange={handleInputChange}
-            onFocus={handleInputFocus}
+            onFocus={() => {
+              if (results.length > 0) setOpen(true);
+            }}
             placeholder={placeholder}
-            className="text-md text-gray-800 bg-transparent border-0 outline-none w-full min-w-[50px] min-h-16 focus-visible:ring-0"
+            className={cn(
+              "text-md text-gray-800 bg-transparent border-0 outline-none w-full min-w-[50px] focus-visible:ring-0",
+              compact ? 'h-full py-2 px-3 text-sm' : 'min-h-16'
+            )}
             style={{ fontSize: "16px" }}
           />
-      </div>
-
-      {/* Dropdown */}
-      {isOpen && (
-        <div
-          ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto"
-        >
-          {isLoading && (
-            <div className="px-4 py-3 text-gray-500 text-sm">Searching...</div>
-          )}
-
-          {error && (
-            <div className="px-4 py-3 text-red-500 text-sm">{error}</div>
-          )}
-
-          {!isLoading &&
-            !error &&
-            results.length === 0 &&
-            query.length >= 2 && (
-              <div className="px-4 py-3 text-gray-500 text-sm">
-                No locations found
-              </div>
-            )}
-
-          {results.map((location) => (
-            <button
-              key={`${location.type}-${location.id}`}
-              onClick={() => handleLocationSelect(location)}
-              className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 focus:outline-none focus:bg-gray-50"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium text-gray-900">
-                    {formatLocationDisplay(location)}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {getLocationTypeLabel(location.type)}
-                  </div>
-                </div>
-                {/* no postal code chip */}
-              </div>
-            </button>
-          ))}
         </div>
-      )}
-    </div>
+      </PopoverTrigger>
+      <PopoverContent 
+        className="w-[var(--radix-popover-trigger-width)] p-0" 
+        align="start"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
+        <Command shouldFilter={false}>
+          <CommandList>
+            {loading && (
+              <CommandEmpty>Searching...</CommandEmpty>
+            )}
+            {!loading && results.length === 0 && query.length >= 2 && (
+              <CommandEmpty>No locations found</CommandEmpty>
+            )}
+            {!loading && results.length > 0 && (
+              <CommandGroup>
+                {results.map((location) => (
+                  <CommandItem
+                    key={`${location.type}-${location.id}`}
+                    value={`${location.type}-${location.id}`}
+                    onSelect={() => handleLocationSelect(location)}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <div>
+                        <div className="font-medium text-gray-900">
+                          {formatLocationDisplay(location)}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {getLocationTypeLabel(location.type)}
+                        </div>
+                      </div>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }

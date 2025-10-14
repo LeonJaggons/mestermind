@@ -26,7 +26,7 @@ async def create_offer(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ):
-    """Create a new offer for a request."""
+    """Create a new offer for a request. Requires lead purchase."""
 
     # Verify the request exists
     request = (
@@ -35,12 +35,29 @@ async def create_offer(
     if not request:
         raise HTTPException(status_code=404, detail="Request not found")
 
+    # Check if mester has purchased this lead
+    from app.services.stripe_service import StripeService
+    
+    mester_uuid = _uuid.UUID(mester_id)
+    request_uuid = _uuid.UUID(payload.request_id)
+    
+    stripe_service = StripeService(db)
+    has_access = stripe_service.check_lead_access(
+        mester_id=mester_uuid, request_id=request_uuid
+    )
+    
+    if not has_access:
+        raise HTTPException(
+            status_code=402, 
+            detail="You must purchase this lead before sending an offer"
+        )
+
     # Check if mester already has a pending offer for this request
     existing_offer = (
         db.query(OfferModel)
         .filter(
-            OfferModel.request_id == payload.request_id,
-            OfferModel.mester_id == _uuid.UUID(mester_id),
+            OfferModel.request_id == request_uuid,
+            OfferModel.mester_id == mester_uuid,
             OfferModel.status == "PENDING",
         )
         .first()
@@ -55,8 +72,8 @@ async def create_offer(
     expires_at = datetime.utcnow() + timedelta(days=7)
 
     offer = OfferModel(
-        request_id=_uuid.UUID(payload.request_id),
-        mester_id=_uuid.UUID(mester_id),
+        request_id=request_uuid,
+        mester_id=mester_uuid,
         price=payload.price,
         currency=payload.currency,
         message=payload.message,
@@ -90,6 +107,29 @@ async def create_offer(
             exc_info=True,
         )
         # Don't fail the offer creation if notification fails
+    
+    # Broadcast new offer via WebSocket (instant match notification)
+    from app.services.websocket import manager
+    
+    if request.user_id:
+        ws_event = {
+            "type": "new_offer",
+            "data": {
+                "id": str(offer.id),
+                "request_id": str(offer.request_id),
+                "mester_id": str(offer.mester_id),
+                "price": float(offer.price),
+                "currency": offer.currency,
+                "message": offer.message,
+                "status": offer.status.value,
+                "created_at": offer.created_at.isoformat() if offer.created_at else None,
+                "expires_at": offer.expires_at.isoformat() if offer.expires_at else None,
+            }
+        }
+        try:
+            await manager.send_to_user(str(request.user_id), ws_event)
+        except Exception as e:
+            logger.error(f"[WEBSOCKET] Error broadcasting new offer: {e}")
 
     return OfferResponse(
         id=str(offer.id),

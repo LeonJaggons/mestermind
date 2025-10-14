@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { subscribeToAuthChanges } from "@/lib/auth";
 import {
   getCustomerRequest,
@@ -10,30 +9,36 @@ import {
   fetchProStatus,
   createOffer,
   listOffers,
+  checkLeadAccess,
+  listThreads,
   type CustomerRequest,
   type Question,
   type Service,
   type Offer,
 } from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Clock,
-  Users,
   CheckCircle,
-  Paperclip,
   MessageCircle,
+  MapPin,
+  DollarSign,
+  Wrench,
+  User,
+  Lock,
+  TrendingUp,
+  Award,
+  Users,
+  ArrowLeft,
 } from "lucide-react";
 import LocationMap from "@/components/LocationMap";
+import PaywallModal from "@/components/PaywallModal";
+import SendOfferModal from "@/components/SendOfferModal";
+import { AppointmentProposalModal } from "@/components/AppointmentProposalModal";
+import ProLayout from "@/components/pro/ProLayout";
 
 export default function RequestDetailPage() {
   const router = useRouter();
@@ -44,11 +49,13 @@ export default function RequestDetailPage() {
   const [request, setRequest] = useState<CustomerRequest | null>(null);
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [service, setService] = useState<Service | null>(null);
-  const [price, setPrice] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
-  const [sending, setSending] = useState(false);
   const [mesterId, setMesterId] = useState<string | null>(null);
   const [existingOffer, setExistingOffer] = useState<Offer | null>(null);
+  const [hasLeadAccess, setHasLeadAccess] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [showOfferModal, setShowOfferModal] = useState(false);
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const [threadId, setThreadId] = useState<string | null>(null);
   const [locationData, setLocationData] = useState<{
     lat: number | null;
     lon: number | null;
@@ -79,14 +86,29 @@ export default function RequestDetailPage() {
   }, [router]);
 
   useEffect(() => {
-    if (checking) return;
-    if (!id) return;
+    if (checking || !id || !mesterId) return;
+    
     setLoading(true);
     setError(null);
+    
     (async () => {
       try {
         const req = await getCustomerRequest(id);
         setRequest(req);
+
+        // Check lead access
+        const hasAccess = await checkLeadAccess(id, mesterId);
+        setHasLeadAccess(hasAccess);
+
+        // Get thread ID if exists
+        try {
+          const threads = await listThreads({ mester_id: mesterId });
+          const thread = threads.find(t => t.request_id === id);
+          if (thread) setThreadId(thread.id);
+        } catch (e) {
+          console.warn("Failed to get thread:", e);
+        }
+
         const qs = await fetchQuestions({
           question_set_id: req.question_set_id,
           limit: 1000,
@@ -101,7 +123,7 @@ export default function RequestDetailPage() {
           console.warn("Failed to fetch service:", e);
         }
 
-        // Fetch location coordinates if postal code is available
+        // Fetch location coordinates
         if (req.postal_code) {
           try {
             const coords = await getCoordinatesByPostalCode(req.postal_code);
@@ -115,34 +137,26 @@ export default function RequestDetailPage() {
             console.warn("Failed to fetch coordinates:", e);
           }
         }
-      } catch {
+
+        // Check for existing offers
+        try {
+          const offers = await listOffers({
+            request_id: id,
+            mester_id: mesterId,
+          });
+          if (offers && offers.length > 0) {
+            setExistingOffer(offers[0]);
+          }
+        } catch (e) {
+          console.warn("Failed to check for existing offers:", e);
+        }
+      } catch (e) {
         setError("Failed to load request");
       } finally {
         setLoading(false);
       }
     })();
-  }, [checking, id]);
-
-  // Check for existing offers
-  useEffect(() => {
-    if (!id || !mesterId) return;
-
-    (async () => {
-      try {
-        const offers = await listOffers({
-          request_id: id as string,
-          mester_id: mesterId,
-        });
-        if (offers && offers.length > 0) {
-          setExistingOffer(offers[0]);
-        }
-      } catch (e) {
-        console.warn("Failed to check for existing offers:", e);
-      }
-    })();
-  }, [id, mesterId]);
-
-  // Messaging UI removed; handled exclusively on messages page
+  }, [checking, id, mesterId]);
 
   const questionIdToLabel = useMemo(() => {
     const map = new Map<string, string>();
@@ -163,23 +177,17 @@ export default function RequestDetailPage() {
         : undefined;
     const label = qid ? questionIdToLabel.get(qid) : undefined;
 
-    // Fallback to formatted key if no label found
     const displayLabel =
       label ||
       key.split("_").join(" ").charAt(0).toUpperCase() +
         key.split("_").join(" ").slice(1);
 
     return (
-      <div
-        key={key}
-        className="text-sm flex flex-col border-b border-gray-200 pb-4"
-      >
-        <span className="text-md font-medium text-gray-500 mb-1">
+      <div key={key} className="border-b border-gray-200 pb-3 last:border-0">
+        <span className="text-sm font-medium text-gray-500 block mb-1">
           {displayLabel}
         </span>
-        <span className="text-[16px] text-gray-800 font-medium">
-          {formatValue(value)}
-        </span>
+        <span className="text-base text-gray-900">{formatValue(value)}</span>
       </div>
     );
   }
@@ -199,457 +207,391 @@ export default function RequestDetailPage() {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  const handleSendOffer = async () => {
-    if (!price || !message || !id || !mesterId) return;
-
-    setSending(true);
-    try {
-      const offer = await createOffer(
-        {
-          request_id: id as string,
-          price: parseFloat(price),
-          currency: "HUF",
-          message: message,
-        },
-        mesterId,
-      );
-
-      setExistingOffer(offer);
-      alert(
-        "Offer sent successfully! This request has been moved to your Offers page.",
-      );
-      // Redirect to offers page
-      router.push("/pro/offers");
-    } catch (e) {
-      console.error("Failed to send offer:", e);
-      alert("Failed to send offer. Please try again.");
-    } finally {
-      setSending(false);
-    }
-  };
-
-  const getServiceDisplayName = () => {
-    if (service) {
-      return service.name;
-    }
-    return "Service Request";
-  };
-
-  function getAvailability(): { type: string; [key: string]: unknown } | null {
-    if (!request) return null;
-    // Prefer normalized field from API
-    const top = (request as { availability?: { type: string; [key: string]: unknown } }).availability;
-    if (top && top.type === "weekly") return top;
-    // Fallback to answers.availability (structured or raw)
-    const a = (request.answers as { availability?: unknown })?.availability;
-    if (!a) return null;
-    if (a && typeof a === "object" && "value" in a) return (a as { value: { type: string; [key: string]: unknown } }).value;
-    return a as { type: string; [key: string]: unknown };
-  }
-
-  function formatWeeklyAvailability(av: {
-    days: number[];
-    start: string;
-    end: string;
-  }): string {
-    const labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const dayNames = (av.days || [])
-      .filter((d) => Number.isInteger(d) && d >= 0 && d <= 6)
-      .map((d) => labels[d]);
-    if (dayNames.length === 0) return "Not specified";
-    return `${dayNames.join(", ")} • ${av.start}–${av.end}`;
-  }
-
-  if (checking) {
+  if (checking || loading) {
     return (
-      <main
-        className="bg-white"
-        style={{ maxHeight: "calc(100vh - 64px)", overflow: "hidden" }}
-      >
-        <div className="max-w-5xl mx-auto p-6">Loading…</div>
-      </main>
-    );
-  }
-
-  if (loading) {
-    return (
-      <main
-        className=" bg-white"
-        style={{ maxHeight: "calc(100vh - 64px)", overflow: "hidden" }}
-      >
-        <div className="max-w-5xl mx-auto p-6">Loading request…</div>
-      </main>
+      <ProLayout>
+        <div className="text-center py-12">Loading...</div>
+      </ProLayout>
     );
   }
 
   if (error || !request) {
     return (
-      <main className="min-h-screen bg-white">
-        <div className="max-w-5xl mx-auto p-6 text-red-600">
-          {error || "Not found"}
+      <ProLayout>
+        <div className="text-center py-12 text-red-600">
+          {error || "Request not found"}
         </div>
-      </main>
+      </ProLayout>
     );
   }
 
   return (
-    <main className="min-h-screen bg-white">
-      <div>
-        <div
-          className="flex"
-          style={{
-            backgroundColor: "rgb(250, 250, 250)",
-          }}
-        >
-          {/* Left Panel - Lead Details */}
-          <div className="max-w-[500px] flex-1 bg-white overflow-y-auto">
-            {/* Map Section */}
-            <div className="border border-gray-200 overflow-hidden">
-              <LocationMap
-                postalCode={request?.postal_code || undefined}
-                lat={locationData?.lat || undefined}
-                lon={locationData?.lon || undefined}
-                locationName={
-                  locationData?.name || request?.postal_code || undefined
-                }
-                className="h-64"
-              />
-              <div className="p-4 bg-transparent">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-lg font-medium text-gray-900">
-                      {locationData?.name ||
-                        request?.postal_code ||
-                        "Location not specified"}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {locationData?.city_name &&
-                      locationData.city_name !== locationData.name
-                        ? `${locationData.city_name}, Hungary`
-                        : "Location"}
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-800 border-green-200">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    15% discount
-                  </Badge>
-                </div>
-              </div>
-            </div>
+    <ProLayout>
+      <PaywallModal
+        open={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        onUpgrade={() => {
+          setShowPaywall(false);
+          // Reload page to reflect purchase
+          window.location.reload();
+        }}
+        audience="mester"
+        threadId={threadId || undefined}
+        mesterId={mesterId || undefined}
+        requestId={request.id}
+      />
 
-            {/* Lead Status */}
-            <div className="border border-gray-200 p-4 border-t-0">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Users className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">
-                      1 pro contacted
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <MessageCircle className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">
-                      1 pro responded
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">
-                      1d 9h until request expires
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-4 p-3 bg-blue-50 rounded-md">
-                <p className="text-xs text-blue-700">
-                  You&apos;ll only pay if the customer responds. Opportunities are
-                  priced separately from other leads.{" "}
-                  <button className="text-blue-600 hover:underline">
-                    View price
-                  </button>
-                </p>
+      {mesterId && request && (
+        <SendOfferModal
+          isOpen={showOfferModal}
+          onClose={() => setShowOfferModal(false)}
+          requestId={request.id}
+          mesterId={mesterId}
+          customerBudget={typeof request.budget_estimate === 'number' ? request.budget_estimate : undefined}
+          serviceName={service?.name}
+          onSuccess={() => {
+            // Reload offers
+            if (mesterId) {
+              listOffers({
+                request_id: request.id,
+                mester_id: mesterId,
+              }).then((offers) => {
+                if (offers && offers.length > 0) {
+                  setExistingOffer(offers[0]);
+                }
+              });
+            }
+          }}
+        />
+      )}
+
+      {/* Appointment Proposal Modal */}
+      {threadId && mesterId && (
+        <AppointmentProposalModal
+          isOpen={showAppointmentModal}
+          onClose={() => setShowAppointmentModal(false)}
+          threadId={threadId}
+          mesterId={mesterId}
+          onProposalCreated={() => {
+            setShowAppointmentModal(false);
+            // Optionally show success message or refresh data
+          }}
+        />
+      )}
+
+      <div>
+        {/* Header with back button */}
+        <div className="mb-6">
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                {service?.name || "Service Request"}
+              </h1>
+              <div className="flex items-center gap-3">
+                <Badge variant={hasLeadAccess ? "default" : "secondary"}>
+                  {hasLeadAccess ? (
+                    <>
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Purchased
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="h-3 w-3 mr-1" />
+                      Not Purchased
+                    </>
+                  )}
+                </Badge>
+                {service?.requires_license && (
+                  <Badge variant="outline" className="border-orange-500 text-orange-700">
+                    License Required
+                  </Badge>
+                )}
               </div>
             </div>
+            {!hasLeadAccess && (
+              <Button
+                size="lg"
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={() => setShowPaywall(true)}
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                Purchase Lead
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Content - Left Column */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Map */}
+            <Card>
+              <CardContent className="p-0">
+                <LocationMap
+                  postalCode={request.postal_code || undefined}
+                  lat={locationData?.lat || undefined}
+                  lon={locationData?.lon || undefined}
+                  locationName={locationData?.name || request.postal_code || undefined}
+                  className="h-64 rounded-t-lg"
+                />
+                <div className="p-4">
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <MapPin className="h-5 w-5 text-gray-400" />
+                    <span className="font-medium">
+                      {locationData?.name || request.postal_code || "Location not specified"}
+                    </span>
+                  </div>
+                  {locationData?.city_name && (
+                    <p className="text-sm text-gray-500 ml-7">
+                      {locationData.city_name}, Hungary
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Job Details */}
-            <div className="border border-gray-200 border-t-0">
-              <div className="p-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
                   Job Details
-                </h3>
-              </div>
-              <div className="p-4 space-y-8">
-                <div>
-                  <div className="text-sm font-medium text-gray-900">
-                    Job type
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {getServiceDisplayName()}
-                  </div>
-                  {service?.description && (
-                    <div className="text-xs text-gray-500 italic mt-1">
-                      Related to {service.description}
-                    </div>
-                  )}
-                </div>
+                </h2>
 
-                {/* Estimated Budget */}
-                {typeof request?.budget_estimate === 'number' && !isNaN(request.budget_estimate) && (
-                  <div className="mt-4 p-3 bg-gray-50 rounded-md">
-                    <div className="text-sm font-medium text-gray-900 mb-2">Estimated Budget</div>
-                    <div className="text-sm text-gray-700">
-                      {new Intl.NumberFormat('hu-HU').format(request.budget_estimate)} Ft
-                    </div>
-                  </div>
-                )}
+                <Tabs defaultValue="overview" className="w-full">
+                  <TabsList className="mb-4">
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="details">Full Details</TabsTrigger>
+                  </TabsList>
 
-                {/* Customer Message */}
-                {request?.message_to_pro && (
-                  <div className="mt-4 p-3 bg-gray-50 rounded-md">
-                    <div className="text-sm font-medium text-gray-900 mb-2">
-                      Customer Message
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      {request.message_to_pro}
-                    </div>
-                  </div>
-                )}
-
-                {/* Availability */}
-                {(() => {
-                  const av = getAvailability();
-                  if (!av || av.type !== "weekly") return null;
-                  const weeklyAv = av as unknown as { days: number[]; start: string; end: string };
-                  return (
-                    <div className="mt-4 p-3 bg-gray-50 rounded-md">
-                      <div className="text-sm font-medium text-gray-900 mb-2">
-                        Availability
-                      </div>
-                      <div className="text-sm text-gray-700">
-                        {formatWeeklyAvailability(weeklyAv)}
+                  <TabsContent value="overview" className="space-y-4">
+                    {/* Service Type */}
+                    <div className="flex items-start gap-3">
+                      <Wrench className="h-5 w-5 text-gray-400 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">Service Type</p>
+                        <p className="text-base text-gray-900">{service?.name || "Service"}</p>
                       </div>
                     </div>
-                  );
-                })()}
 
-                {/* Question Answers */}
-                {request?.answers &&
-                  Object.keys(request.answers).length > 0 && (
-                    <div className="mt-4">
-                      <div className="text-sm font-medium text-gray-900 mb-2">
-                        Additional Details
+                    {/* Budget */}
+                    {typeof request.budget_estimate === "number" &&
+                      !isNaN(request.budget_estimate) && (
+                        <div className="flex items-start gap-3">
+                          <DollarSign className="h-5 w-5 text-gray-400 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-500">
+                              Customer Budget
+                            </p>
+                            <p className="text-base font-semibold text-gray-900">
+                              {new Intl.NumberFormat("hu-HU").format(
+                                request.budget_estimate
+                              )}{" "}
+                              Ft
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                    {/* Customer Message */}
+                    {request.message_to_pro && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p className="text-sm font-medium text-blue-900 mb-2">
+                          Message from customer:
+                        </p>
+                        <p className="text-gray-700">{request.message_to_pro}</p>
                       </div>
-                      <div className="space-y-4">
-                        {Object.entries(request.answers)
-                          .filter(([key]) => key !== "availability")
-                          .map(([key, entry]) => renderAnswer(key, entry))}
-                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="details" className="space-y-3">
+                    {request.answers && Object.keys(request.answers).length > 0 ? (
+                      Object.entries(request.answers)
+                        .filter(([key]) => key !== "availability")
+                        .map(([key, entry]) => renderAnswer(key, entry))
+                    ) : (
+                      <p className="text-gray-500 text-center py-4">
+                        No additional details provided
+                      </p>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+
+            {/* Existing Offer */}
+            {existingOffer && (
+              <Card className="border-green-200 bg-green-50">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-6 w-6 text-green-600 mt-0.5" />
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Offer Sent
+                      </h3>
+                      <p className="text-gray-700 mb-3">
+                        You've sent an offer of{" "}
+                        <span className="font-bold">
+                          {new Intl.NumberFormat("hu-HU").format(existingOffer.price)} Ft
+                        </span>
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Status: <span className="capitalize">{existingOffer.status.toLowerCase()}</span>
+                      </p>
                     </div>
-                  )}
-              </div>
-            </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
-          {/* Right Panel - Offer and Message */}
-          <div className="space-y-6 flex-1 p-12 flex flex-col items-center justify-start sticky top-0 h-screen overflow-y-auto">
-            {existingOffer ? (
-              /* Existing Offer Display */
-              <div className="w-[500px] space-y-6">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+          {/* Sidebar - Right Column */}
+          <div className="space-y-6">
+            {/* Lead Quality Metrics */}
+            {!hasLeadAccess && (
+              <Card>
+                <CardContent className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Offer Sent
+                    Lead Insights
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4 text-blue-600" />
+                        <span className="text-sm text-gray-700">Expected ROI</span>
+                      </div>
+                      <span className="text-sm font-semibold text-blue-600">3.5x</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Award className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-gray-700">Win Rate</span>
+                      </div>
+                      <span className="text-sm font-semibold text-green-600">65%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-purple-600" />
+                        <span className="text-sm text-gray-700">Competition</span>
+                      </div>
+                      <span className="text-sm font-semibold text-purple-600">Low</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Action Card */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  {hasLeadAccess ? "Next Steps" : "Get Started"}
+                </h3>
+
+                {hasLeadAccess ? (
+                  <div className="space-y-3">
+                    <Button
+                      className="w-full"
+                      onClick={() => router.push("/pro/messages" + (threadId ? `/${threadId}` : ""))}
+                    >
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Message Customer
+                    </Button>
+                    {!existingOffer && (
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => setShowOfferModal(true)}
+                      >
+                        Send Quote
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => setShowAppointmentModal(true)}
+                      disabled={!threadId}
+                      title={!threadId ? "Start a conversation first to propose an appointment" : ""}
+                    >
+                      <Clock className="h-4 w-4 mr-2" />
+                      Propose Appointment
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <p className="text-sm text-gray-600">
+                      Purchase this lead to message the customer and send your quote.
+                    </p>
+                    <Button
+                      size="lg"
+                      className="w-full bg-blue-600 hover:bg-blue-700"
+                      onClick={() => setShowPaywall(true)}
+                    >
+                      <Lock className="h-4 w-4 mr-2" />
+                      Purchase Lead
+                    </Button>
+                    <p className="text-xs text-gray-500 text-center">
+                      Only pay if the customer responds
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Customer Info (only if purchased) */}
+            {hasLeadAccess && (
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Customer Info
                   </h3>
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Price (HUF):</span>
-                      <span className="text-2xl font-semibold text-gray-900">
-                        {new Intl.NumberFormat('hu-HU').format(existingOffer.price)} Ft
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Status:</span>
-                      <span className="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-                        {existingOffer.status}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Sent:</span>
-                      <span className="text-gray-900">
-                        {new Date(
-                          existingOffer.created_at,
-                        ).toLocaleDateString()}
-                      </span>
-                    </div>
-                    {existingOffer.message && (
-                      <div className="pt-3 border-t border-blue-200">
-                        <span className="text-gray-600 block mb-2">
-                          Message:
-                        </span>
-                        <p className="text-gray-900 whitespace-pre-wrap">
-                          {existingOffer.message}
-                        </p>
+                    {request.first_name && request.last_name && (
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                          <User className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {request.first_name} {request.last_name}
+                          </p>
+                          <p className="text-xs text-gray-500">Customer</p>
+                        </div>
+                      </div>
+                    )}
+                    {request.contact_email && (
+                      <div className="text-sm text-gray-600">
+                        <p className="font-medium mb-1">Email</p>
+                        <p>{request.contact_email}</p>
+                      </div>
+                    )}
+                    {request.contact_phone && (
+                      <div className="text-sm text-gray-600">
+                        <p className="font-medium mb-1">Phone</p>
+                        <p>{request.contact_phone}</p>
                       </div>
                     )}
                   </div>
-                </div>
-                <div className="text-center text-sm text-gray-600">
-                  This request has been moved to your{" "}
-                  <Link
-                    href="/pro/offers"
-                    className="text-blue-600 hover:text-blue-700 underline"
-                  >
-                    Offers page
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <>
-                {/* Price Section (HUF) */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 w-[500px]">
-                  Price (HUF)
-                </h3>
-                <div className="border border-gray-200 bg-white rounded-lg w-[500px]">
-                  <div className="p-4">
-                    <div className="relative flex justify-center">
-                      <div className="relative inline-block h-fit my-auto">
-                        <span className="absolute text-black text-3xl left-3 top-12 transform -translate-y-1/2  ">Ft</span>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          value={price}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            // Only allow positive numbers and empty string
-                            if (
-                              value === "" ||
-                              (!isNaN(Number(value)) && Number(value) >= 0)
-                            ) {
-                              setPrice(value);
-                            }
-                          }}
-                          min="0"
-                          className="border-0 px-0 shadow-none bg-transparent pl-8 pr-4 py-8 outline-none focus:outline-none focus:border-0 focus:ring-0 focus:shadow-none text-gray-900 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield] text-center"
-                          style={{
-                            fontSize:
-                              price.length > 3
-                                ? `${Math.max(120 - (price.length - 3) * 20, 30)}px`
-                                : "120px",
-                            width: `${Math.max(price.length * 50 + 80, 120)}px`,
-                            minWidth: "300px",
-                            maxWidth: "400px",
-                            maxHeight: "fit-content",
-                            minHeight: "fit-content",
-                            height: "fit-content",
-                            padding: "0px !important",
-                            border: "none !important",
-                            outline: "none !important",
-                            outlineColor: "transparent !important",
-                            outlineWidth: "0px !important",
-                            outlineStyle: "none !important",
-                            boxShadow: "none !important",
-                            borderRadius: "0px !important",
-                          }}
-                        />
-                        <button className="flex items-center justify-center mt-3 absolute bottom-0 left-0 right-0">
-                          <span className="text-sm text-gray-600">
-                            Fixed price (HUF)
-                          </span>
-                          <svg
-                            className="w-4 h-4 ml-2 text-gray-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Message Section */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 w-[500px]">
-                  Message
-                </h3>
-                <div className="border border-gray-200 bg-white rounded-lg w-[500px]">
-                  <div className="p-4">
-                    <textarea
-                      placeholder="Introduce yourself and share next steps."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      className="w-full h-32 p-3 border border-gray-300 rounded-md resize-none focus:ring-0 focus:border-gray-400 text-gray-900 placeholder-gray-400"
-                    />
-                    <div className="flex items-center justify-between mt-3">
-                      <button className="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-700">
-                        <Paperclip className="h-4 w-4" />
-                        <span>Attach</span>
-                      </button>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <button className="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-700">
-                            <MessageCircle className="h-4 w-4" />
-                            <span>Tips</span>
-                          </button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-md">
-                          <DialogHeader>
-                            <DialogTitle>
-                              Tips to write winning messages
-                            </DialogTitle>
-                            <DialogDescription>
-                              Your message forms your customer&apos;s first
-                              impression of you and your business. They love to
-                              hire pros who:
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-3">
-                            <ul className="list-disc list-inside space-y-2 text-sm text-gray-700">
-                              <li>Greet them by name.</li>
-                              <li>
-                                Talk about your relevant past work,
-                                qualifications, and expertise.
-                              </li>
-                              <li>Describe what&apos;s included in the price.</li>
-                              <li>
-                                Encourage them to take the next step and follow
-                                up!
-                              </li>
-                            </ul>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Send Button */}
-                <div className="flex justify-end w-[500px]">
-                  <Button
-                    onClick={handleSendOffer}
-                    disabled={!price || !message || sending}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md"
-                  >
-                    {sending ? "Sending..." : "Send"}
-                  </Button>
-                </div>
-              </>
+                </CardContent>
+              </Card>
             )}
 
-            {/* Conversation moved to /pro/messages */}
+            {/* Tips */}
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="p-6">
+                <h3 className="text-sm font-semibold text-blue-900 mb-3">
+                  💡 Pro Tips
+                </h3>
+                <ul className="space-y-2 text-sm text-blue-800">
+                  <li>• Respond within 24 hours for best results</li>
+                  <li>• Be specific about your availability</li>
+                  <li>• Include examples of similar work</li>
+                  <li>• Be competitive but fair with pricing</li>
+                </ul>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
-    </main>
+    </ProLayout>
   );
 }

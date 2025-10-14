@@ -859,6 +859,7 @@ export interface Message {
   sender_mester_id?: string | null;
   is_read_by_customer: boolean;
   is_read_by_mester: boolean;
+  is_blurred: boolean;
   created_at: string;
 }
 
@@ -909,12 +910,18 @@ export async function getThread(threadId: string): Promise<MessageThread> {
 
 export async function listMessages(
   threadId: string,
-  params: { limit?: number; skip?: number; viewer_type?: "customer" | "mester" } = {},
+  params: {
+    limit?: number;
+    skip?: number;
+    viewer_type?: "customer" | "mester";
+    mester_id?: string;
+  } = {},
 ): Promise<Message[]> {
   const search = new URLSearchParams();
   if (params.limit !== undefined) search.set("limit", String(params.limit));
   if (params.skip !== undefined) search.set("skip", String(params.skip));
   if (params.viewer_type) search.set("viewer_type", params.viewer_type);
+  if (params.mester_id) search.set("mester_id", params.mester_id);
   const res = await fetch(
     `${API_BASE_URL}/messages/threads/${threadId}/messages${search.toString() ? `?${search.toString()}` : ""}`,
   );
@@ -1397,7 +1404,7 @@ export async function getMyRequests(
 // Admin Request Management Functions
 export async function updateRequestStatus(
   requestId: string,
-  status: CustomerRequest['status']
+  status: CustomerRequest["status"],
 ): Promise<CustomerRequest> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -1413,11 +1420,11 @@ export async function updateRequestStatus(
   }
 
   const response = await fetch(`${API_BASE_URL}/requests/${requestId}`, {
-    method: 'PATCH',
+    method: "PATCH",
     headers,
     body: JSON.stringify({ status }),
   });
-  
+
   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
   return await response.json();
 }
@@ -1444,15 +1451,17 @@ export async function deleteRequest(requestId: string): Promise<{
   }
 
   const response = await fetch(`${API_BASE_URL}/requests/${requestId}`, {
-    method: 'DELETE',
+    method: "DELETE",
     headers,
   });
-  
+
   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
   return await response.json();
 }
 
-export async function getRequestById(requestId: string): Promise<CustomerRequest> {
+export async function getRequestById(
+  requestId: string,
+): Promise<CustomerRequest> {
   const response = await fetch(`${API_BASE_URL}/requests/${requestId}`);
   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
   return await response.json();
@@ -1615,6 +1624,56 @@ export interface ProStatus {
   display_name?: string | null;
 }
 
+// Admin interfaces
+export interface AdminCustomer {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  firebase_uid?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface AdminCustomerListResponse {
+  users: AdminCustomer[];
+  total: number;
+  page: number;
+  per_page: number;
+}
+
+export interface AdminCustomerStats {
+  total_users: number;
+  active_users: number;
+  users_with_requests: number;
+  users_with_messages: number;
+}
+
+export interface AdminRequestStats {
+  total_requests: number;
+  open_requests: number;
+  completed_requests: number;
+  cancelled_requests: number;
+}
+
+export interface AdminOverviewStats {
+  overview: {
+    total_users: number;
+    total_mesters: number;
+    total_requests: number;
+    total_services: number;
+    total_categories: number;
+  };
+  recent_activity: {
+    new_users_7d: number;
+    new_requests_7d: number;
+  };
+  status: {
+    open_requests: number;
+    active_mesters: number;
+  };
+}
+
 export async function fetchProStatus(email: string): Promise<ProStatus> {
   const res = await fetch(
     `${API_BASE_URL}/v1/users/pro-status?email=${encodeURIComponent(email)}`,
@@ -1658,7 +1717,7 @@ export interface BestMatch {
   review_count: number;
   years_experience?: number;
   is_verified: boolean;
-  category: "frequently_hired" | "responds_quickly" | "highly_rated";
+  category: "most_experienced" | "verified_pro" | "highly_rated";
   is_top_pro: boolean;
 }
 
@@ -1718,6 +1777,253 @@ export async function createOffer(
 export async function getOffer(offerId: string): Promise<Offer> {
   const response = await fetch(`${API_BASE_URL}/offers/${offerId}`);
   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
+}
+
+// -----------------------------
+// Pricing API
+// -----------------------------
+
+export interface LeadPriceBreakdown {
+  expected_job_value: number;
+  value_source: string;
+  target_take_rate: number;
+  base_price_before_constraints: number;
+  price_floor: number;
+  price_cap: number;
+  final_price: number;
+  applied_constraint?: string | null;
+}
+
+export interface JobMetrics {
+  estimated_job_value_min: number;
+  estimated_job_value_max: number;
+  estimated_job_value_midpoint: number;
+  customer_budget?: number | null;
+  has_customer_budget: boolean;
+  expected_roi: number;
+  expected_profit_min: number;
+  expected_profit_max: number;
+  win_rate_min: number;
+  win_rate_max: number;
+  win_rate_avg: number;
+  expected_value: number;
+  competition_level: string;
+  urgency_score: number;
+}
+
+export interface LeadPrice {
+  request_id: string;
+  price: number;
+  currency: string;
+  band_code: string;
+  band_label: string;
+  band_description?: string | null;
+  seats_available: number;
+  estimated_close_rate: number;
+  breakdown: LeadPriceBreakdown;
+  job_metrics: JobMetrics;
+  value_proposition: string;
+}
+
+export async function getLeadPrice(requestId: string): Promise<LeadPrice> {
+  const response = await fetch(`${API_BASE_URL}/pricing/lead/${requestId}`);
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
+}
+
+export async function getThreadLeadPrice(threadId: string): Promise<LeadPrice> {
+  const response = await fetch(`${API_BASE_URL}/pricing/thread/${threadId}`);
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
+}
+
+// -----------------------------
+// Payment API (Stripe)
+// -----------------------------
+
+export interface PaymentIntent {
+  payment_id: string;
+  client_secret: string;
+  amount: number;
+  currency: string;
+  status: string;
+}
+
+export async function createPaymentIntent(
+  requestId: string,
+  mesterId: string,
+  threadId?: string,
+): Promise<PaymentIntent> {
+  const response = await fetch(
+    `${API_BASE_URL}/payments/create-intent?mester_id=${mesterId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        request_id: requestId,
+        thread_id: threadId,
+      }),
+    },
+  );
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ detail: "Payment failed" }));
+    throw new Error(error.detail || "Failed to create payment intent");
+  }
+  return await response.json();
+}
+
+export async function confirmPayment(paymentIntentId: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/payments/confirm`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      payment_intent_id: paymentIntentId,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to confirm payment");
+  }
+}
+
+export async function checkLeadAccess(
+  requestId: string,
+  mesterId: string,
+): Promise<boolean> {
+  const response = await fetch(
+    `${API_BASE_URL}/payments/check-access/${requestId}?mester_id=${mesterId}`,
+  );
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  const data = await response.json();
+  return data.has_access;
+}
+
+// -----------------------------
+// Saved Payment Methods API
+// -----------------------------
+
+export interface SavedPaymentMethod {
+  id: string;
+  mester_id: string;
+  stripe_payment_method_id: string;
+  card_brand: string | null;
+  card_last4: string | null;
+  card_exp_month: number | null;
+  card_exp_year: number | null;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string | null;
+}
+
+export interface SavedPaymentMethodList {
+  payment_methods: SavedPaymentMethod[];
+  total: number;
+}
+
+export async function listSavedPaymentMethods(
+  mesterId: string,
+): Promise<SavedPaymentMethodList> {
+  const response = await fetch(
+    `${API_BASE_URL}/payments/payment-methods?mester_id=${mesterId}`,
+  );
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
+}
+
+export async function savePaymentMethod(
+  mesterId: string,
+  stripePaymentMethodId: string,
+  isDefault: boolean = false,
+): Promise<SavedPaymentMethod> {
+  const response = await fetch(
+    `${API_BASE_URL}/payments/payment-methods?mester_id=${mesterId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        stripe_payment_method_id: stripePaymentMethodId,
+        is_default: isDefault,
+      }),
+    },
+  );
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ detail: "Failed to save payment method" }));
+    throw new Error(error.detail || "Failed to save payment method");
+  }
+  return await response.json();
+}
+
+export async function setDefaultPaymentMethod(
+  mesterId: string,
+  paymentMethodId: string,
+): Promise<SavedPaymentMethod> {
+  const response = await fetch(
+    `${API_BASE_URL}/payments/payment-methods/${paymentMethodId}?mester_id=${mesterId}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        is_default: true,
+      }),
+    },
+  );
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ detail: "Failed to update payment method" }));
+    throw new Error(error.detail || "Failed to update payment method");
+  }
+  return await response.json();
+}
+
+export async function deleteSavedPaymentMethod(
+  mesterId: string,
+  paymentMethodId: string,
+): Promise<void> {
+  const response = await fetch(
+    `${API_BASE_URL}/payments/payment-methods/${paymentMethodId}?mester_id=${mesterId}`,
+    {
+      method: "DELETE",
+    },
+  );
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ detail: "Failed to delete payment method" }));
+    throw new Error(error.detail || "Failed to delete payment method");
+  }
+}
+
+export async function createPaymentIntentWithMethod(
+  requestId: string,
+  mesterId: string,
+  threadId?: string,
+  paymentMethodId?: string,
+  savePaymentMethod: boolean = false,
+): Promise<PaymentIntent> {
+  const response = await fetch(
+    `${API_BASE_URL}/payments/create-intent-v2?mester_id=${mesterId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        request_id: requestId,
+        thread_id: threadId,
+        payment_method_id: paymentMethodId,
+        save_payment_method: savePaymentMethod,
+      }),
+    },
+  );
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({ detail: "Payment failed" }));
+    throw new Error(error.detail || "Failed to create payment intent");
+  }
   return await response.json();
 }
 
@@ -1931,36 +2237,308 @@ export async function updateNotificationPreferences(
 }
 
 // Onboarding cleanup functions
-export async function cleanupOnboardingByEmail(email: string): Promise<{ message: string; deleted_count: number }> {
-  const response = await fetch(`${API_BASE_URL}/cleanup/onboarding/by-email/${encodeURIComponent(email)}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+export async function cleanupOnboardingByEmail(
+  email: string,
+): Promise<{ message: string; deleted_count: number }> {
+  const response = await fetch(
+    `${API_BASE_URL}/cleanup/onboarding/by-email/${encodeURIComponent(email)}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 
   if (!response.ok) {
-    throw new Error(`Failed to cleanup onboarding drafts: ${response.statusText}`);
+    throw new Error(
+      `Failed to cleanup onboarding drafts: ${response.statusText}`,
+    );
   }
 
   return response.json();
 }
 
-export async function cleanupAbandonedOnboarding(daysOld: number = 7): Promise<{ message: string; deleted_count: number }> {
-  const response = await fetch(`${API_BASE_URL}/cleanup/onboarding/abandoned?days_old=${daysOld}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+// Admin API functions
+export async function fetchAdminCustomers(params: {
+  page?: number;
+  per_page?: number;
+  search?: string;
+  sort_by?: string;
+  sort_order?: "asc" | "desc";
+}): Promise<AdminCustomerListResponse> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add authentication token if available
+  if (typeof window !== "undefined") {
+    const { auth } = await import("@/firebase");
+    const token = await auth.currentUser?.getIdToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const searchParams = new URLSearchParams();
+
+  if (params.page) searchParams.append("page", params.page.toString());
+  if (params.per_page)
+    searchParams.append("per_page", params.per_page.toString());
+  if (params.search) searchParams.append("search", params.search);
+  if (params.sort_by) searchParams.append("sort_by", params.sort_by);
+  if (params.sort_order) searchParams.append("sort_order", params.sort_order);
+
+  const response = await fetch(`${API_BASE_URL}/admin/users?${searchParams}`, {
+    headers,
   });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchAdminCustomer(
+  customerId: string,
+): Promise<AdminCustomer> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add authentication token if available
+  if (typeof window !== "undefined") {
+    const { auth } = await import("@/firebase");
+    const token = await auth.currentUser?.getIdToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const response = await fetch(`${API_BASE_URL}/admin/users/${customerId}`, {
+    headers,
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function updateAdminCustomer(
+  customerId: string,
+  data: Partial<AdminCustomer>,
+): Promise<AdminCustomer> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add authentication token if available
+  if (typeof window !== "undefined") {
+    const { auth } = await import("@/firebase");
+    const token = await auth.currentUser?.getIdToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const response = await fetch(`${API_BASE_URL}/admin/users/${customerId}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function deleteAdminCustomer(
+  customerId: string,
+): Promise<{ message: string }> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add authentication token if available
+  if (typeof window !== "undefined") {
+    const { auth } = await import("@/firebase");
+    const token = await auth.currentUser?.getIdToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const response = await fetch(`${API_BASE_URL}/admin/users/${customerId}`, {
+    method: "DELETE",
+    headers,
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchAdminCustomerStats(): Promise<AdminCustomerStats> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add authentication token if available
+  if (typeof window !== "undefined") {
+    const { auth } = await import("@/firebase");
+    const token = await auth.currentUser?.getIdToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const response = await fetch(`${API_BASE_URL}/admin/stats/users`, {
+    headers,
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchAdminRequestStats(): Promise<AdminRequestStats> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add authentication token if available
+  if (typeof window !== "undefined") {
+    const { auth } = await import("@/firebase");
+    const token = await auth.currentUser?.getIdToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const response = await fetch(`${API_BASE_URL}/admin/stats/requests`, {
+    headers,
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchAdminOverviewStats(): Promise<AdminOverviewStats> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add authentication token if available
+  if (typeof window !== "undefined") {
+    const { auth } = await import("@/firebase");
+    const token = await auth.currentUser?.getIdToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const response = await fetch(`${API_BASE_URL}/admin/stats/overview`, {
+    headers,
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchAdminCustomerRequests(
+  customerId: string,
+  params?: {
+    status?: string;
+    limit?: number;
+  },
+): Promise<{ user_id: string; requests: CustomerRequest[]; total: number }> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add authentication token if available
+  if (typeof window !== "undefined") {
+    const { auth } = await import("@/firebase");
+    const token = await auth.currentUser?.getIdToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const searchParams = new URLSearchParams();
+  if (params?.status) searchParams.append("status", params.status);
+  if (params?.limit) searchParams.append("limit", params.limit.toString());
+
+  const response = await fetch(
+    `${API_BASE_URL}/admin/users/${customerId}/requests?${searchParams}`,
+    {
+      headers,
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchAdminCustomerMessages(
+  customerId: string,
+  params?: {
+    limit?: number;
+  },
+): Promise<{ user_id: string; threads: MessageThread[]; total: number }> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add authentication token if available
+  if (typeof window !== "undefined") {
+    const { auth } = await import("@/firebase");
+    const token = await auth.currentUser?.getIdToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const searchParams = new URLSearchParams();
+  if (params?.limit) searchParams.append("limit", params.limit.toString());
+
+  const response = await fetch(
+    `${API_BASE_URL}/admin/users/${customerId}/messages?${searchParams}`,
+    {
+      headers,
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function cleanupAbandonedOnboarding(
+  daysOld: number = 7,
+): Promise<{ message: string; deleted_count: number }> {
+  const response = await fetch(
+    `${API_BASE_URL}/cleanup/onboarding/abandoned?days_old=${daysOld}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
 
   if (!response.ok) {
-    throw new Error(`Failed to cleanup abandoned onboarding drafts: ${response.statusText}`);
+    throw new Error(
+      `Failed to cleanup abandoned onboarding drafts: ${response.statusText}`,
+    );
   }
 
   return response.json();
 }
 
+// Admin API functions
 export async function getOnboardingStats(): Promise<{
   total_drafts: number;
   submitted_drafts: number;
@@ -1970,9 +2548,9 @@ export async function getOnboardingStats(): Promise<{
   submission_rate: number;
 }> {
   const response = await fetch(`${API_BASE_URL}/cleanup/onboarding/stats`, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
 
@@ -1981,4 +2559,182 @@ export async function getOnboardingStats(): Promise<{
   }
 
   return response.json();
+}
+
+// Admin API functions
+
+// -----------------------------
+// Appointment Proposals API
+// -----------------------------
+
+export interface AppointmentProposal {
+  id: string;
+  thread_id: string;
+  mester_id: string;
+  request_id: string;
+  customer_user_id?: string | null;
+  proposed_date: string;
+  duration_minutes?: number | null;
+  location?: string | null;
+  notes?: string | null;
+  status: "proposed" | "accepted" | "rejected" | "cancelled" | "expired";
+  response_message?: string | null;
+  responded_at?: string | null;
+  expires_at?: string | null;
+  created_at: string;
+  updated_at?: string | null;
+  appointment_id?: string | null;
+  
+  // Offer details (price quote)
+  offer_id?: string | null;
+  price?: number | null;
+  currency?: string | null;
+  offer_message?: string | null;
+  offer_status?: string | null;
+  
+  // Request details
+  request_service_id?: string | null;
+  request_service_name?: string | null;
+  request_customer_name?: string | null;
+  request_postal_code?: string | null;
+  request_message?: string | null;
+}
+
+export interface AppointmentProposalCreate {
+  proposed_date: string;
+  duration_minutes?: number;
+  location?: string;
+  notes?: string;
+  // Offer details (price quote) - REQUIRED
+  price: number;
+  currency?: string;
+  offer_message?: string;
+}
+
+export interface AppointmentProposalAccept {
+  response_message?: string;
+}
+
+export interface AppointmentProposalReject {
+  response_message?: string;
+}
+
+/**
+ * Create an appointment proposal for a thread (mester action)
+ */
+export async function createAppointmentProposal(
+  threadId: string,
+  mesterId: string,
+  payload: AppointmentProposalCreate,
+): Promise<AppointmentProposal> {
+  const response = await fetch(
+    `${API_BASE_URL}/appointments/threads/${threadId}/proposals?mester_id=${mesterId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    },
+  );
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
+}
+
+/**
+ * List all appointment proposals for a thread
+ */
+export async function listAppointmentProposals(
+  threadId: string,
+  status?: string,
+): Promise<AppointmentProposal[]> {
+  const searchParams = new URLSearchParams();
+  if (status) searchParams.set("status", status);
+
+  const response = await fetch(
+    `${API_BASE_URL}/appointments/threads/${threadId}/proposals${searchParams.toString() ? `?${searchParams.toString()}` : ""}`,
+  );
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
+}
+
+/**
+ * Get a specific appointment proposal
+ */
+export async function getAppointmentProposal(
+  proposalId: string,
+): Promise<AppointmentProposal> {
+  const response = await fetch(
+    `${API_BASE_URL}/appointments/proposals/${proposalId}`,
+  );
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
+}
+
+/**
+ * Accept an appointment proposal (customer action)
+ */
+export async function acceptAppointmentProposal(
+  proposalId: string,
+  customerUserId: string,
+  payload: AppointmentProposalAccept = {},
+): Promise<AppointmentProposal> {
+  const response = await fetch(
+    `${API_BASE_URL}/appointments/proposals/${proposalId}/accept?customer_user_id=${customerUserId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    },
+  );
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
+}
+
+/**
+ * Reject an appointment proposal (customer action)
+ */
+export async function rejectAppointmentProposal(
+  proposalId: string,
+  customerUserId: string,
+  payload: AppointmentProposalReject = {},
+): Promise<AppointmentProposal> {
+  const response = await fetch(
+    `${API_BASE_URL}/appointments/proposals/${proposalId}/reject?customer_user_id=${customerUserId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    },
+  );
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
+}
+
+/**
+ * Cancel an appointment proposal (mester action)
+ */
+export async function cancelAppointmentProposal(
+  proposalId: string,
+  mesterId: string,
+): Promise<AppointmentProposal> {
+  const response = await fetch(
+    `${API_BASE_URL}/appointments/proposals/${proposalId}/cancel?mester_id=${mesterId}`,
+    {
+      method: "POST",
+    },
+  );
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
+}
+
+/**
+ * Get accepted appointments for a mester
+ */
+export async function getAcceptedAppointments(
+  mesterId: string,
+): Promise<AppointmentProposal[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/appointments/mesters/${mesterId}/proposals?status=accepted`,
+  );
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  return await response.json();
 }

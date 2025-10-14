@@ -570,6 +570,9 @@ class Mester(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
+    user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=True, index=True
+    )
     full_name: Mapped[str] = mapped_column(String(150), nullable=False, index=True)
     slug: Mapped[str] = mapped_column(
         String(160), nullable=False, unique=True, index=True
@@ -593,6 +596,11 @@ class Mester(Base):
     # Verification and status
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    
+    # Stripe integration
+    stripe_customer_id: Mapped[Optional[str]] = mapped_column(
+        String(255), nullable=True, unique=True, index=True
+    )
 
     # Location anchoring for geo search
     home_city_id: Mapped[Optional[uuid.UUID]] = mapped_column(
@@ -609,6 +617,7 @@ class Mester(Base):
     )
 
     # Relationships
+    user: Mapped[Optional["User"]] = relationship("User")
     home_city: Mapped[Optional["City"]] = relationship("City")
     services: Mapped[List["MesterService"]] = relationship(
         "MesterService", back_populates="mester", cascade="all, delete-orphan"
@@ -618,6 +627,9 @@ class Mester(Base):
     )
     reviews: Mapped[List["MesterReview"]] = relationship(
         "MesterReview", back_populates="mester", cascade="all, delete-orphan"
+    )
+    calendar: Mapped[Optional["MesterCalendar"]] = relationship(
+        "MesterCalendar", back_populates="mester", uselist=False
     )
 
     __table_args__ = (Index("ix_mesters_active_city", "is_active", "home_city_id"),)
@@ -1212,6 +1224,392 @@ class NotificationLog(Base):
 
 
 # -----------------------------
+# Appointment Proposal models
+# -----------------------------
+
+
+class AppointmentProposalStatus(str, enum.Enum):
+    """Appointment proposal status enum"""
+
+    PROPOSED = "proposed"
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+    CANCELLED = "cancelled"
+    EXPIRED = "expired"
+
+
+class AppointmentProposal(Base):
+    """Appointment time proposal from mester to customer"""
+
+    __tablename__ = "appointment_proposals"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    thread_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("message_threads.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    mester_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, index=True
+    )
+    request_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("requests.id"), nullable=False, index=True
+    )
+    customer_user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=True, index=True
+    )
+    offer_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("offers.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+
+    # Proposed appointment details
+    proposed_date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    duration_minutes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    location: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    status: Mapped[AppointmentProposalStatus] = mapped_column(
+        Enum(AppointmentProposalStatus, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=AppointmentProposalStatus.PROPOSED,
+        index=True,
+    )
+
+    # Response details
+    response_message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    responded_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+    # Expiration
+    expires_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()"), index=True
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+
+    # Relationships
+    thread: Mapped["MessageThread"] = relationship("MessageThread")
+    mester: Mapped["Mester"] = relationship("Mester")
+    request: Mapped["Request"] = relationship("Request")
+    customer: Mapped[Optional["User"]] = relationship("User")
+    offer: Mapped[Optional["Offer"]] = relationship("Offer")
+    appointment: Mapped[Optional["Appointment"]] = relationship(
+        "Appointment", back_populates="proposal", uselist=False
+    )
+
+    __table_args__ = (
+        Index("ix_appointment_proposals_thread_status", "thread_id", "status"),
+        Index("ix_appointment_proposals_mester_status", "mester_id", "status"),
+    )
+
+
+# -----------------------------
+# Appointment and Calendar models
+# -----------------------------
+
+
+class AppointmentStatus(str, enum.Enum):
+    """Appointment status enum"""
+    CONFIRMED = "confirmed"  # Appointment confirmed and scheduled
+    RESCHEDULED = "rescheduled"  # Appointment was rescheduled
+    CANCELLED_BY_CUSTOMER = "cancelled_by_customer"
+    CANCELLED_BY_MESTER = "cancelled_by_mester"
+    COMPLETED = "completed"  # Service was completed
+    NO_SHOW = "no_show"  # Customer didn't show up
+
+
+class Appointment(Base):
+    """Actual confirmed appointment record"""
+    
+    __tablename__ = "appointments"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    proposal_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), 
+        ForeignKey("appointment_proposals.id"), 
+        nullable=False, 
+        index=True
+    )
+    thread_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("message_threads.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    mester_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, index=True
+    )
+    request_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("requests.id"), nullable=False, index=True
+    )
+    customer_user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True
+    )
+    
+    # Appointment details
+    scheduled_start: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, index=True
+    )
+    scheduled_end: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, index=True
+    )
+    duration_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
+    
+    # Location
+    location: Mapped[str] = mapped_column(Text, nullable=False)
+    location_address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    location_coordinates: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)  # "lat,lng"
+    
+    # Notes
+    mester_notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    customer_notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    internal_notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Status
+    status: Mapped[AppointmentStatus] = mapped_column(
+        Enum(AppointmentStatus, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=AppointmentStatus.CONFIRMED,
+        index=True,
+    )
+    
+    # Cancellation info
+    cancelled_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    cancellation_reason: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Completion info
+    completed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    
+    # Reschedule tracking
+    rescheduled_from_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("appointments.id"), nullable=True
+    )
+    rescheduled_to_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("appointments.id"), nullable=True
+    )
+    
+    # Confirmation tracking
+    confirmed_by_customer_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    confirmed_by_mester_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    
+    # Calendar integration
+    google_calendar_event_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    ical_uid: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()"), index=True
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+    
+    # Relationships
+    proposal: Mapped["AppointmentProposal"] = relationship(
+        "AppointmentProposal", back_populates="appointment"
+    )
+    thread: Mapped["MessageThread"] = relationship("MessageThread")
+    mester: Mapped["Mester"] = relationship("Mester")
+    request: Mapped["Request"] = relationship("Request")
+    customer: Mapped["User"] = relationship("User")
+    
+    __table_args__ = (
+        Index("ix_appointments_mester_date", "mester_id", "scheduled_start"),
+        Index("ix_appointments_customer_date", "customer_user_id", "scheduled_start"),
+        Index("ix_appointments_status", "status"),
+    )
+
+
+class MesterCalendar(Base):
+    """Mester's calendar and availability settings"""
+    
+    __tablename__ = "mester_calendars"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    mester_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, unique=True, index=True
+    )
+    
+    # Timezone
+    timezone: Mapped[str] = mapped_column(String(50), nullable=False, default="Europe/Budapest")
+    
+    # Default working hours (JSON format: {"monday": {"start": "09:00", "end": "17:00"}, ...})
+    default_working_hours: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
+    
+    # Buffer time between appointments (minutes)
+    buffer_minutes: Mapped[int] = mapped_column(Integer, nullable=False, default=15)
+    
+    # Minimum advance booking time (hours)
+    min_advance_hours: Mapped[int] = mapped_column(Integer, nullable=False, default=24)
+    
+    # Maximum advance booking time (days)
+    max_advance_days: Mapped[int] = mapped_column(Integer, nullable=False, default=90)
+    
+    # Default appointment duration (minutes)
+    default_duration_minutes: Mapped[int] = mapped_column(Integer, nullable=False, default=60)
+    
+    # Allow online booking
+    allow_online_booking: Mapped[bool] = mapped_column(Boolean, default=True)
+    
+    # Google Calendar sync
+    google_calendar_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    google_calendar_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    google_refresh_token: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    google_access_token: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    google_token_expires_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()")
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+    
+    # Relationships
+    mester: Mapped["Mester"] = relationship("Mester", back_populates="calendar")
+
+
+class MesterAvailabilitySlot(Base):
+    """Specific time slots when mester is available or unavailable"""
+    
+    __tablename__ = "mester_availability_slots"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    mester_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, index=True
+    )
+    
+    # Time slot
+    start_time: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, index=True
+    )
+    end_time: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, index=True
+    )
+    
+    # Availability type
+    is_available: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    
+    # Reason/notes (e.g., "Lunch break", "Out of office", "Available for emergency calls")
+    reason: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Recurring pattern (if applicable)
+    is_recurring: Mapped[bool] = mapped_column(Boolean, default=False)
+    recurrence_pattern: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()")
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+    
+    # Relationships
+    mester: Mapped["Mester"] = relationship("Mester")
+    
+    __table_args__ = (
+        Index("ix_mester_availability_mester_time", "mester_id", "start_time", "end_time"),
+    )
+
+
+class ReminderStatus(str, enum.Enum):
+    """Reminder status enum"""
+    SCHEDULED = "scheduled"
+    SENT = "sent"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+
+class AppointmentReminder(Base):
+    """Scheduled reminders for appointments"""
+    
+    __tablename__ = "appointment_reminders"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    appointment_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("appointments.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    
+    # Recipient
+    recipient_type: Mapped[str] = mapped_column(
+        String(20), nullable=False  # "customer" or "mester"
+    )
+    recipient_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), nullable=False
+    )
+    
+    # Timing
+    remind_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, index=True
+    )
+    minutes_before: Mapped[int] = mapped_column(
+        Integer, nullable=False  # e.g., 1440 for 24 hours before
+    )
+    
+    # Delivery method
+    send_email: Mapped[bool] = mapped_column(Boolean, default=True)
+    send_sms: Mapped[bool] = mapped_column(Boolean, default=False)
+    send_push: Mapped[bool] = mapped_column(Boolean, default=True)
+    
+    # Status
+    status: Mapped[ReminderStatus] = mapped_column(
+        Enum(ReminderStatus, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=ReminderStatus.SCHEDULED,
+        index=True,
+    )
+    
+    # Delivery tracking
+    sent_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    error_message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()")
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+    
+    # Relationships
+    appointment: Mapped["Appointment"] = relationship("Appointment")
+    
+    __table_args__ = (
+        Index("ix_appointment_reminders_status_time", "status", "remind_at"),
+    )
+
+
+# -----------------------------
 # Pricing models (Price Bands)
 # -----------------------------
 
@@ -1282,4 +1680,544 @@ class PriceBandMapping(Base):
     __table_args__ = (
         UniqueConstraint("category_id", "subcategory_id", name="uq_price_band_cat_subcat"),
         Index("ix_price_band_mapping_band", "price_band_id"),
+    )
+
+
+# -----------------------------
+# Payment models (Stripe Integration)
+# -----------------------------
+
+
+class PaymentStatus(str, enum.Enum):
+    """Payment status enum"""
+    PENDING = "pending"
+    PROCESSING = "processing"
+    SUCCEEDED = "succeeded"
+    FAILED = "failed"
+    CANCELED = "canceled"
+    REFUNDED = "refunded"
+
+
+class Payment(Base):
+    """Payment transaction record for Stripe payments"""
+
+    __tablename__ = "payments"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    mester_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, index=True
+    )
+    amount: Mapped[int] = mapped_column(Integer, nullable=False)  # Amount in smallest currency unit (e.g., cents, fillér)
+    currency: Mapped[str] = mapped_column(String(3), nullable=False, default="HUF")
+    status: Mapped[PaymentStatus] = mapped_column(
+        Enum(PaymentStatus), nullable=False, default=PaymentStatus.PENDING, index=True
+    )
+    
+    # Stripe-specific fields
+    stripe_payment_intent_id: Mapped[Optional[str]] = mapped_column(
+        String(255), nullable=True, unique=True, index=True
+    )
+    stripe_client_secret: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    stripe_charge_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    
+    # Metadata
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    payment_metadata: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
+    
+    # Refund info
+    refunded_amount: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, default=0)
+    refund_reason: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()"), index=True
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+    completed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+    # Relationships
+    mester: Mapped["Mester"] = relationship("Mester")
+    lead_purchases: Mapped[List["LeadPurchase"]] = relationship(
+        "LeadPurchase", back_populates="payment", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        Index("ix_payments_mester_status", "mester_id", "status"),
+        Index("ix_payments_created", "created_at"),
+    )
+
+
+class LeadPurchase(Base):
+    """Tracks which mesters have purchased which leads (requests)"""
+
+    __tablename__ = "lead_purchases"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    payment_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("payments.id"), nullable=False, index=True
+    )
+    mester_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, index=True
+    )
+    request_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("requests.id"), nullable=False, index=True
+    )
+    thread_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("message_threads.id"), nullable=True, index=True
+    )
+    
+    # Pricing snapshot at time of purchase
+    price_paid: Mapped[int] = mapped_column(Integer, nullable=False)
+    currency: Mapped[str] = mapped_column(String(3), nullable=False, default="HUF")
+    price_band_code: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
+    
+    # Lead details snapshot
+    lead_details: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
+    
+    # Access tracking
+    unlocked_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()"), index=True
+    )
+    first_message_sent_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()")
+    )
+
+    # Relationships
+    payment: Mapped["Payment"] = relationship("Payment", back_populates="lead_purchases")
+    mester: Mapped["Mester"] = relationship("Mester")
+    request: Mapped["Request"] = relationship("Request")
+    thread: Mapped[Optional["MessageThread"]] = relationship("MessageThread")
+
+    __table_args__ = (
+        UniqueConstraint("mester_id", "request_id", name="uq_mester_request_purchase"),
+        Index("ix_lead_purchases_mester_unlocked", "mester_id", "unlocked_at"),
+    )
+
+
+class SavedPaymentMethod(Base):
+    """Saved payment methods for mesters to reuse for lead purchases"""
+    
+    __tablename__ = "saved_payment_methods"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    mester_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, index=True
+    )
+    
+    # Stripe payment method ID
+    stripe_payment_method_id: Mapped[str] = mapped_column(
+        String(255), nullable=False, unique=True, index=True
+    )
+    
+    # Payment method details (for display purposes)
+    card_brand: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    card_last4: Mapped[Optional[str]] = mapped_column(String(4), nullable=True)
+    card_exp_month: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    card_exp_year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    
+    # Metadata
+    is_default: Mapped[bool] = mapped_column(Boolean, default=False)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()")
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+    
+    # Relationships
+    mester: Mapped["Mester"] = relationship("Mester")
+    
+    __table_args__ = (
+        Index("ix_saved_payment_methods_mester_default", "mester_id", "is_default"),
+    )
+
+
+# -----------------------------
+# Job/Project Management models
+# -----------------------------
+
+
+class JobStatus(str, enum.Enum):
+    """Job status enum for tracking job lifecycle"""
+    PENDING = "pending"  # Job created, not started yet
+    IN_PROGRESS = "in_progress"  # Work has begun
+    ON_HOLD = "on_hold"  # Temporarily paused
+    COMPLETED = "completed"  # Job finished
+    CANCELLED = "cancelled"  # Job cancelled
+
+
+class Job(Base):
+    """Job/Project record tracking the actual work being performed"""
+    
+    __tablename__ = "jobs"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    request_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("requests.id"), nullable=False, index=True
+    )
+    appointment_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("appointments.id"), nullable=True, index=True
+    )
+    mester_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=False, index=True
+    )
+    customer_user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True
+    )
+    thread_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("message_threads.id"), nullable=True, index=True
+    )
+    
+    # Job details
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Status tracking
+    status: Mapped[JobStatus] = mapped_column(
+        Enum(JobStatus, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=JobStatus.PENDING,
+        index=True,
+    )
+    
+    # Timeline
+    scheduled_start_date: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True, index=True
+    )
+    scheduled_end_date: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    actual_start_date: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    actual_end_date: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    
+    # Financial
+    estimated_cost: Mapped[Optional[float]] = mapped_column(
+        Numeric(precision=10, scale=2), nullable=True
+    )
+    final_cost: Mapped[Optional[float]] = mapped_column(
+        Numeric(precision=10, scale=2), nullable=True
+    )
+    currency: Mapped[str] = mapped_column(String(3), nullable=False, default="HUF")
+    
+    # Location
+    location: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    location_address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Completion tracking
+    # customer_approved_at: Mapped[Optional[datetime]] = mapped_column(
+    #     DateTime(timezone=True), nullable=True
+    # )  # REMOVED: No approval step needed
+    mester_marked_complete_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    
+    # Customer satisfaction
+    customer_satisfaction_rating: Mapped[Optional[int]] = mapped_column(
+        Integer, nullable=True  # 1-5 scale
+    )
+    customer_feedback: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()"), index=True
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+    
+    # Relationships
+    request: Mapped["Request"] = relationship("Request")
+    appointment: Mapped[Optional["Appointment"]] = relationship("Appointment")
+    mester: Mapped["Mester"] = relationship("Mester")
+    customer: Mapped["User"] = relationship("User")
+    thread: Mapped[Optional["MessageThread"]] = relationship("MessageThread")
+    milestones: Mapped[List["JobMilestone"]] = relationship(
+        "JobMilestone", back_populates="job", cascade="all, delete-orphan"
+    )
+    documents: Mapped[List["JobDocument"]] = relationship(
+        "JobDocument", back_populates="job", cascade="all, delete-orphan"
+    )
+    status_history: Mapped[List["JobStatusHistory"]] = relationship(
+        "JobStatusHistory", back_populates="job", cascade="all, delete-orphan"
+    )
+    notes: Mapped[List["JobNote"]] = relationship(
+        "JobNote", back_populates="job", cascade="all, delete-orphan"
+    )
+    
+    __table_args__ = (
+        Index("ix_jobs_mester_status", "mester_id", "status"),
+        Index("ix_jobs_customer_status", "customer_user_id", "status"),
+        Index("ix_jobs_scheduled_start", "scheduled_start_date"),
+    )
+
+
+class MilestoneStatus(str, enum.Enum):
+    """Milestone status enum"""
+    PENDING = "pending"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    SKIPPED = "skipped"
+
+
+class JobMilestone(Base):
+    """Milestones/phases within a job"""
+    
+    __tablename__ = "job_milestones"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    job_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    
+    # Milestone details
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Status
+    status: Mapped[MilestoneStatus] = mapped_column(
+        Enum(MilestoneStatus, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=MilestoneStatus.PENDING,
+    )
+    
+    # Ordering
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    
+    # Timeline
+    scheduled_start: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    scheduled_end: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    actual_start: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    actual_end: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    
+    # Completion
+    completion_percentage: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    completion_notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()")
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+    
+    # Relationships
+    job: Mapped["Job"] = relationship("Job", back_populates="milestones")
+    documents: Mapped[List["JobDocument"]] = relationship(
+        "JobDocument", back_populates="milestone", cascade="all, delete-orphan"
+    )
+    
+    __table_args__ = (
+        Index("ix_job_milestones_job_order", "job_id", "order_index"),
+    )
+
+
+class DocumentType(str, enum.Enum):
+    """Document type enum"""
+    PHOTO = "photo"
+    DOCUMENT = "document"
+    INVOICE = "invoice"
+    CONTRACT = "contract"
+    RECEIPT = "receipt"
+    OTHER = "other"
+
+
+class DocumentCategory(str, enum.Enum):
+    """Document category for organizing uploads"""
+    BEFORE = "before"  # Before work photos
+    DURING = "during"  # Progress photos
+    AFTER = "after"  # Completion photos
+    INVOICE = "invoice"  # Invoices
+    CONTRACT = "contract"  # Contracts
+    PERMIT = "permit"  # Permits/licenses
+    OTHER = "other"
+
+
+class JobDocument(Base):
+    """Documents and photos related to a job"""
+    
+    __tablename__ = "job_documents"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    job_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    milestone_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("job_milestones.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    
+    # File details
+    file_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    file_url: Mapped[str] = mapped_column(Text, nullable=False)
+    file_size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # bytes
+    file_type: Mapped[str] = mapped_column(String(100), nullable=False)  # MIME type
+    
+    # Classification
+    document_type: Mapped[DocumentType] = mapped_column(
+        Enum(DocumentType, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=DocumentType.OTHER,
+    )
+    category: Mapped[DocumentCategory] = mapped_column(
+        Enum(DocumentCategory, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=DocumentCategory.OTHER,
+    )
+    
+    # Metadata
+    title: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Uploader info
+    uploaded_by_type: Mapped[str] = mapped_column(
+        String(20), nullable=False  # "customer" or "mester"
+    )
+    uploaded_by_user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=True
+    )
+    uploaded_by_mester_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=True
+    )
+    
+    # Visibility
+    is_visible_to_customer: Mapped[bool] = mapped_column(Boolean, default=True)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()"), index=True
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+    
+    # Relationships
+    job: Mapped["Job"] = relationship("Job", back_populates="documents")
+    milestone: Mapped[Optional["JobMilestone"]] = relationship(
+        "JobMilestone", back_populates="documents"
+    )
+    
+    __table_args__ = (
+        Index("ix_job_documents_job_category", "job_id", "category"),
+        Index("ix_job_documents_type", "document_type"),
+    )
+
+
+class JobStatusHistory(Base):
+    """Audit trail of job status changes"""
+    
+    __tablename__ = "job_status_history"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    job_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    
+    # Status change
+    previous_status: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    new_status: Mapped[str] = mapped_column(String(50), nullable=False)
+    
+    # Changed by
+    changed_by_type: Mapped[str] = mapped_column(
+        String(20), nullable=False  # "customer" or "mester" or "system"
+    )
+    changed_by_user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=True
+    )
+    changed_by_mester_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=True
+    )
+    
+    # Notes
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    reason: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()"), index=True
+    )
+    
+    # Relationships
+    job: Mapped["Job"] = relationship("Job", back_populates="status_history")
+    
+    __table_args__ = (
+        Index("ix_job_status_history_job_created", "job_id", "created_at"),
+    )
+
+
+class JobNote(Base):
+    """CRM-style notes for jobs"""
+    
+    __tablename__ = "job_notes"
+    
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    job_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    
+    # Note content
+    title: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    
+    # Author
+    created_by_type: Mapped[str] = mapped_column(
+        String(20), nullable=False  # "customer" or "mester"
+    )
+    created_by_user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=True
+    )
+    created_by_mester_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("mesters.id"), nullable=True
+    )
+    
+    # Visibility
+    is_private: Mapped[bool] = mapped_column(
+        Boolean, default=False  # If True, only visible to mester (CRM note)
+    )
+    is_pinned: Mapped[bool] = mapped_column(Boolean, default=False)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("now()"), index=True
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), onupdate=text("now()")
+    )
+    
+    # Relationships
+    job: Mapped["Job"] = relationship("Job", back_populates="notes")
+    
+    __table_args__ = (
+        Index("ix_job_notes_job_created", "job_id", "created_at"),
+        Index("ix_job_notes_pinned", "job_id", "is_pinned"),
     )

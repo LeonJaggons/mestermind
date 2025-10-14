@@ -23,6 +23,7 @@ from .database import (
     MesterReview,
     PriceBand,
     PriceBandMapping,
+    SavedPaymentMethod,
 )
 from .schemas import (
     HealthResponse,
@@ -109,6 +110,7 @@ __all__ = [
     "MesterReview",
     "PriceBand",
     "PriceBandMapping",
+    "SavedPaymentMethod",
     "HealthResponse",
     "CategoryBase",
     "CategoryCreate",

@@ -1,0 +1,63 @@
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { subscribeToAuthChanges } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/api";
+import JobDetailView from "@/components/JobDetailView";
+import { ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export default function CustomerJobDetailPage() {
+  const router = useRouter();
+  const { id } = router.query;
+  const [checking, setChecking] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsub = subscribeToAuthChanges(async (user) => {
+      if (!user?.email) {
+        router.replace("/login");
+        return;
+      }
+      try {
+        const userData = await getCurrentUser();
+        if (userData?.id) {
+          setUserId(userData.id);
+        }
+      } catch (e) {
+        console.error("Failed to fetch user ID:", e);
+      }
+      setChecking(false);
+    });
+    return () => { if (unsub) unsub(); };
+  }, [router]);
+
+  if (checking || !id || !userId) {
+    return (
+      <main className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto p-6">
+        <Button
+          variant="ghost"
+          onClick={() => router.push("/jobs")}
+          className="mb-4"
+        >
+          <ChevronLeft className="h-4 w-4 mr-2" />
+          Back to Jobs
+        </Button>
+
+        <JobDetailView jobId={id as string} userType="customer" />
+      </div>
+    </main>
+  );
+}
+

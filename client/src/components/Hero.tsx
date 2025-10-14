@@ -72,7 +72,7 @@ export default function Hero() {
 
             {/* Search Bar */}
             <div className="w-full max-w-6xl mx-auto mb-6 px-4">
-              <div className="relative flex flex-col sm:flex-row items-stretch bg-white border border-gray-200 rounded-lg shadow-sm ">
+              <div className="relative flex flex-col sm:flex-row items-stretch bg-white border border-gray-200 rounded-lg shadow-sm">
                 <ServiceSearch
                   onSelect={(svc) => setSelectedService(svc)}
                   selectedService={selectedService}
@@ -84,14 +84,14 @@ export default function Hero() {
                   selectedLocation={selectedLocation}
                   onLocationSelect={setSelectedLocation}
                   placeholder="Enter location..."
-                  className="sm:min-w-[180px] h-16"
+                  className="sm:min-w-[180px]"
                 />
                 <div className="hidden sm:block w-px bg-gray-200"></div>
                 <Button
                   id="search-button"
                   onClick={handleSearch}
                   disabled={!selectedService || !selectedLocation}
-                  className="bg-blue-600 h-16 hover:bg-blue-700 text-white px-6 sm:px-8 py-4 sm:py-6 disabled:opacity-50 disabled:cursor-not-allowed min-h-17 rounded-t-none sm:rounded-t-lg sm:rounded-l-none rounded-b-lg sm:rounded-b-lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-4 sm:py-6 disabled:opacity-50 disabled:cursor-not-allowed rounded-t-none sm:rounded-t-lg sm:rounded-l-none rounded-b-lg sm:rounded-b-lg"
                 >
                   Search
                 </Button>

@@ -155,7 +155,6 @@ div[data-slot="card-header"] {
 }
 
 div[data-slot="card"] {
-    border-radius: 0px;
     padding-inline: 4px;
 }
 
@@ -222,9 +221,6 @@ div[data-slot="card-footer"] {
     @apply border-[var(--primary)] ring-2 ring-[var(--primary)];
 }
 
-button {
-    border-radius: 4px;
-}
 
 /* Brand color overrides for common Tailwind blue utilities used in the app */
 /* Backgrounds */
@@ -338,4 +334,46 @@ button {
         padding-left: 2rem;
         padding-right: 2rem;
     }
+}
+
+/* Fix Leaflet map z-index to not interfere with modals/dialogs */
+.leaflet-container {
+    z-index: 1 !important;
+}
+
+.leaflet-pane {
+    z-index: auto !important;
+}
+
+.leaflet-tile-pane {
+    z-index: 1 !important;
+}
+
+.leaflet-overlay-pane {
+    z-index: 2 !important;
+}
+
+.leaflet-shadow-pane {
+    z-index: 3 !important;
+}
+
+.leaflet-marker-pane {
+    z-index: 4 !important;
+}
+
+.leaflet-tooltip-pane {
+    z-index: 5 !important;
+}
+
+.leaflet-popup-pane {
+    z-index: 6 !important;
+}
+
+.leaflet-control {
+    z-index: 7 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+    z-index: 7 !important;
 }

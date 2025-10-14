@@ -46,6 +46,25 @@ def get_pro_status(
 ):
     # Normalize email
     normalized = email.strip().lower()
+    
+    # First, try to find user by email
+    user = db.query(User).filter(func.lower(User.email) == normalized).first()
+    
+    if user:
+        # Check if user has a mester profile
+        mester = db.query(Mester).filter(Mester.user_id == user.id).first()
+        if mester:
+            profile = (
+                db.query(MesterProfile).filter(MesterProfile.mester_id == mester.id).first()
+            )
+            return {
+                "is_pro": True,
+                "mester_id": str(mester.id),
+                "logo_url": getattr(profile, "logo_url", None) if profile else None,
+                "display_name": getattr(profile, "display_name", None) if profile else None,
+            }
+    
+    # Fallback: check by email in mester table (legacy)
     mester = db.query(Mester).filter(func.lower(Mester.email) == normalized).first()
     profile = None
     if not mester:

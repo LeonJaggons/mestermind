@@ -36,6 +36,7 @@ help:
 	@echo ""
 	@echo "🔧 Development:"
 	@echo "  setup-db        Initialize the database with sample data"
+	@echo "  seed-db         Seed database with all data from JSON files"
 	@echo "  reset-db        Reset the database (WARNING: destroys all data)"
 	@echo ""
 
@@ -146,6 +147,17 @@ setup-db:
 	python scripts/init_db.py
 	@echo "✅ Database initialized"
 
+seed-db:
+	@echo "🌱 Seeding database with all data..."
+	@cd api && \
+	if [ ! -d "venv" ]; then \
+		echo "Creating virtual environment first..."; \
+		./setup_venv.sh; \
+	fi && \
+	source venv/bin/activate && \
+	python scripts/seed_all.py
+	@echo "✅ Database seeded successfully"
+
 reset-db:
 	@echo "⚠️  WARNING: This will destroy all data in the database!"
 	@read -p "Are you sure? (y/N): " confirm && \
@@ -157,7 +169,7 @@ reset-db:
 			./setup_venv.sh; \
 		fi && \
 		source venv/bin/activate && \
-		python scripts/init_db.py; \
+		python scripts/seed_all.py; \
 		echo "✅ Database reset complete"; \
 	else \
 		echo "❌ Database reset cancelled"; \

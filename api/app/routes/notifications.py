@@ -42,13 +42,26 @@ async def list_notifications(
     Returns both read and unread notifications unless filtered.
     Includes total unread count.
     """
-    # Check if user is a mester
-    mester = db.query(Mester).filter(Mester.email == current_user.email).first()
+    # Check if user is a mester (try both user_id and email)
+    from sqlalchemy import or_, func
+    mester = db.query(Mester).filter(
+        or_(
+            Mester.user_id == current_user.id,
+            func.lower(Mester.email) == func.lower(current_user.email)
+        )
+    ).first()
 
     query = db.query(Notification)
 
+    # For mesters: show notifications with their mester_id OR their user_id
+    # For customers: show notifications with their user_id only
     if mester:
-        query = query.filter(Notification.mester_id == mester.id)
+        query = query.filter(
+            or_(
+                Notification.mester_id == mester.id,
+                Notification.user_id == current_user.id
+            )
+        )
     else:
         query = query.filter(Notification.user_id == current_user.id)
 
@@ -64,7 +77,12 @@ async def list_notifications(
     # Get unread count
     unread_query = db.query(Notification)
     if mester:
-        unread_query = unread_query.filter(Notification.mester_id == mester.id)
+        unread_query = unread_query.filter(
+            or_(
+                Notification.mester_id == mester.id,
+                Notification.user_id == current_user.id
+            )
+        )
     else:
         unread_query = unread_query.filter(Notification.user_id == current_user.id)
 

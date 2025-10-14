@@ -3,12 +3,16 @@ Database configuration and connection management for Mestermind API
 """
 
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, MetaData, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from typing import Generator
 import logging
+
+# Load environment variables
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

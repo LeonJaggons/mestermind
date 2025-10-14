@@ -8,6 +8,7 @@ from typing import Optional, Dict, Any, Set
 import uuid as _uuid
 from sqlalchemy import select
 from fastapi import Query
+from datetime import datetime
 
 from app.core.database import get_db
 from app.core.auth import get_current_user, get_current_user_optional
@@ -509,6 +510,77 @@ async def update_request(
 
     if old_status_str != "OPEN" and new_status == "OPEN":
         print(f"[NOTIFICATION DEBUG] Triggering notifications for request {req.id}")
+        
+        # If request is sent to specific mester, create thread and initial customer message
+        if req.mester_id:
+            from app.models.database import MessageThread as MessageThreadModel, Message as MessageModel
+            
+            # Create or get thread
+            thread = (
+                db.query(MessageThreadModel)
+                .filter(
+                    MessageThreadModel.request_id == req.id,
+                    MessageThreadModel.mester_id == req.mester_id,
+                )
+                .first()
+            )
+            
+            if not thread:
+                thread = MessageThreadModel(
+                    request_id=req.id,
+                    mester_id=req.mester_id,
+                    customer_user_id=req.user_id,
+                )
+                db.add(thread)
+                db.flush()  # Flush to get thread.id
+            
+            # Check if there's already an initial customer message
+            existing_customer_msg = (
+                db.query(MessageModel)
+                .filter(
+                    MessageModel.thread_id == thread.id,
+                    MessageModel.sender_type == "customer",
+                )
+                .first()
+            )
+            
+            if not existing_customer_msg:
+                # Create initial customer message with request details
+                message_parts = []
+                
+                # Add service/request type
+                if req.message_to_pro:
+                    message_parts.append(req.message_to_pro)
+                
+                # Add budget estimate if provided
+                if req.budget_estimate:
+                    message_parts.append(f"\nEstimated Budget: {int(req.budget_estimate):,} HUF")
+                
+                # Add location if provided
+                if req.postal_code:
+                    message_parts.append(f"Location: {req.postal_code}")
+                
+                # Combine all parts
+                message_body = "\n".join(message_parts) if message_parts else "Request details submitted"
+                
+                customer_msg = MessageModel(
+                    thread_id=thread.id,
+                    body=message_body,
+                    sender_type="customer",
+                    sender_user_id=req.user_id,
+                    is_read_by_customer=True,
+                    is_read_by_mester=False,
+                )
+                db.add(customer_msg)
+                
+                # Update thread metadata
+                thread.last_message_at = datetime.utcnow()
+                thread.last_message_preview = message_body[:255]
+                db.add(thread)
+                db.flush()
+                
+                print(f"[MESSAGE DEBUG] Created initial customer message for thread {thread.id}")
+        
         # Request was just opened - notify matching professionals
         notification_service = NotificationService(db)
         try:

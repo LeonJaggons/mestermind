@@ -20,6 +20,12 @@ from app.routes import (
     messages_router,
     offers_router,
     notifications_router,
+    admin_router,
+    pricing_router,
+    payments_router,
+    appointments_router,
+    jobs_router,
+    websocket_router,
 )
 from app.routes.requests import router as requests_router
 from app.routes.cleanup import router as cleanup_router
@@ -75,4 +81,10 @@ app.include_router(mesters_router)
 app.include_router(messages_router)
 app.include_router(offers_router)
 app.include_router(notifications_router)
+app.include_router(appointments_router)
+app.include_router(jobs_router)
+app.include_router(admin_router)
+app.include_router(pricing_router)
+app.include_router(payments_router)
+app.include_router(websocket_router)
 app.include_router(cleanup_router)

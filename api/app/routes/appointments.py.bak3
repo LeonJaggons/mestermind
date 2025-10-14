@@ -1,0 +1,432 @@
+"""
+Appointment proposal routes for mesters to book appointments with customers
+"""
+
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
+from sqlalchemy.orm import Session
+from typing import Optional, List
+import uuid as _uuid
+import logging
+
+from app.core.database import get_db
+from app.services.appointments import AppointmentService
+from app.models.schemas import (
+    AppointmentProposalCreate,
+    AppointmentProposalResponse,
+    AppointmentProposalAccept,
+    AppointmentProposalReject,
+)
+from app.models.database import AppointmentProposalStatus
+
+logger = logging.getLogger(__name__)
+
+router = APIRouter(prefix="/appointments", tags=["appointments"])
+
+
+def _validate_uuid(value: Optional[str], field: str) -> Optional[_uuid.UUID]:
+    """Validate and convert string to UUID"""
+    if value is None:
+        return None
+    try:
+        return _uuid.UUID(value)
+    except (ValueError, TypeError) as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid {field}") from exc
+
+
+@router.post("/threads/{thread_id}/proposals", response_model=AppointmentProposalResponse)
+async def create_appointment_proposal(
+    thread_id: str,
+    payload: AppointmentProposalCreate,
+    mester_id: str = Query(..., description="Mester ID creating the proposal"),
+    background_tasks: BackgroundTasks = BackgroundTasks(),
+    db: Session = Depends(get_db),
+):
+    """
+    Create a new appointment proposal from mester to customer.
+    This can only be done after the mester has purchased the lead.
+    """
+    
+    thread_uuid = _validate_uuid(thread_id, "thread_id")
+    mester_uuid = _validate_uuid(mester_id, "mester_id")
+    
+    if not thread_uuid or not mester_uuid:
+        raise HTTPException(status_code=400, detail="Invalid thread_id or mester_id")
+    
+    service = AppointmentService(db)
+    
+    proposal = service.create_proposal(
+        thread_id=thread_uuid,
+        mester_id=mester_uuid,
+        proposed_date=payload.proposed_date,
+        duration_minutes=payload.duration_minutes,
+        location=payload.location,
+        notes=payload.notes,
+    )
+    
+    # TODO: Send notification to customer about new appointment proposal
+    # background_tasks.add_task(send_appointment_proposal_notification, proposal.id)
+    
+    return AppointmentProposalResponse(
+        id=str(proposal.id),
+        thread_id=str(proposal.thread_id),
+        mester_id=str(proposal.mester_id),
+        request_id=str(proposal.request_id),
+        customer_user_id=str(proposal.customer_user_id) if proposal.customer_user_id else None,
+        proposed_date=proposal.proposed_date,
+        duration_minutes=proposal.duration_minutes,
+        location=proposal.location,
+        notes=proposal.notes,
+        status=proposal.status.value,
+        response_message=proposal.response_message,
+        responded_at=proposal.responded_at,
+        expires_at=proposal.expires_at,
+        created_at=proposal.created_at,
+        updated_at=proposal.updated_at,
+    )
+
+
+@router.get("/mesters/{mester_id}/proposals", response_model=List[AppointmentProposalResponse])
+async def list_mester_proposals(
+    mester_id: str,
+    status: Optional[AppointmentProposalStatus] = Query(None),
+    db: Session = Depends(get_db),
+):
+    """
+    Get all appointment proposals for a specific mester (optionally filtered by status).
+    """
+    
+    mester_uuid = _validate_uuid(mester_id, "mester_id")
+    if not mester_uuid:
+        raise HTTPException(status_code=400, detail="Invalid mester_id")
+    
+    service = AppointmentService(db)
+    proposals = service.list_proposals_for_mester(mester_uuid, status)
+    
+    return [
+        AppointmentProposalResponse(
+            id=str(p.id),
+            thread_id=str(p.thread_id),
+            mester_id=str(p.mester_id),
+            request_id=str(p.request_id),
+            customer_user_id=str(p.customer_user_id) if p.customer_user_id else None,
+            proposed_date=p.proposed_date,
+            duration_minutes=p.duration_minutes,
+            location=p.location,
+            notes=p.notes,
+            status=p.status.value,
+            response_message=p.response_message,
+            responded_at=p.responded_at,
+            expires_at=p.expires_at,
+            created_at=p.created_at,
+            updated_at=p.updated_at,
+        )
+        for p in proposals
+    ]
+
+
+@router.get("/threads/{thread_id}/proposals", response_model=List[AppointmentProposalResponse])
+async def list_thread_proposals(
+    thread_id: str,
+    status: Optional[str] = Query(None, description="Filter by status"),
+    db: Session = Depends(get_db),
+):
+    """
+    List all appointment proposals for a thread.
+    Optionally filter by status.
+    """
+    
+    thread_uuid = _validate_uuid(thread_id, "thread_id")
+    if not thread_uuid:
+        raise HTTPException(status_code=400, detail="Invalid thread_id")
+    
+    service = AppointmentService(db)
+    
+    # Parse status if provided
+    status_enum = None
+    if status:
+        try:
+            status_enum = AppointmentProposalStatus(status.lower())
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid status. Must be one of: {', '.join([s.value for s in AppointmentProposalStatus])}"
+            )
+    
+    proposals = service.list_proposals_for_thread(
+        thread_id=thread_uuid,
+        status=status_enum,
+    )
+    
+    return [
+        AppointmentProposalResponse(
+            id=str(p.id),
+            thread_id=str(p.thread_id),
+            mester_id=str(p.mester_id),
+            request_id=str(p.request_id),
+            customer_user_id=str(p.customer_user_id) if p.customer_user_id else None,
+            proposed_date=p.proposed_date,
+            duration_minutes=p.duration_minutes,
+            location=p.location,
+            notes=p.notes,
+            status=p.status.value,
+            response_message=p.response_message,
+            responded_at=p.responded_at,
+            expires_at=p.expires_at,
+            created_at=p.created_at,
+            updated_at=p.updated_at,
+        )
+        for p in proposals
+    ]
+
+
+@router.get("/proposals/{proposal_id}", response_model=AppointmentProposalResponse)
+async def get_proposal(
+    proposal_id: str,
+    db: Session = Depends(get_db),
+):
+    """Get a specific appointment proposal by ID"""
+    
+    proposal_uuid = _validate_uuid(proposal_id, "proposal_id")
+    if not proposal_uuid:
+        raise HTTPException(status_code=400, detail="Invalid proposal_id")
+    
+    service = AppointmentService(db)
+    proposal = service.get_proposal(proposal_uuid)
+    
+    if not proposal:
+        raise HTTPException(status_code=404, detail="Proposal not found")
+    
+    return AppointmentProposalResponse(
+        id=str(proposal.id),
+        thread_id=str(proposal.thread_id),
+        mester_id=str(proposal.mester_id),
+        request_id=str(proposal.request_id),
+        customer_user_id=str(proposal.customer_user_id) if proposal.customer_user_id else None,
+        proposed_date=proposal.proposed_date,
+        duration_minutes=proposal.duration_minutes,
+        location=proposal.location,
+        notes=proposal.notes,
+        status=proposal.status.value,
+        response_message=proposal.response_message,
+        responded_at=proposal.responded_at,
+        expires_at=proposal.expires_at,
+        created_at=proposal.created_at,
+        updated_at=proposal.updated_at,
+    )
+
+
+@router.post("/proposals/{proposal_id}/accept", response_model=AppointmentProposalResponse)
+async def accept_proposal(
+    proposal_id: str,
+    payload: AppointmentProposalAccept,
+    customer_user_id: str = Query(..., description="Customer user ID accepting the proposal"),
+    background_tasks: BackgroundTasks = BackgroundTasks(),
+    db: Session = Depends(get_db),
+):
+    """
+    Accept an appointment proposal (customer action).
+    This will update the request status to BOOKED.
+    """
+    
+    proposal_uuid = _validate_uuid(proposal_id, "proposal_id")
+    customer_uuid = _validate_uuid(customer_user_id, "customer_user_id")
+    
+    if not proposal_uuid or not customer_uuid:
+        raise HTTPException(status_code=400, detail="Invalid proposal_id or customer_user_id")
+    
+    service = AppointmentService(db)
+    proposal = service.accept_proposal(
+        proposal_id=proposal_uuid,
+        customer_user_id=customer_uuid,
+        response_message=payload.response_message,
+    )
+    
+    # TODO: Send notification to mester about accepted appointment
+    # background_tasks.add_task(send_appointment_accepted_notification, proposal.id)
+    
+    return AppointmentProposalResponse(
+        id=str(proposal.id),
+        thread_id=str(proposal.thread_id),
+        mester_id=str(proposal.mester_id),
+        request_id=str(proposal.request_id),
+        customer_user_id=str(proposal.customer_user_id) if proposal.customer_user_id else None,
+        proposed_date=proposal.proposed_date,
+        duration_minutes=proposal.duration_minutes,
+        location=proposal.location,
+        notes=proposal.notes,
+        status=proposal.status.value,
+        response_message=proposal.response_message,
+        responded_at=proposal.responded_at,
+        expires_at=proposal.expires_at,
+        created_at=proposal.created_at,
+        updated_at=proposal.updated_at,
+    )
+
+
+@router.post("/proposals/{proposal_id}/reject", response_model=AppointmentProposalResponse)
+async def reject_proposal(
+    proposal_id: str,
+    payload: AppointmentProposalReject,
+    customer_user_id: str = Query(..., description="Customer user ID rejecting the proposal"),
+    background_tasks: BackgroundTasks = BackgroundTasks(),
+    db: Session = Depends(get_db),
+):
+    """
+    Reject an appointment proposal (customer action).
+    The mester can then propose a different time.
+    """
+    
+    proposal_uuid = _validate_uuid(proposal_id, "proposal_id")
+    customer_uuid = _validate_uuid(customer_user_id, "customer_user_id")
+    
+    if not proposal_uuid or not customer_uuid:
+        raise HTTPException(status_code=400, detail="Invalid proposal_id or customer_user_id")
+    
+    service = AppointmentService(db)
+    proposal = service.reject_proposal(
+        proposal_id=proposal_uuid,
+        customer_user_id=customer_uuid,
+        response_message=payload.response_message,
+    )
+    
+    # TODO: Send notification to mester about rejected appointment
+    # background_tasks.add_task(send_appointment_rejected_notification, proposal.id)
+    
+    return AppointmentProposalResponse(
+        id=str(proposal.id),
+        thread_id=str(proposal.thread_id),
+        mester_id=str(proposal.mester_id),
+        request_id=str(proposal.request_id),
+        customer_user_id=str(proposal.customer_user_id) if proposal.customer_user_id else None,
+        proposed_date=proposal.proposed_date,
+        duration_minutes=proposal.duration_minutes,
+        location=proposal.location,
+        notes=proposal.notes,
+        status=proposal.status.value,
+        response_message=proposal.response_message,
+        responded_at=proposal.responded_at,
+        expires_at=proposal.expires_at,
+        created_at=proposal.created_at,
+        updated_at=proposal.updated_at,
+    )
+
+
+@router.get("/mesters/{mester_id}/proposals", response_model=List[AppointmentProposalResponse])
+async def list_mester_proposals(
+    mester_id: str,
+    status: Optional[AppointmentProposalStatus] = Query(None),
+    db: Session = Depends(get_db),
+):
+    """
+    Get all appointment proposals for a specific mester (optionally filtered by status).
+    """
+    
+    mester_uuid = _validate_uuid(mester_id, "mester_id")
+    if not mester_uuid:
+        raise HTTPException(status_code=400, detail="Invalid mester_id")
+    
+    service = AppointmentService(db)
+    proposals = service.list_proposals_for_mester(mester_uuid, status)
+    
+    return [
+        AppointmentProposalResponse(
+            id=str(p.id),
+            thread_id=str(p.thread_id),
+            mester_id=str(p.mester_id),
+            request_id=str(p.request_id),
+            customer_user_id=str(p.customer_user_id) if p.customer_user_id else None,
+            proposed_date=p.proposed_date,
+            duration_minutes=p.duration_minutes,
+            location=p.location,
+            notes=p.notes,
+            status=p.status.value,
+            response_message=p.response_message,
+            responded_at=p.responded_at,
+            expires_at=p.expires_at,
+            created_at=p.created_at,
+            updated_at=p.updated_at,
+        )
+        for p in proposals
+    ]
+
+
+@router.post("/proposals/{proposal_id}/cancel", response_model=AppointmentProposalResponse)
+async def cancel_proposal(
+    proposal_id: str,
+    mester_id: str = Query(..., description="Mester ID canceling the proposal"),
+    db: Session = Depends(get_db),
+):
+    """
+    Cancel an appointment proposal (mester action).
+    Can only cancel proposals that haven't been accepted or rejected yet.
+    """
+    
+    proposal_uuid = _validate_uuid(proposal_id, "proposal_id")
+    mester_uuid = _validate_uuid(mester_id, "mester_id")
+    
+    if not proposal_uuid or not mester_uuid:
+        raise HTTPException(status_code=400, detail="Invalid proposal_id or mester_id")
+    
+    service = AppointmentService(db)
+    proposal = service.cancel_proposal(
+        proposal_id=proposal_uuid,
+        mester_id=mester_uuid,
+    )
+    
+    return AppointmentProposalResponse(
+        id=str(proposal.id),
+        thread_id=str(proposal.thread_id),
+        mester_id=str(proposal.mester_id),
+        request_id=str(proposal.request_id),
+        customer_user_id=str(proposal.customer_user_id) if proposal.customer_user_id else None,
+        proposed_date=proposal.proposed_date,
+        duration_minutes=proposal.duration_minutes,
+        location=proposal.location,
+        notes=proposal.notes,
+        status=proposal.status.value,
+        response_message=proposal.response_message,
+        responded_at=proposal.responded_at,
+        expires_at=proposal.expires_at,
+        created_at=proposal.created_at,
+        updated_at=proposal.updated_at,
+    )
+
+
+@router.get("/mesters/{mester_id}/proposals", response_model=List[AppointmentProposalResponse])
+async def list_mester_proposals(
+    mester_id: str,
+    status: Optional[AppointmentProposalStatus] = Query(None),
+    db: Session = Depends(get_db),
+):
+    """
+    Get all appointment proposals for a specific mester (optionally filtered by status).
+    """
+    
+    mester_uuid = _validate_uuid(mester_id, "mester_id")
+    if not mester_uuid:
+        raise HTTPException(status_code=400, detail="Invalid mester_id")
+    
+    service = AppointmentService(db)
+    proposals = service.list_proposals_for_mester(mester_uuid, status)
+    
+    return [
+        AppointmentProposalResponse(
+            id=str(p.id),
+            thread_id=str(p.thread_id),
+            mester_id=str(p.mester_id),
+            request_id=str(p.request_id),
+            customer_user_id=str(p.customer_user_id) if p.customer_user_id else None,
+            proposed_date=p.proposed_date,
+            duration_minutes=p.duration_minutes,
+            location=p.location,
+            notes=p.notes,
+            status=p.status.value,
+            response_message=p.response_message,
+            responded_at=p.responded_at,
+            expires_at=p.expires_at,
+            created_at=p.created_at,
+            updated_at=p.updated_at,
+        )
+        for p in proposals
+    ]
+

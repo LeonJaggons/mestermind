@@ -38,7 +38,7 @@ class BestMatchResponse(BaseModel):
     review_count: int
     years_experience: Optional[int]
     is_verified: bool
-    category: str  # "frequently_hired", "responds_quickly", "highly_rated"
+    category: str  # "most_experienced", "verified_pro", "highly_rated"
     is_top_pro: bool = False
 
 
@@ -50,8 +50,8 @@ async def get_best_matches(
 ):
     """
     Get the best matching mesters based on different criteria:
-    - Frequently hired (most jobs completed)
-    - Responds quickly (fastest response time)
+    - Most experienced (highest years_experience)
+    - Verified pro (is_verified with best rating)
     - Highly rated (highest average rating)
     """
     
@@ -66,61 +66,66 @@ async def get_best_matches(
         )
     
     # Get most experienced mester (most years_experience)
-    frequently_hired = (
+    most_experienced = (
         base_query
         .filter(Mester.years_experience.isnot(None))
         .order_by(desc(Mester.years_experience))
         .first()
     )
     
-    # Get most verified mester (is_verified = true)
-    responds_quickly = (
+    # Get verified pro (is_verified = true, highest rating)
+    verified_pro = (
         base_query
         .filter(Mester.is_verified == True)  # noqa: E712
-        .order_by(desc(Mester.review_count))
+        .filter(Mester.rating_avg.isnot(None))
+        .order_by(desc(Mester.rating_avg), desc(Mester.review_count))
         .first()
     )
     
-    # Get highest rated mester (highest rating_avg)
+    # Get highest rated mester (highest rating_avg with enough reviews)
     highly_rated = (
         base_query
         .filter(Mester.rating_avg.isnot(None))
-        .order_by(desc(Mester.rating_avg))
+        .filter(Mester.review_count >= 5)  # At least 5 reviews for credibility
+        .order_by(desc(Mester.rating_avg), desc(Mester.review_count))
         .first()
     )
     
     results = []
+    seen_ids = set()
     
     # Add most experienced mester
-    if frequently_hired:
+    if most_experienced:
         results.append(BestMatchResponse(
-            id=str(frequently_hired.id),
-            full_name=frequently_hired.full_name,
-            slug=frequently_hired.slug,
-            rating_avg=frequently_hired.rating_avg,
-            review_count=frequently_hired.review_count,
-            years_experience=frequently_hired.years_experience,
-            is_verified=frequently_hired.is_verified,
-            category="frequently_hired",
-            is_top_pro=bool(frequently_hired.years_experience and frequently_hired.years_experience > 5)
+            id=str(most_experienced.id),
+            full_name=most_experienced.full_name,
+            slug=most_experienced.slug,
+            rating_avg=most_experienced.rating_avg,
+            review_count=most_experienced.review_count,
+            years_experience=most_experienced.years_experience,
+            is_verified=most_experienced.is_verified,
+            category="most_experienced",
+            is_top_pro=bool(most_experienced.years_experience and most_experienced.years_experience >= 10)
         ))
+        seen_ids.add(str(most_experienced.id))
     
-    # Add fastest responder (if different from frequently hired)
-    if responds_quickly and responds_quickly.id != (frequently_hired.id if frequently_hired else None):
+    # Add verified pro (if different from most experienced)
+    if verified_pro and str(verified_pro.id) not in seen_ids:
         results.append(BestMatchResponse(
-            id=str(responds_quickly.id),
-            full_name=responds_quickly.full_name,
-            slug=responds_quickly.slug,
-            rating_avg=responds_quickly.rating_avg,
-            review_count=responds_quickly.review_count,
-            years_experience=responds_quickly.years_experience,
-            is_verified=responds_quickly.is_verified,
-            category="responds_quickly",
-            is_top_pro=bool(responds_quickly.rating_avg and responds_quickly.rating_avg >= 4.5)
+            id=str(verified_pro.id),
+            full_name=verified_pro.full_name,
+            slug=verified_pro.slug,
+            rating_avg=verified_pro.rating_avg,
+            review_count=verified_pro.review_count,
+            years_experience=verified_pro.years_experience,
+            is_verified=verified_pro.is_verified,
+            category="verified_pro",
+            is_top_pro=bool(verified_pro.rating_avg and verified_pro.rating_avg >= 4.5)
         ))
+        seen_ids.add(str(verified_pro.id))
     
     # Add highest rated mester (if different from previous ones)
-    if highly_rated and highly_rated.id not in [r.id for r in results]:
+    if highly_rated and str(highly_rated.id) not in seen_ids:
         results.append(BestMatchResponse(
             id=str(highly_rated.id),
             full_name=highly_rated.full_name,
@@ -132,16 +137,16 @@ async def get_best_matches(
             category="highly_rated",
             is_top_pro=bool(highly_rated.rating_avg and highly_rated.rating_avg >= 4.8)
         ))
+        seen_ids.add(str(highly_rated.id))
     
-    # If we don't have enough results, fill with random mesters
+    # If we don't have enough results, fill with top-rated mesters
     if len(results) < limit:
         remaining_needed = limit - len(results)
-        existing_ids = [r.id for r in results]
         
         # Try to get top-rated mesters first
         additional_mesters = (
             base_query
-            .filter(Mester.id.notin_(existing_ids))
+            .filter(Mester.id.notin_([db_id for db_id in seen_ids]))
             .filter(Mester.rating_avg.isnot(None))
             .order_by(desc(Mester.rating_avg))
             .limit(remaining_needed)
@@ -151,9 +156,10 @@ async def get_best_matches(
         # If still not enough, get any random mesters
         if len(additional_mesters) < remaining_needed:
             random_needed = remaining_needed - len(additional_mesters)
+            additional_ids = [str(m.id) for m in additional_mesters]
             random_mesters = (
                 base_query
-                .filter(Mester.id.notin_(existing_ids + [str(m.id) for m in additional_mesters]))
+                .filter(Mester.id.notin_(list(seen_ids) + additional_ids))
                 .order_by(text("RANDOM()"))
                 .limit(random_needed)
                 .all()
@@ -163,10 +169,11 @@ async def get_best_matches(
         # If still no results, get any mesters at all (fallback)
         if len(additional_mesters) < remaining_needed:
             fallback_needed = remaining_needed - len(additional_mesters)
+            additional_ids = [str(m.id) for m in additional_mesters]
             fallback_mesters = (
                 db.query(Mester)
                 .filter(Mester.is_active == True)  # noqa: E712
-                .filter(Mester.id.notin_(existing_ids + [str(m.id) for m in additional_mesters]))
+                .filter(Mester.id.notin_(list(seen_ids) + additional_ids))
                 .order_by(text("RANDOM()"))
                 .limit(fallback_needed)
                 .all()
@@ -174,13 +181,16 @@ async def get_best_matches(
             additional_mesters.extend(fallback_mesters)
         
         for i, mester in enumerate(additional_mesters):
-            # Assign categories based on position
-            if i == 0:
+            # Assign categories based on what's missing
+            if "most_experienced" not in [r.category for r in results]:
+                category = "most_experienced"
+            elif "verified_pro" not in [r.category for r in results]:
+                category = "verified_pro"
+            elif "highly_rated" not in [r.category for r in results]:
                 category = "highly_rated"
-            elif i == 1:
-                category = "responds_quickly"
             else:
-                category = "frequently_hired"
+                # Default to highly_rated for any extras
+                category = "highly_rated"
                 
             results.append(BestMatchResponse(
                 id=str(mester.id),
