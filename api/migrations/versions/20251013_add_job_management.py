@@ -18,34 +18,38 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # Create enums
-    job_status_enum = postgresql.ENUM(
-        'pending', 'in_progress', 'on_hold', 'awaiting_approval', 'completed', 'cancelled',
-        name='jobstatus',
-        create_type=True
-    )
-    job_status_enum.create(op.get_bind(), checkfirst=True)
-    
-    milestone_status_enum = postgresql.ENUM(
-        'pending', 'in_progress', 'completed', 'skipped',
-        name='milestonestatus',
-        create_type=True
-    )
-    milestone_status_enum.create(op.get_bind(), checkfirst=True)
-    
-    document_type_enum = postgresql.ENUM(
-        'photo', 'document', 'invoice', 'contract', 'receipt', 'other',
-        name='documenttype',
-        create_type=True
-    )
-    document_type_enum.create(op.get_bind(), checkfirst=True)
-    
-    document_category_enum = postgresql.ENUM(
-        'before', 'during', 'after', 'invoice', 'contract', 'permit', 'other',
-        name='documentcategory',
-        create_type=True
-    )
-    document_category_enum.create(op.get_bind(), checkfirst=True)
+    # Create enums (duplicate safe)
+    op.execute("""
+    DO $$ BEGIN
+        CREATE TYPE jobstatus AS ENUM (
+            'pending','in_progress','on_hold','awaiting_approval','completed','cancelled'
+        );
+    EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+    """)
+
+    op.execute("""
+    DO $$ BEGIN
+        CREATE TYPE milestonestatus AS ENUM (
+            'pending','in_progress','completed','skipped'
+        );
+    EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+    """)
+
+    op.execute("""
+    DO $$ BEGIN
+        CREATE TYPE documenttype AS ENUM (
+            'photo','document','invoice','contract','receipt','other'
+        );
+    EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+    """)
+
+    op.execute("""
+    DO $$ BEGIN
+        CREATE TYPE documentcategory AS ENUM (
+            'before','during','after','invoice','contract','permit','other'
+        );
+    EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+    """)
     
     # Create jobs table
     op.create_table(
@@ -60,7 +64,7 @@ def upgrade() -> None:
         sa.Column('title', sa.String(255), nullable=False),
         sa.Column('description', sa.Text, nullable=True),
         
-        sa.Column('status', job_status_enum, nullable=False, server_default='pending'),
+        sa.Column('status', postgresql.ENUM(name='jobstatus'), nullable=False, server_default='pending'),
         
         sa.Column('scheduled_start_date', sa.DateTime(timezone=True), nullable=True),
         sa.Column('scheduled_end_date', sa.DateTime(timezone=True), nullable=True),
@@ -105,7 +109,7 @@ def upgrade() -> None:
         sa.Column('title', sa.String(255), nullable=False),
         sa.Column('description', sa.Text, nullable=True),
         
-        sa.Column('status', milestone_status_enum, nullable=False, server_default='pending'),
+        sa.Column('status', postgresql.ENUM(name='milestonestatus'), nullable=False, server_default='pending'),
         
         sa.Column('order_index', sa.Integer, nullable=False, server_default='0'),
         
@@ -137,8 +141,8 @@ def upgrade() -> None:
         sa.Column('file_size', sa.Integer, nullable=True),
         sa.Column('file_type', sa.String(100), nullable=False),
         
-        sa.Column('document_type', document_type_enum, nullable=False, server_default='other'),
-        sa.Column('category', document_category_enum, nullable=False, server_default='other'),
+        sa.Column('document_type', postgresql.ENUM(name='documenttype'), nullable=False, server_default='other'),
+        sa.Column('category', postgresql.ENUM(name='documentcategory'), nullable=False, server_default='other'),
         
         sa.Column('title', sa.String(255), nullable=True),
         sa.Column('description', sa.Text, nullable=True),

@@ -30,7 +30,7 @@ steps:
       - '--image=$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
       - '--labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID'
       - '--region=$_DEPLOY_REGION'
-      - '--set-secrets=DATABASE_URL=mestermind-secrets:5,REDIS_URL=mestermind-secrets:2,SECRET_KEY=mestermind-secrets:3,FIREBASE_CREDENTIALS=mestermind-secrets:4'
+      - '--set-secrets=DATABASE_URL=PROD_DB_URL:latest,STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,STRIPE_PUBLISHABLE_KEY=STRIPE_PUBLIC_KEY:latest'
       - '--add-cloudsql-instances=mestermind-474514:europe-west1:mestermind-postgres'
       - '--quiet'
     id: 'Deploy'

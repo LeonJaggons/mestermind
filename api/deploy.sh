@@ -6,10 +6,12 @@
 set -e  # Exit on any error
 
 # Configuration
-PROJECT_ID=${PROJECT_ID:-"your-gcp-project-id"}
-SERVICE_NAME="mestermind-api"
+PROJECT_ID=${PROJECT_ID:-"mestermind-474514"}
+SERVICE_NAME="mestermind"
 REGION=${REGION:-"europe-west1"}
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
+# Cloud SQL instance (for /cloudsql/... socket in DATABASE_URL)
+CLOUD_SQL_INSTANCE=${CLOUD_SQL_INSTANCE:-"mestermind-474514:europe-west1:mestermind-postgres"}
 
 # Colors for output
 RED='\033[0;31m'
@@ -80,13 +82,50 @@ enable_apis() {
 build_and_push() {
     log_info "Building Docker image..."
     
-    # Build the image
-    docker build -t $IMAGE_NAME:latest .
-    
-    log_info "Pushing image to Google Container Registry..."
-    docker push $IMAGE_NAME:latest
-    
-    log_success "Image built and pushed: $IMAGE_NAME:latest"
+    # Prefer buildx to produce an amd64/linux image for Cloud Run
+    if command -v docker &> /dev/null && docker buildx version &> /dev/null; then
+        log_info "Using docker buildx to build linux/amd64 image"
+        docker buildx build --platform linux/amd64 -t $IMAGE_NAME:latest --push .
+        log_success "Image built and pushed (linux/amd64) via buildx: $IMAGE_NAME:latest"
+    else
+        log_warning "docker buildx not available; falling back to docker build (may be slower)"
+        DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build -t $IMAGE_NAME:latest .
+        log_info "Pushing image to Google Container Registry..."
+        docker push $IMAGE_NAME:latest
+        log_success "Image built and pushed (linux/amd64): $IMAGE_NAME:latest"
+    fi
+}
+
+# Ensure required secrets exist and grant access
+ensure_secrets() {
+    log_info "Ensuring required secrets exist and access is configured..."
+
+    # Required secret names
+    REQUIRED_SECRETS=(
+        "database-url"
+        "stripe-secret-key"
+        "stripe-publishable-key"
+    )
+
+    for secret in "${REQUIRED_SECRETS[@]}"; do
+        if ! gcloud secrets describe "$secret" --project "$PROJECT_ID" &> /dev/null; then
+            log_info "Creating secret: $secret"
+            gcloud secrets create "$secret" --replication-policy="automatic" --project "$PROJECT_ID"
+            log_warning "Add a version for $secret, e.g.: echo 'VALUE' | gcloud secrets versions add $secret --data-file=- --project $PROJECT_ID"
+        fi
+    done
+
+    # Grant Secret Accessor role to Cloud Run service account
+    PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format="value(projectNumber)")
+    CR_SA="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
+    for secret in "${REQUIRED_SECRETS[@]}"; do
+        gcloud secrets add-iam-policy-binding "$secret" \
+            --member "serviceAccount:${CR_SA}" \
+            --role roles/secretmanager.secretAccessor \
+            --project "$PROJECT_ID" >/dev/null 2>&1 || true
+    done
+
+    log_success "Secrets checked and access configured"
 }
 
 # Deploy to Cloud Run
@@ -99,18 +138,16 @@ deploy() {
         --platform managed \
         --region $REGION \
         --allow-unauthenticated \
-        --port 8080 \
+        --add-cloudsql-instances "$CLOUD_SQL_INSTANCE" \
         --memory 2Gi \
         --cpu 2 \
         --min-instances 1 \
         --max-instances 10 \
         --concurrency 100 \
         --timeout 300 \
-        --set-env-vars PORT=8080 \
-        --set-secrets DATABASE_URL=mestermind-secrets:database-url \
-        --set-secrets REDIS_URL=mestermind-secrets:redis-url \
-        --set-secrets SECRET_KEY=mestermind-secrets:secret-key \
-        --set-secrets FIREBASE_CREDENTIALS=mestermind-secrets:firebase-credentials
+        --set-secrets DATABASE_URL=PROD_DB_URL:latest \
+        --set-secrets STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest \
+        --set-secrets STRIPE_PUBLISHABLE_KEY=STRIPE_PUBLIC_KEY:latest
     
     log_success "Service deployed successfully!"
     

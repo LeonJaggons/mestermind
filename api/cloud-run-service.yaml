@@ -21,28 +21,21 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: PORT
-          value: "8080"
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: mestermind-secrets
-              key: database-url
-        - name: REDIS_URL
+              name: PROD_DB_URL
+              key: latest
+        - name: STRIPE_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: mestermind-secrets
-              key: redis-url
-        - name: SECRET_KEY
+              name: STRIPE_SECRET_KEY
+              key: latest
+        - name: STRIPE_PUBLISHABLE_KEY
           valueFrom:
             secretKeyRef:
-              name: mestermind-secrets
-              key: secret-key
-        - name: FIREBASE_CREDENTIALS
-          valueFrom:
-            secretKeyRef:
-              name: mestermind-secrets
-              key: firebase-credentials
+              name: STRIPE_PUBLIC_KEY
+              key: latest
         resources:
           limits:
             cpu: "2"
