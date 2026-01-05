@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     POSTMARK_API_KEY: str = ""  # Postmark server token
     POSTMARK_FROM_EMAIL: str = "noreply@mestermind.com"  # Default sender
     
+    # CORS Configuration
+    CORS_ORIGINS: str = "http://localhost:3000,https://www.mestermind.com,https://mestermind.com"
+    
     class Config:
         case_sensitive = True
         env_file = ".env"
