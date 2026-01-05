@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Database files (will be created in container)
+*.db
+*.db-shm
+*.db-wal
+app.db*
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# Documentation
+*.md
+README.md
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Scripts (keep only what's needed)
+seed.py
+seed_fake_pros.py
+seed_projects.sh
+seed_reviews.sh
+clear_non_seed_data.py
+cleanup_data.py
+migrate_add_balance.py
+migrate_add_translations.py
+
+# Logs
+*.log
