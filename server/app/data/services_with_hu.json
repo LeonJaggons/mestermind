@@ -1,0 +1,1668 @@
+[
+  {
+    "id": "867ed58c-0271-4772-a431-a6cca0b8eb3a",
+    "name": "Above Ground Swimming Pool Installation",
+    "slug": "above-ground-swimming-pool-installation",
+    "category": "Pools & Spas",
+    "name_hu": "Föld feletti úszómedence telepítése"
+  },
+  {
+    "id": "c402c4b6-2b2c-415e-bac5-5785fc820d26",
+    "name": "Air Quality and Environmental Testing",
+    "slug": "air-quality-and-environmental-testing",
+    "category": "Environmental Services",
+    "name_hu": "Levegőminőség- és környezetvizsgálat"
+  },
+  {
+    "id": "7d6a8cb7-80b7-442e-9541-55e136dc2bf9",
+    "name": "Appliance Installation",
+    "slug": "appliance-installation",
+    "category": "Other Home Services",
+    "name_hu": "Háztartási gép telepítése"
+  },
+  {
+    "id": "aa6b9478-8757-4f6a-8e5f-9b16a7529049",
+    "name": "Appliance Repair or Maintenance",
+    "slug": "appliance-repair-or-maintenance",
+    "category": "Other Home Services",
+    "name_hu": "Háztartási gép javítása vagy karbantartása"
+  },
+  {
+    "id": "1e91c456-650b-4ff8-94c4-5d22a7074b0e",
+    "name": "Architectural Services",
+    "slug": "architectural-services",
+    "category": "Real Estate & Professional Services",
+    "name_hu": "Építészeti szolgáltatások"
+  },
+  {
+    "id": "d7a9a5a2-e36e-4040-bb5f-30f4ed45c77d",
+    "name": "Artificial Turf Installation",
+    "slug": "artificial-turf-installation",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Műfű telepítése"
+  },
+  {
+    "id": "cb6224d1-b231-4a23-9499-ac5b58443095",
+    "name": "Asbestos Removal",
+    "slug": "asbestos-removal",
+    "category": "Environmental Services",
+    "name_hu": "Azbeszt eltávolítása"
+  },
+  {
+    "id": "e6cdf836-9f2c-462b-b9b2-7cbbfeb6c59f",
+    "name": "Asphalt Installation",
+    "slug": "asphalt-installation",
+    "category": "Roofing & Exterior",
+    "name_hu": "Aszfaltozás"
+  },
+  {
+    "id": "081b47ab-dbe4-4db4-a924-86ea8378d4c7",
+    "name": "Asphalt Repair and Maintenance",
+    "slug": "asphalt-repair-and-maintenance",
+    "category": "Roofing & Exterior",
+    "name_hu": "Aszfalt javítása és karbantartása"
+  },
+  {
+    "id": "8cca261b-6d38-4c15-86d3-d8906717577e",
+    "name": "Basement Finishing or Remodeling",
+    "slug": "basement-finishing-or-remodeling",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Pince befejezése vagy felújítása"
+  },
+  {
+    "id": "377a841e-dc46-4a6c-ae1d-360c2fcd5d54",
+    "name": "Bathroom Remodel",
+    "slug": "bathroom-remodel",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Fürdőszoba felújítása"
+  },
+  {
+    "id": "eadc687a-00b1-4ebd-a8c5-e7657a6ab929",
+    "name": "Bed Bug Extermination",
+    "slug": "bed-bug-extermination",
+    "category": "Other Home Services",
+    "name_hu": "Ágyi poloska irtás"
+  },
+  {
+    "id": "713e1f80-3006-4b94-a3f4-e180632e099c",
+    "name": "Brick or Stone Repair",
+    "slug": "brick-or-stone-repair",
+    "category": "Other Home Services",
+    "name_hu": "Tégla vagy kő javítása"
+  },
+  {
+    "id": "46b3749f-3fcc-4524-a776-29a5ed3f9cf8",
+    "name": "Cabinet Installation",
+    "slug": "cabinet-installation",
+    "category": "Carpentry & Woodwork",
+    "name_hu": "Konyhaszekrény telepítése"
+  },
+  {
+    "id": "0120ba89-6f56-41e5-954c-8f8b1eb29e18",
+    "name": "Cabinet Painting",
+    "slug": "cabinet-painting",
+    "category": "Carpentry & Woodwork",
+    "name_hu": "Konyhaszekrény festése"
+  },
+  {
+    "id": "bbfdce76-4360-4ba3-9c21-bc1c46306c33",
+    "name": "Cabinet Refinishing and Repair",
+    "slug": "cabinet-refinishing-and-repair",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Konyhaszekrény felújítása és javítása"
+  },
+  {
+    "id": "f3f17969-5398-4bd3-bf9c-ee8f50aee13b",
+    "name": "Cabinetry",
+    "slug": "cabinetry",
+    "category": "Carpentry & Woodwork",
+    "name_hu": "Konyhabútor"
+  },
+  {
+    "id": "f3f37eb9-d879-4a04-8f12-885190a16e10",
+    "name": "Carpet Cleaning",
+    "slug": "carpet-cleaning",
+    "category": "Cleaning",
+    "name_hu": "Szőnyegtisztítás"
+  },
+  {
+    "id": "bfb0244d-d3da-45c9-87c7-eb3db113c031",
+    "name": "Carpet Installation",
+    "slug": "carpet-installation",
+    "category": "Flooring",
+    "name_hu": "Padlószőnyeg lerakása"
+  },
+  {
+    "id": "6b2d2743-17b9-4921-a6d6-7f5594c674d6",
+    "name": "Carpet Removal",
+    "slug": "carpet-removal",
+    "category": "Flooring",
+    "name_hu": "Padlószőnyeg eltávolítása"
+  },
+  {
+    "id": "6cb471eb-02ee-4bb5-9b8e-8a6e57db9473",
+    "name": "Carpet Repair or Partial Replacement",
+    "slug": "carpet-repair-or-partial-replacement",
+    "category": "Flooring",
+    "name_hu": "Padlószőnyeg javítása vagy részleges cseréje"
+  },
+  {
+    "id": "2a5d49b1-a9a2-4ce6-8ec5-6a9b8ad8c865",
+    "name": "Central Air Conditioning Installation or Replacement",
+    "slug": "central-air-conditioning-installation-or-replacement",
+    "category": "HVAC",
+    "name_hu": "Központi légkondicionáló telepítése vagy cseréje"
+  },
+  {
+    "id": "d4a8b031-cfa5-405d-acc0-db1a35b7a1ad",
+    "name": "Central Air Conditioning Repair or Maintenance",
+    "slug": "central-air-conditioning-repair-or-maintenance",
+    "category": "HVAC",
+    "name_hu": "Központi légkondicionáló javítása vagy karbantartása"
+  },
+  {
+    "id": "151e5bd4-401d-44f8-b898-78c8a2cf1e1f",
+    "name": "Circuit Breaker Panel or Fuse Box Installation",
+    "slug": "circuit-breaker-panel-or-fuse-box-installation",
+    "category": "Electrical",
+    "name_hu": "Megszakítótábla vagy biztosítékszekrény telepítése"
+  },
+  {
+    "id": "b68af750-c54a-4103-8aba-ff2ff48632a6",
+    "name": "Circuit Breaker Panel or Fuse Box Repair",
+    "slug": "circuit-breaker-panel-or-fuse-box-repair",
+    "category": "Electrical",
+    "name_hu": "Megszakítótábla vagy biztosítékszekrény javítása"
+  },
+  {
+    "id": "6a90496d-3b26-4ef4-bd88-5774dee3adbf",
+    "name": "Closet Remodel",
+    "slug": "closet-remodel",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Gardrób átalakítása"
+  },
+  {
+    "id": "42fe7fa9-dc76-4f83-bba7-f8f4cb7e6d88",
+    "name": "Closet and Shelving System Installation",
+    "slug": "closet-and-shelving-system-installation",
+    "category": "Carpentry & Woodwork",
+    "name_hu": "Gardrób- és polcrendszer telepítése"
+  },
+  {
+    "id": "e4d2da0d-0be5-4f73-85b0-f031aa8747c5",
+    "name": "Commercial Carpet Cleaning",
+    "slug": "commercial-carpet-cleaning",
+    "category": "Cleaning",
+    "name_hu": "Kereskedelmi szőnyegtisztítás"
+  },
+  {
+    "id": "27f8efa8-2533-4f6d-8e0a-978516d3a79c",
+    "name": "Commercial Cleaning",
+    "slug": "commercial-cleaning",
+    "category": "Cleaning",
+    "name_hu": "Kereskedelmi takarítás"
+  },
+  {
+    "id": "9f0c5dc3-0e9d-4a61-8e46-593c6208d551",
+    "name": "Concrete Installation",
+    "slug": "concrete-installation",
+    "category": "Roofing & Exterior",
+    "name_hu": "Betonozás"
+  },
+  {
+    "id": "1eef68f5-eb4a-4461-ba1b-6a132b654e18",
+    "name": "Concrete Removal",
+    "slug": "concrete-removal",
+    "category": "Roofing & Exterior",
+    "name_hu": "Beton eltávolítása"
+  },
+  {
+    "id": "f1ebc4fc-fbc8-4b6e-bf60-34f944467143",
+    "name": "Concrete Repair and Maintenance",
+    "slug": "concrete-repair-and-maintenance",
+    "category": "Roofing & Exterior",
+    "name_hu": "Beton javítása és karbantartása"
+  },
+  {
+    "id": "0eed2176-aef3-4653-acf0-78301fb95e60",
+    "name": "Construction Services",
+    "slug": "construction-services",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Építési szolgáltatások"
+  },
+  {
+    "id": "c69fe085-4d49-4bb8-9e01-7a74b332337f",
+    "name": "Countertop Installation",
+    "slug": "countertop-installation",
+    "category": "Other Home Services",
+    "name_hu": "Munkalap telepítése"
+  },
+  {
+    "id": "04eb10a7-3374-4980-9ccb-0757fc009e74",
+    "name": "Countertop Repair or Maintenance",
+    "slug": "countertop-repair-or-maintenance",
+    "category": "Other Home Services",
+    "name_hu": "Munkalap javítása vagy karbantartása"
+  },
+  {
+    "id": "e6629fca-699c-48e9-9c9f-ff133a28ab20",
+    "name": "Custom Cabinet Building",
+    "slug": "custom-cabinet-building",
+    "category": "Carpentry & Woodwork",
+    "name_hu": "Egyedi konyhaszekrény készítése"
+  },
+  {
+    "id": "022cf2c3-7bed-4809-8770-44deee8f21fd",
+    "name": "Custom Furniture Building",
+    "slug": "custom-furniture-building",
+    "category": "Other Home Services",
+    "name_hu": "Egyedi bútor készítése"
+  },
+  {
+    "id": "b7154a17-6124-4a05-9a6f-4fa69ac3fe14",
+    "name": "Deck Staining and Sealing",
+    "slug": "deck-staining-and-sealing",
+    "category": "Carpentry & Woodwork",
+    "name_hu": "Terasz pácolása és impregnálása"
+  },
+  {
+    "id": "1c4fe1c8-7ded-4b5e-9378-b9577a9682ac",
+    "name": "Deck or Porch Remodel or Addition",
+    "slug": "deck-or-porch-remodel-or-addition",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Terasz vagy veranda felújítása vagy bővítése"
+  },
+  {
+    "id": "bb8c2f2e-1c7e-4e0f-947a-5046026e9163",
+    "name": "Deck or Porch Repair",
+    "slug": "deck-or-porch-repair",
+    "category": "Carpentry & Woodwork",
+    "name_hu": "Terasz vagy veranda javítása"
+  },
+  {
+    "id": "71fddd0b-1624-4593-aef5-58f8de05bc19",
+    "name": "Demolition Services",
+    "slug": "demolition-services",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Bontási szolgáltatások"
+  },
+  {
+    "id": "5a33a821-c5a4-4f86-8e4e-3917b7ea445c",
+    "name": "Dishwasher Installation",
+    "slug": "dishwasher-installation",
+    "category": "Plumbing",
+    "name_hu": "Mosogatógép telepítése"
+  },
+  {
+    "id": "3cad9d12-9e65-4eee-a1c3-e8f58ac3bf50",
+    "name": "Door Installation",
+    "slug": "door-installation",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Ajtó beépítése"
+  },
+  {
+    "id": "76c1fbd9-808d-49fd-9bef-539b36b0a1af",
+    "name": "Door Repair",
+    "slug": "door-repair",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Ajtó javítása"
+  },
+  {
+    "id": "d7ed267e-4349-4997-8ac4-98492f4fc4ba",
+    "name": "Drywall Installation and Hanging",
+    "slug": "drywall-installation-and-hanging",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Gipszkarton telepítése és rögzítése"
+  },
+  {
+    "id": "caaca0ac-43bf-4e21-879e-7e5d56517600",
+    "name": "Drywall Repair and Texturing",
+    "slug": "drywall-repair-and-texturing",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Gipszkarton javítása és textúrázása"
+  },
+  {
+    "id": "f9f4da4a-fe55-4f7b-8753-fccaafda1134",
+    "name": "Duct and Vent Cleaning",
+    "slug": "duct-and-vent-cleaning",
+    "category": "HVAC",
+    "name_hu": "Légcsatorna- és szellőzőtisztítás"
+  },
+  {
+    "id": "a2e3e714-22fe-400b-8f87-11a9e89f1fa1",
+    "name": "Duct and Vent Installation or Removal",
+    "slug": "duct-and-vent-installation-or-removal",
+    "category": "HVAC",
+    "name_hu": "Légcsatorna és szellőző telepítése vagy eltávolítása"
+  },
+  {
+    "id": "7e6fba63-7a57-4a78-87f9-fef404ab680f",
+    "name": "Duct and Vent Repair",
+    "slug": "duct-and-vent-repair",
+    "category": "HVAC",
+    "name_hu": "Légcsatorna és szellőző javítása"
+  },
+  {
+    "id": "b40b9693-4dd5-4232-8bb9-b0dc7b4d41f1",
+    "name": "Dumpster Rental",
+    "slug": "dumpster-rental",
+    "category": "Moving & Hauling",
+    "name_hu": "Konténerbérlés"
+  },
+  {
+    "id": "f2c8ed5a-038a-4a08-95b7-a9c18d4ecc46",
+    "name": "Electrical and Wiring Repair",
+    "slug": "electrical-and-wiring-repair",
+    "category": "Electrical",
+    "name_hu": "Elektromos és vezetékezési javítás"
+  },
+  {
+    "id": "7b6a8d5c-e0b2-4e27-939a-9b157c0314d6",
+    "name": "Emergency Plumbing",
+    "slug": "emergency-plumbing",
+    "category": "Plumbing",
+    "name_hu": "Sürgősségi vízvezeték-szerelés"
+  },
+  {
+    "id": "5d3c5723-1540-4750-b5c8-6e08e40bbf3b",
+    "name": "Engraving",
+    "slug": "engraving",
+    "category": "Other Home Services",
+    "name_hu": "Gravírozás"
+  },
+  {
+    "id": "0b5f1f02-bb40-4b2f-8f3c-f8518eb6fe0b",
+    "name": "Epoxy Floor Coating",
+    "slug": "epoxy-floor-coating",
+    "category": "Flooring",
+    "name_hu": "Epoxi padlóbevonat"
+  },
+  {
+    "id": "d3cabeb3-2fd4-4dad-b58b-9f1962c1f339",
+    "name": "Excavation Services",
+    "slug": "excavation-services",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Földmunka"
+  },
+  {
+    "id": "65f61ad3-7ed9-4fdf-9b7b-fb48aafba23e",
+    "name": "Exterior Painting",
+    "slug": "exterior-painting",
+    "category": "Painting & Wall Coverings",
+    "name_hu": "Kültéri festés"
+  },
+  {
+    "id": "0a634f3a-b47a-422d-b473-57d51110ee47",
+    "name": "Fan Installation",
+    "slug": "fan-installation",
+    "category": "Electrical",
+    "name_hu": "Ventilátor telepítése"
+  },
+  {
+    "id": "a3cf03b1-dcf1-4f8d-b068-d0b146717b6c",
+    "name": "Faux Finishing or Painting",
+    "slug": "faux-finishing-or-painting",
+    "category": "Painting & Wall Coverings",
+    "name_hu": "Dekorfestés vagy díszítőfestés"
+  },
+  {
+    "id": "e84c2a55-312a-4741-a783-e02424f8d5f3",
+    "name": "Fence Painting",
+    "slug": "fence-painting",
+    "category": "Painting & Wall Coverings",
+    "name_hu": "Kerítés festése"
+  },
+  {
+    "id": "ad9baa29-5c4e-492f-9020-40687eb7ae12",
+    "name": "Fence and Gate Installation",
+    "slug": "fence-and-gate-installation",
+    "category": "Roofing & Exterior",
+    "name_hu": "Kerítés és Kapu telepítése"
+  },
+  {
+    "id": "e2c1d4c3-646f-4dfc-ba3c-03bcbebbbf1d",
+    "name": "Fence and Gate Repairs",
+    "slug": "fence-and-gate-repairs",
+    "category": "Roofing & Exterior",
+    "name_hu": "Kerítés és Kapu Repairs"
+  },
+  {
+    "id": "a179280c-7d52-4407-a03a-4ff55a5da774",
+    "name": "Finish Carpentry",
+    "slug": "finish-carpentry",
+    "category": "Carpentry & Woodwork",
+    "name_hu": "Befejező asztalosmunka"
+  },
+  {
+    "id": "47b94f6e-4edf-4aa4-8b6d-77a511189cf4",
+    "name": "Fireplace and Chimney Cleaning or Repair",
+    "slug": "fireplace-and-chimney-cleaning-or-repair",
+    "category": "Home Services & Lifestyle",
+    "name_hu": "Kandalló és kémény tisztítása vagy javítása"
+  },
+  {
+    "id": "0d4e8315-fcd8-4c55-833b-38c13185e812",
+    "name": "Fireplace and Chimney Installation",
+    "slug": "fireplace-and-chimney-installation",
+    "category": "Home Services & Lifestyle",
+    "name_hu": "Kandalló és kémény telepítése"
+  },
+  {
+    "id": "9dacb32b-41f8-4df5-8fdc-2fa39717388b",
+    "name": "Fitness Equipment Assembly",
+    "slug": "fitness-equipment-assembly",
+    "category": "Home Projects & Assembly",
+    "name_hu": "Fitneszgép összeszerelése"
+  },
+  {
+    "id": "389dc4c8-7dd6-4447-9d1e-b2d5706535d0",
+    "name": "Floor Cleaning",
+    "slug": "floor-cleaning",
+    "category": "Cleaning",
+    "name_hu": "Padlótisztítás"
+  },
+  {
+    "id": "bf082885-eacb-4744-bf7d-eb0fa6f14750",
+    "name": "Floor Installation or Replacement",
+    "slug": "floor-installation-or-replacement",
+    "category": "Flooring",
+    "name_hu": "Padló lerakása vagy cseréje"
+  },
+  {
+    "id": "8c20c0f5-37fe-4f05-9a7a-fc5dbc1b1006",
+    "name": "Floor Painting or Coating",
+    "slug": "floor-painting-or-coating",
+    "category": "Flooring",
+    "name_hu": "Padló festése vagy bevonása"
+  },
+  {
+    "id": "5ba0b269-dc68-4d54-9b5d-61c70bbfcf61",
+    "name": "Floor Polishing",
+    "slug": "floor-polishing",
+    "category": "Flooring",
+    "name_hu": "Padló polírozása"
+  },
+  {
+    "id": "9171ec33-1399-4e93-9bd4-e71dfba4a90e",
+    "name": "Floor Repair",
+    "slug": "floor-repair",
+    "category": "Flooring",
+    "name_hu": "Padló javítása"
+  },
+  {
+    "id": "71a02a9b-be36-4c78-9c03-5d7073a4bda3",
+    "name": "Foundation Repair",
+    "slug": "foundation-repair",
+    "category": "Roofing & Exterior",
+    "name_hu": "Alap javítása"
+  },
+  {
+    "id": "29909baf-c031-47de-baa3-196c74c22899",
+    "name": "Framing Carpentry",
+    "slug": "framing-carpentry",
+    "category": "Carpentry & Woodwork",
+    "name_hu": "Szerkezetépítő ácsmunkák"
+  },
+  {
+    "id": "0c86982e-a865-4f7c-8ad9-5aae21f94872",
+    "name": "Full Service Lawn Care",
+    "slug": "full-service-lawn-care",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Teljes körű gyepgondozás"
+  },
+  {
+    "id": "7bb05a31-d9c3-4f2b-bf0e-5596234f3df3",
+    "name": "Furniture Assembly",
+    "slug": "furniture-assembly",
+    "category": "Home Projects & Assembly",
+    "name_hu": "Bútorösszeszerelés"
+  },
+  {
+    "id": "3cb84f4f-427c-4ace-b20b-c0919e5edb65",
+    "name": "Furniture Delivery",
+    "slug": "furniture-delivery",
+    "category": "Moving & Hauling",
+    "name_hu": "Bútorszállítás"
+  },
+  {
+    "id": "7e17d8df-30d5-4b28-8edd-dc02e90a8aea",
+    "name": "Furniture Moving and Heavy Lifting",
+    "slug": "furniture-moving-and-heavy-lifting",
+    "category": "Moving & Hauling",
+    "name_hu": "Bútorok mozgatása és nehéz tárgyak emelése"
+  },
+  {
+    "id": "878c02c8-f4e5-46d1-acac-6403bb0f8dca",
+    "name": "Furniture Refinishing",
+    "slug": "furniture-refinishing",
+    "category": "Home Projects & Assembly",
+    "name_hu": "Bútorfelújítás"
+  },
+  {
+    "id": "3a8d55a2-6d9c-4cb0-8da9-3ab8957e44f4",
+    "name": "Furniture Repair",
+    "slug": "furniture-repair",
+    "category": "Home Projects & Assembly",
+    "name_hu": "Bútorjavítás"
+  },
+  {
+    "id": "fa7fe056-bb98-4fe4-838a-63434617b97a",
+    "name": "Furniture Upholstery",
+    "slug": "furniture-upholstery",
+    "category": "Home Projects & Assembly",
+    "name_hu": "Bútorkárpitozás"
+  },
+  {
+    "id": "e2c8cb43-1821-4ee5-9206-29aea7e46c23",
+    "name": "Garage Addition or Remodel",
+    "slug": "garage-addition-or-remodel",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Garázs bővítése vagy felújítása"
+  },
+  {
+    "id": "94156792-4ba1-4f26-a2f9-d869d0438ed0",
+    "name": "Garage Door Installation or Replacement",
+    "slug": "garage-door-installation-or-replacement",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Garázskapu telepítése vagy cseréje"
+  },
+  {
+    "id": "a346deb0-449a-4b27-bd68-6271f3418c32",
+    "name": "Garage Door Repair",
+    "slug": "garage-door-repair",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Garázskapu javítása"
+  },
+  {
+    "id": "641e86fc-1c89-4f5f-a42e-3a9d7bb5ac61",
+    "name": "Garage, Basement or Attic Cleaning",
+    "slug": "garage-basement-or-attic-cleaning",
+    "category": "Cleaning",
+    "name_hu": "Garázs-, pince- vagy padlástakarítás"
+  },
+  {
+    "id": "2d9ea32f-56b4-4cf3-bd7d-1b176f1c693a",
+    "name": "Garbage Disposal Installation",
+    "slug": "garbage-disposal-installation",
+    "category": "Plumbing",
+    "name_hu": "Konyhai hulladékdaráló telepítése"
+  },
+  {
+    "id": "84b4924b-d261-4a61-a392-bfe5ec00b78d",
+    "name": "Garbage Disposal Repair",
+    "slug": "garbage-disposal-repair",
+    "category": "Plumbing",
+    "name_hu": "Konyhai hulladékdaráló javítása"
+  },
+  {
+    "id": "7be0b4ac-8be9-40b5-bc5e-85a847cb7ee5",
+    "name": "Gardening",
+    "slug": "gardening",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Kertgondozás"
+  },
+  {
+    "id": "812f8623-bd11-478c-8e40-ca59c8fef89f",
+    "name": "Gas Line Installation",
+    "slug": "gas-line-installation",
+    "category": "Plumbing",
+    "name_hu": "Gázvezeték telepítése"
+  },
+  {
+    "id": "1ab26eb0-6f5a-4f8e-b4a4-69241083d6f4",
+    "name": "Gazebo Installation and Construction",
+    "slug": "gazebo-installation-and-construction",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Pavilon telepítése és építése"
+  },
+  {
+    "id": "11ae63e7-684c-4b7a-aed4-5511c874d927",
+    "name": "General Carpentry",
+    "slug": "general-carpentry",
+    "category": "General Contractors & Handymen",
+    "name_hu": "Általános asztalosmunka"
+  },
+  {
+    "id": "3cc478cf-f857-4b8f-8aba-97fecfb98a3f",
+    "name": "General Contracting",
+    "slug": "general-contracting",
+    "category": "General Contractors & Handymen",
+    "name_hu": "Generálkivitelezés"
+  },
+  {
+    "id": "96982ea9-4758-4e1e-b70c-8f3798fae148",
+    "name": "Generator Installation",
+    "slug": "generator-installation",
+    "category": "Electrical",
+    "name_hu": "Áramfejlesztő telepítése"
+  },
+  {
+    "id": "839da4b2-de15-4af0-bde2-c3df4b53b7aa",
+    "name": "Generator Repair",
+    "slug": "generator-repair",
+    "category": "Electrical",
+    "name_hu": "Áramfejlesztő javítása"
+  },
+  {
+    "id": "964e3121-586d-4d8d-881b-f8ef2c44aa80",
+    "name": "Gutter Cleaning and Maintenance",
+    "slug": "gutter-cleaning-and-maintenance",
+    "category": "Roofing & Exterior",
+    "name_hu": "Ereszcsatorna tisztítása és karbantartása"
+  },
+  {
+    "id": "3bd24297-135e-4e1c-9316-90e8b0953fc2",
+    "name": "Gutter Installation or Replacement",
+    "slug": "gutter-installation-or-replacement",
+    "category": "Roofing & Exterior",
+    "name_hu": "Ereszcsatorna telepítése vagy cseréje"
+  },
+  {
+    "id": "5245b01a-bcae-4d42-9280-be022f0eb0a9",
+    "name": "Gutter Repair",
+    "slug": "gutter-repair",
+    "category": "Roofing & Exterior",
+    "name_hu": "Ereszcsatorna javítása"
+  },
+  {
+    "id": "0a3ad819-fb56-4bbb-9651-ded85af2f696",
+    "name": "Handyman",
+    "slug": "handyman",
+    "category": "General Contractors & Handymen",
+    "name_hu": "Ezermester"
+  },
+  {
+    "id": "a6ab9a93-b318-4f3d-b1e3-0cd4991cb667",
+    "name": "Hardwood Floor Refinishing",
+    "slug": "hardwood-floor-refinishing",
+    "category": "Flooring",
+    "name_hu": "Parketta felújítása"
+  },
+  {
+    "id": "2cc2d231-da86-48d7-a505-ffbbfa116ee0",
+    "name": "Heating System Installation or Replacement",
+    "slug": "heating-system-installation-or-replacement",
+    "category": "HVAC",
+    "name_hu": "Fűtési rendszer telepítése vagy cseréje"
+  },
+  {
+    "id": "ba4054a3-99f3-4a5e-9c6e-8014d9eb1e9e",
+    "name": "Heating System Repair or Maintenance",
+    "slug": "heating-system-repair-or-maintenance",
+    "category": "HVAC",
+    "name_hu": "Fűtési rendszer javítása vagy karbantartása"
+  },
+  {
+    "id": "52f0d1da-313a-4670-b011-5d2a813ecdb0",
+    "name": "Holiday Lighting Installation and Removal",
+    "slug": "holiday-lighting-installation-and-removal",
+    "category": "Seasonal Services",
+    "name_hu": "Ünnepi világítás telepítése és eltávolítása"
+  },
+  {
+    "id": "1442902a-5161-4d73-96a3-676653d61234",
+    "name": "Home Inspection",
+    "slug": "home-inspection",
+    "category": "Real Estate & Professional Services",
+    "name_hu": "Ingatlan állapotfelmérés"
+  },
+  {
+    "id": "35b8e0a8-1690-464b-813f-1f0c86a58ffb",
+    "name": "Home Modification for Accessibility",
+    "slug": "home-modification-for-accessibility",
+    "category": "Specialty Home Services",
+    "name_hu": "Akadálymentesítési átalakítások"
+  },
+  {
+    "id": "8cc8f40b-6c96-4e1c-91ee-58536d8e781a",
+    "name": "Home Organizing",
+    "slug": "home-organizing",
+    "category": "Home Services & Lifestyle",
+    "name_hu": "Otthoni rendszerezés"
+  },
+  {
+    "id": "51e2fc61-b32f-4a44-949e-9cf1ae416105",
+    "name": "Home Remodeling",
+    "slug": "home-remodeling",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Lakásfelújítás"
+  },
+  {
+    "id": "14f962ad-459c-4bc6-ad97-f0b107eeb794",
+    "name": "Home Security System Repair",
+    "slug": "home-security-system-repair",
+    "category": "Security & Smart Home",
+    "name_hu": "Otthoni biztonsági rendszer javítása"
+  },
+  {
+    "id": "32ae437b-25c2-4dec-abb7-b81be66ef7d9",
+    "name": "Home Security and Alarms Install",
+    "slug": "home-security-and-alarms-install",
+    "category": "Security & Smart Home",
+    "name_hu": "Otthoni biztonsági rendszer és riasztó telepítése"
+  },
+  {
+    "id": "6b11f36c-1e3b-4af9-aada-fe0b56367910",
+    "name": "Home Staging",
+    "slug": "home-staging",
+    "category": "Home Services & Lifestyle",
+    "name_hu": "Home staging"
+  },
+  {
+    "id": "6370ee12-51b2-4e13-a15b-487bd15720a8",
+    "name": "Home Theater System Installation or Replacement",
+    "slug": "home-theater-system-installation-or-replacement",
+    "category": "Home Services & Lifestyle",
+    "name_hu": "Házimozi rendszer telepítése vagy cseréje"
+  },
+  {
+    "id": "63bd8378-9b2a-4f48-ada6-049ad6f1e4d1",
+    "name": "Home Theater System Repair or Service",
+    "slug": "home-theater-system-repair-or-service",
+    "category": "Home Services & Lifestyle",
+    "name_hu": "Házimozi rendszer javítása vagy szervizelése"
+  },
+  {
+    "id": "8e336526-603c-4956-9d7b-f50da12c60a7",
+    "name": "Home Waterproofing",
+    "slug": "home-waterproofing",
+    "category": "Specialty Installation & Repair",
+    "name_hu": "Épület vízszigetelése"
+  },
+  {
+    "id": "a9098439-b302-42a4-87a6-633865df0c01",
+    "name": "Hot Tub Moving",
+    "slug": "hot-tub-moving",
+    "category": "Pools & Spas",
+    "name_hu": "Jakuzzi szállítása"
+  },
+  {
+    "id": "2a38a932-5fa0-416b-a5a7-09e98de4fc5a",
+    "name": "Hot Tub and Spa Cleaning and Maintenance",
+    "slug": "hot-tub-and-spa-cleaning-and-maintenance",
+    "category": "Pools & Spas",
+    "name_hu": "Jakuzzi és spa tisztítása és karbantartása"
+  },
+  {
+    "id": "35f71b7b-496c-4433-a56b-f304857a44af",
+    "name": "Hot Tub and Spa Installation",
+    "slug": "hot-tub-and-spa-installation",
+    "category": "Pools & Spas",
+    "name_hu": "Jakuzzi és spa telepítése"
+  },
+  {
+    "id": "4a38d779-1463-4736-a9f6-031fab229f8a",
+    "name": "Hot Tub and Spa Repair",
+    "slug": "hot-tub-and-spa-repair",
+    "category": "Pools & Spas",
+    "name_hu": "Jakuzzi és spa javítása"
+  },
+  {
+    "id": "a2fa2678-dd88-4eb0-b1bc-5393ee03a954",
+    "name": "House Cleaning",
+    "slug": "house-cleaning",
+    "category": "Cleaning",
+    "name_hu": "Lakástakarítás"
+  },
+  {
+    "id": "e749694a-7eaf-4d65-9a48-e7a197c8165b",
+    "name": "House Sitting",
+    "slug": "house-sitting",
+    "category": "Specialty Home Services",
+    "name_hu": "Házfelügyelet"
+  },
+  {
+    "id": "1bfbedee-9784-4af2-bf0c-7f80d04d8b52",
+    "name": "In-Ground Swimming Pool Construction",
+    "slug": "in-ground-swimming-pool-construction",
+    "category": "Pools & Spas",
+    "name_hu": "Süllyesztett úszómedence építése"
+  },
+  {
+    "id": "abf408c9-fb3f-4d9c-a3af-80d52c8dbdc5",
+    "name": "Insulation Installation or Upgrade",
+    "slug": "insulation-installation-or-upgrade",
+    "category": "Specialty Installation & Repair",
+    "name_hu": "Insulation telepítése vagy korszerűsítése"
+  },
+  {
+    "id": "2ba873dd-a0bb-49a8-adf9-d8e03979a6e7",
+    "name": "Interior Design",
+    "slug": "interior-design",
+    "category": "Home Services & Lifestyle",
+    "name_hu": "Lakberendezés"
+  },
+  {
+    "id": "72e43a1d-b8f0-4b55-8f88-357d6e82295b",
+    "name": "Interior Painting",
+    "slug": "interior-painting",
+    "category": "Painting & Wall Coverings",
+    "name_hu": "Beltéri festés"
+  },
+  {
+    "id": "b8fd31d9-9dff-45a6-a76a-c22f79574719",
+    "name": "Junk Removal",
+    "slug": "junk-removal",
+    "category": "Moving & Hauling",
+    "name_hu": "Lomtalanítás"
+  },
+  {
+    "id": "e7691962-55d4-4ab7-95af-8f0fa995203e",
+    "name": "Kitchen Remodel",
+    "slug": "kitchen-remodel",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Konyha felújítása"
+  },
+  {
+    "id": "32bc99ad-772d-4ae5-a8b5-ecc1928b9ee2",
+    "name": "Land Clearing",
+    "slug": "land-clearing",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Telektisztítás"
+  },
+  {
+    "id": "29f7a54c-9755-4e67-9491-d9cd8792f2c9",
+    "name": "Land Leveling and Grading",
+    "slug": "land-leveling-and-grading",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Tereprendezés és szintezés"
+  },
+  {
+    "id": "b8f74e7f-6892-4a83-b2fb-93dfa64a82ee",
+    "name": "Land Surveying",
+    "slug": "land-surveying",
+    "category": "Real Estate & Professional Services",
+    "name_hu": "Földmérés"
+  },
+  {
+    "id": "f3b8077f-b3dd-4b08-8ad3-2b08717d154c",
+    "name": "Lawn Mower Repair",
+    "slug": "lawn-mower-repair",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Lawn Mower javítása"
+  },
+  {
+    "id": "e10e2314-2a58-4209-a688-7b575a992b72",
+    "name": "Lawn Mowing and Trimming",
+    "slug": "lawn-mowing-and-trimming",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Lawn Mowing és Trimming"
+  },
+  {
+    "id": "811a5f81-78cc-4603-9e4b-790fba2a0181",
+    "name": "Lighting Installation",
+    "slug": "lighting-installation",
+    "category": "Electrical",
+    "name_hu": "Világítás telepítése"
+  },
+  {
+    "id": "11f9e57f-f42b-4323-afd3-b5c234ff9509",
+    "name": "Local Moving (under 50 miles)",
+    "slug": "local-moving-under-50-miles",
+    "category": "Moving & Hauling",
+    "name_hu": "Helyi költöztetés (50 mérföld alatt)"
+  },
+  {
+    "id": "aa91fa9d-09a0-4a89-9dac-ff268c5019dd",
+    "name": "Lock Installation and Repair",
+    "slug": "lock-installation-and-repair",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Zárak telepítése és javítása"
+  },
+  {
+    "id": "af0b5a00-aafe-49ac-b552-323969326c0e",
+    "name": "Long Distance Moving",
+    "slug": "long-distance-moving",
+    "category": "Moving & Hauling",
+    "name_hu": "Távolsági költöztetés"
+  },
+  {
+    "id": "de979d47-6767-4cae-9fde-f66485f72d9b",
+    "name": "Masonry Construction Services",
+    "slug": "masonry-construction-services",
+    "category": "Roofing & Exterior",
+    "name_hu": "Kőműves kivitelezési szolgáltatások"
+  },
+  {
+    "id": "e8fb38a3-83f3-4f59-92b0-849b2b3ce319",
+    "name": "Metalwork",
+    "slug": "metalwork",
+    "category": "Specialty Installation & Repair",
+    "name_hu": "Fémmegmunkálás"
+  },
+  {
+    "id": "1d3a5a90-9e9c-4892-82c8-b7afc8f09583",
+    "name": "Mold Inspection and Removal",
+    "slug": "mold-inspection-and-removal",
+    "category": "Pest & Environmental",
+    "name_hu": "Penész ellenőrzése és eltávolítása"
+  },
+  {
+    "id": "d0f29eaa-3ddb-4f43-a1e1-935438520cf3",
+    "name": "Mulching",
+    "slug": "mulching",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Mulcsozás"
+  },
+  {
+    "id": "7bbd2e36-46ab-45bb-bf8f-7d6144c08242",
+    "name": "Muralist",
+    "slug": "muralist",
+    "category": "Painting & Wall Coverings",
+    "name_hu": "Falfestő művész"
+  },
+  {
+    "id": "0bcccf88-fd47-4658-97da-d68397d5706d",
+    "name": "New Home Construction",
+    "slug": "new-home-construction",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Új ház építése"
+  },
+  {
+    "id": "a022574e-a4bb-46de-8283-18abd769ad2a",
+    "name": "Odor Removal",
+    "slug": "odor-removal",
+    "category": "Environmental Services",
+    "name_hu": "Szageltávolítás"
+  },
+  {
+    "id": "faa68bb2-0a8f-4a21-8c06-0770232b7ffe",
+    "name": "Office Moving",
+    "slug": "office-moving",
+    "category": "Commercial Services",
+    "name_hu": "Irodaköltöztetés"
+  },
+  {
+    "id": "1b27dd1b-bc60-41e9-8c34-2568a7cae95c",
+    "name": "Outdoor Landscaping and Design",
+    "slug": "outdoor-landscaping-and-design",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Kertépítés és tervezés"
+  },
+  {
+    "id": "5abe4c50-07a6-4810-b18a-fc809b6cfd21",
+    "name": "Outdoor Mosquito Control Services",
+    "slug": "outdoor-mosquito-control-services",
+    "category": "Pest & Environmental",
+    "name_hu": "Kültéri szúnyogirtás"
+  },
+  {
+    "id": "6dfcb9ad-1a7a-4a11-ac0e-f856273fdd39",
+    "name": "Outdoor Pesticide Application",
+    "slug": "outdoor-pesticide-application",
+    "category": "Pest & Environmental",
+    "name_hu": "Kültéri növényvédőszer kijuttatása"
+  },
+  {
+    "id": "acee31a5-8e75-4c0b-9bd7-d95fad44a5a8",
+    "name": "Packing and Unpacking",
+    "slug": "packing-and-unpacking",
+    "category": "Moving & Hauling",
+    "name_hu": "Csomagolás és kicsomagolás"
+  },
+  {
+    "id": "5a66773d-b770-4e0c-8e2c-898665d2355c",
+    "name": "Paint Removal",
+    "slug": "paint-removal",
+    "category": "Painting & Wall Coverings",
+    "name_hu": "Festék eltávolítása"
+  },
+  {
+    "id": "a2ee1f4d-9c2c-49fe-8168-fa09fb109bfe",
+    "name": "Patio Cover and Awning Services",
+    "slug": "patio-cover-and-awning-services",
+    "category": "Roofing & Exterior",
+    "name_hu": "Teraszfedés és napellenző szolgáltatások"
+  },
+  {
+    "id": "0bb8367d-ad97-4d91-9252-196563865478",
+    "name": "Patio Remodel or Addition",
+    "slug": "patio-remodel-or-addition",
+    "category": "Roofing & Exterior",
+    "name_hu": "Terasz felújítása vagy bővítése"
+  },
+  {
+    "id": "c65eac4c-bd74-4367-9b0b-a8ede22c689d",
+    "name": "Pest Control Services",
+    "slug": "pest-control-services",
+    "category": "Pest & Environmental",
+    "name_hu": "Kártevőirtási szolgáltatások"
+  },
+  {
+    "id": "578e4b45-8101-4fe7-8c42-3272756bfddd",
+    "name": "Pest Inspection",
+    "slug": "pest-inspection",
+    "category": "Pest & Environmental",
+    "name_hu": "Kártevő-ellenőrzés"
+  },
+  {
+    "id": "9e76e620-3283-49ff-b241-1d006a5ac657",
+    "name": "Piano Moving",
+    "slug": "piano-moving",
+    "category": "Moving & Hauling",
+    "name_hu": "Zongoraszállítás"
+  },
+  {
+    "id": "26555e02-3ad1-476d-acf7-e42a290be642",
+    "name": "Picture Hanging and Art Installation",
+    "slug": "picture-hanging-and-art-installation",
+    "category": "Home Projects & Assembly",
+    "name_hu": "Kép- és műtárgy felszerelés"
+  },
+  {
+    "id": "426f0a0b-ee2b-4241-8c5d-006210ea45e3",
+    "name": "Plastering",
+    "slug": "plastering",
+    "category": "Painting & Wall Coverings",
+    "name_hu": "Vakolás"
+  },
+  {
+    "id": "9ababe0f-8711-4f00-8e52-ef08bcaeaa2f",
+    "name": "Play Equipment Construction and Assembly",
+    "slug": "play-equipment-construction-and-assembly",
+    "category": "Home Projects & Assembly",
+    "name_hu": "Játszótéri eszközök építése és összeszerelése"
+  },
+  {
+    "id": "f0f16210-8238-4de5-b452-7d7aafc12f4a",
+    "name": "Plumbing Drain Repair",
+    "slug": "plumbing-drain-repair",
+    "category": "Plumbing",
+    "name_hu": "Lefolyó javítása"
+  },
+  {
+    "id": "a2d40171-26b1-4fb3-91ba-f9af908c9380",
+    "name": "Plumbing Inspection",
+    "slug": "plumbing-inspection",
+    "category": "Plumbing",
+    "name_hu": "Vízvezeték-rendszer ellenőrzése"
+  },
+  {
+    "id": "bdbd3acb-6e08-4538-b081-4c1c66119873",
+    "name": "Plumbing Pipe Installation or Replacement",
+    "slug": "plumbing-pipe-installation-or-replacement",
+    "category": "Plumbing",
+    "name_hu": "Csővezeték telepítése vagy cseréje"
+  },
+  {
+    "id": "98ac0a2b-a835-4428-ae12-909b38cac415",
+    "name": "Plumbing Pipe Repair",
+    "slug": "plumbing-pipe-repair",
+    "category": "Plumbing",
+    "name_hu": "Csőjavítás"
+  },
+  {
+    "id": "fb245247-27b8-4c4f-9c28-aa8d5dd55265",
+    "name": "Pool Table Moving",
+    "slug": "pool-table-moving",
+    "category": "Moving & Hauling",
+    "name_hu": "Biliárdasztal szállítása"
+  },
+  {
+    "id": "5a54339f-769c-49a1-955a-927611af94a0",
+    "name": "Pool Table Repair Services",
+    "slug": "pool-table-repair-services",
+    "category": "Home Projects & Assembly",
+    "name_hu": "Biliárdasztal javítási szolgáltatások"
+  },
+  {
+    "id": "0af3cc44-900a-47ba-a0d9-9a5c7dee39c2",
+    "name": "Popcorn Texture Removal",
+    "slug": "popcorn-texture-removal",
+    "category": "Painting & Wall Coverings",
+    "name_hu": "Popcorn mennyezeti textúra eltávolítása"
+  },
+  {
+    "id": "8a42c6b2-40eb-40e5-8f09-c6e1221ba3ff",
+    "name": "Powder Coating",
+    "slug": "powder-coating",
+    "category": "Specialty Installation & Repair",
+    "name_hu": "Porfestés"
+  },
+  {
+    "id": "cf77c040-e315-4476-931b-03025a2defbe",
+    "name": "Pressure Washing",
+    "slug": "pressure-washing",
+    "category": "Cleaning",
+    "name_hu": "Magasnyomású mosás"
+  },
+  {
+    "id": "5f2351f3-f5c2-4dde-be13-5342f008130c",
+    "name": "Property Management",
+    "slug": "property-management",
+    "category": "Real Estate & Professional Services",
+    "name_hu": "Ingatlankezelés"
+  },
+  {
+    "id": "f20c3f64-1fd2-43a8-8ebd-45e2130300dd",
+    "name": "Radon Mitigation",
+    "slug": "radon-mitigation",
+    "category": "Environmental Services",
+    "name_hu": "Radoncsökkentés"
+  },
+  {
+    "id": "0ff9f030-1477-4d7f-91f5-bc3a934ac7ed",
+    "name": "Railing Installation or Remodel",
+    "slug": "railing-installation-or-remodel",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Korlát telepítése vagy felújítása"
+  },
+  {
+    "id": "908b9242-4b82-4e85-a80b-1a6f1be8d5cc",
+    "name": "Real Estate Agent Services",
+    "slug": "real-estate-agent-services",
+    "category": "Real Estate & Professional Services",
+    "name_hu": "Ingatlanügynöki szolgáltatások"
+  },
+  {
+    "id": "a3f7cbb4-a746-4b58-81d1-c14f9ea851ad",
+    "name": "Real Estate Appraisal",
+    "slug": "real-estate-appraisal",
+    "category": "Real Estate & Professional Services",
+    "name_hu": "Ingatlanértékbecslés"
+  },
+  {
+    "id": "a94c8c6a-7aa0-497c-a29c-911bb201453d",
+    "name": "Rodent and Animal Removal",
+    "slug": "rodent-and-animal-removal",
+    "category": "Pest & Environmental",
+    "name_hu": "Rágcsáló- és állateltávolítás"
+  },
+  {
+    "id": "52969a8c-0ef1-4f37-aee6-7cfd0b33a2f8",
+    "name": "Roof Cleaning",
+    "slug": "roof-cleaning",
+    "category": "Roofing & Exterior",
+    "name_hu": "Tetőtisztítás"
+  },
+  {
+    "id": "95979d09-fa27-4bb1-9cb1-1d14040d1e5b",
+    "name": "Roof Inspection",
+    "slug": "roof-inspection",
+    "category": "Roofing & Exterior",
+    "name_hu": "Tetőellenőrzés"
+  },
+  {
+    "id": "9fa5f3c7-69bb-49cd-9033-743b072f905f",
+    "name": "Roof Installation or Replacement",
+    "slug": "roof-installation-or-replacement",
+    "category": "Roofing & Exterior",
+    "name_hu": "Tető telepítése vagy cseréje"
+  },
+  {
+    "id": "7f53a499-371a-4cf2-b809-9fd0706d5b5c",
+    "name": "Roof Repair or Maintenance",
+    "slug": "roof-repair-or-maintenance",
+    "category": "Roofing & Exterior",
+    "name_hu": "Tető javítása vagy karbantartása"
+  },
+  {
+    "id": "9afefc21-b51f-4c51-907b-095cf450cde4",
+    "name": "Room Remodel",
+    "slug": "room-remodel",
+    "category": "Home Remodeling & Construction",
+    "name_hu": "Szoba felújítása"
+  },
+  {
+    "id": "f6f6a0d1-5354-4fa4-9cfb-dbf21a6bdc8a",
+    "name": "Rug Cleaning",
+    "slug": "rug-cleaning",
+    "category": "Cleaning",
+    "name_hu": "Szőnyegtisztítás"
+  },
+  {
+    "id": "562c7ab4-b60e-45c6-85eb-197b4209e2a7",
+    "name": "Satellite Dish Services",
+    "slug": "satellite-dish-services",
+    "category": "Specialty Installation & Repair",
+    "name_hu": "Műholdas antenna szolgáltatások"
+  },
+  {
+    "id": "782df096-1c78-4d10-bac3-b2a1636cb291",
+    "name": "Screen Installation or Replacement",
+    "slug": "screen-installation-or-replacement",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Szúnyogháló telepítése vagy cseréje"
+  },
+  {
+    "id": "93f8b5a8-1037-4aa2-aa86-1291c90077a5",
+    "name": "Septic System Installation or Replacement",
+    "slug": "septic-system-installation-or-replacement",
+    "category": "Plumbing",
+    "name_hu": "Szennyvízderítő rendszer telepítése vagy cseréje"
+  },
+  {
+    "id": "1e187ecd-9999-4d8b-b788-8ace92e457f2",
+    "name": "Septic System Repair, Maintenance or Inspection",
+    "slug": "septic-system-repair-maintenance-or-inspection",
+    "category": "Plumbing",
+    "name_hu": "Szennyvízderítő rendszer javítása, karbantartása vagy ellenőrzése"
+  },
+  {
+    "id": "95f0b832-c515-4af0-8a25-7513f37431e5",
+    "name": "Shower and Bathtub Installation or Replacement",
+    "slug": "shower-and-bathtub-installation-or-replacement",
+    "category": "Plumbing",
+    "name_hu": "Zuhany és kád telepítése vagy cseréje"
+  },
+  {
+    "id": "2644d088-138c-4995-99c1-1f0b4c386be6",
+    "name": "Shower and Bathtub Repair",
+    "slug": "shower-and-bathtub-repair",
+    "category": "Plumbing",
+    "name_hu": "Zuhany és kád javítása"
+  },
+  {
+    "id": "4d4dbc6d-e2a2-4ae9-b8e0-46178f8a3463",
+    "name": "Shrub Trimming and Removal",
+    "slug": "shrub-trimming-and-removal",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Cserjenyírás és eltávolítás"
+  },
+  {
+    "id": "c2ac8bea-4702-4852-9301-8e6f7a4d72b8",
+    "name": "Siding Installation",
+    "slug": "siding-installation",
+    "category": "Roofing & Exterior",
+    "name_hu": "Homlokzatburkolat telepítése"
+  },
+  {
+    "id": "d350b271-4a95-4e96-88ba-f69426ad2d49",
+    "name": "Siding Removal",
+    "slug": "siding-removal",
+    "category": "Roofing & Exterior",
+    "name_hu": "Homlokzatburkolat eltávolítása"
+  },
+  {
+    "id": "e5f014ed-2770-4d36-b472-b95a890e6528",
+    "name": "Siding Repair",
+    "slug": "siding-repair",
+    "category": "Roofing & Exterior",
+    "name_hu": "Homlokzatburkolat javítása"
+  },
+  {
+    "id": "d34eb47e-02e5-4da7-9c30-e6e681f89eb6",
+    "name": "Sink or Faucet Installation or Replacement",
+    "slug": "sink-or-faucet-installation-or-replacement",
+    "category": "Plumbing",
+    "name_hu": "Mosdó vagy csaptelep telepítése vagy cseréje"
+  },
+  {
+    "id": "6ac76f88-e637-4aee-bfe4-3f4f8f07b8c2",
+    "name": "Sink or Faucet Repair",
+    "slug": "sink-or-faucet-repair",
+    "category": "Plumbing",
+    "name_hu": "Mosdó vagy csaptelep javítása"
+  },
+  {
+    "id": "55c65fd8-b1cd-4372-963e-e17e3e3d6745",
+    "name": "Smart Home Installation or Repair",
+    "slug": "smart-home-installation-or-repair",
+    "category": "Security & Smart Home",
+    "name_hu": "Okosotthon telepítése vagy javítása"
+  },
+  {
+    "id": "5109bf89-957a-4c8b-a9bb-48d6b5406881",
+    "name": "Snow Plowing",
+    "slug": "snow-plowing",
+    "category": "Seasonal Services",
+    "name_hu": "Hóeltakarítás"
+  },
+  {
+    "id": "3f44a221-769d-40e2-9400-60220479dbf0",
+    "name": "Sod Installation",
+    "slug": "sod-installation",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Gyepszőnyeg telepítése"
+  },
+  {
+    "id": "f2ca3037-447d-42f9-9f1e-9aa10de23bec",
+    "name": "Solar Panel Cleaning",
+    "slug": "solar-panel-cleaning",
+    "category": "Specialty Installation & Repair",
+    "name_hu": "Napelem tisztítása"
+  },
+  {
+    "id": "bafb4f5f-bd91-4cb2-97d5-216dc7ced0df",
+    "name": "Solar Panel Installation and Repair",
+    "slug": "solar-panel-installation-and-repair",
+    "category": "Specialty Installation & Repair",
+    "name_hu": "Napelem telepítése és javítása"
+  },
+  {
+    "id": "5d3c9aec-41dc-4ac5-b486-1769bfc7b987",
+    "name": "Sound Proofing",
+    "slug": "sound-proofing",
+    "category": "Specialty Installation & Repair",
+    "name_hu": "Hangszigetelés"
+  },
+  {
+    "id": "9a3313ff-0ce9-47f9-af11-60bace095447",
+    "name": "Sprinkler and Irrigation System Installation",
+    "slug": "sprinkler-and-irrigation-system-installation",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Öntözőrendszer telepítése"
+  },
+  {
+    "id": "93d42e94-117a-4936-b46e-a814a4f5cfca",
+    "name": "Sprinkler and Irrigation System Repair and Maintenance",
+    "slug": "sprinkler-and-irrigation-system-repair-and-maintenance",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Öntözőrendszer javítása és karbantartása"
+  },
+  {
+    "id": "81bd0584-b1e6-4dbe-a1a3-4f3608b6b655",
+    "name": "Stair Installation, Remodel, or Repair",
+    "slug": "stair-installation-remodel-or-repair",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Lépcső telepítése, felújítása vagy javítása"
+  },
+  {
+    "id": "1d3638cb-df0f-4ce7-9e9d-f02eb8b77268",
+    "name": "Structural Engineering Services",
+    "slug": "structural-engineering-services",
+    "category": "Real Estate & Professional Services",
+    "name_hu": "Statikai mérnöki szolgáltatások"
+  },
+  {
+    "id": "d076c7a9-4117-4cf2-a99d-981bed9afbba",
+    "name": "Stucco Application",
+    "slug": "stucco-application",
+    "category": "Roofing & Exterior",
+    "name_hu": "Vakolat felhordása"
+  },
+  {
+    "id": "3e38a532-ad84-4d6e-a8f0-e6156c260f92",
+    "name": "Stucco Repair",
+    "slug": "stucco-repair",
+    "category": "Roofing & Exterior",
+    "name_hu": "Vakolat javítása"
+  },
+  {
+    "id": "0c57a94f-ba49-4e2f-bf75-2d56a42a7776",
+    "name": "Sump Pump Installation or Replacement",
+    "slug": "sump-pump-installation-or-replacement",
+    "category": "Plumbing",
+    "name_hu": "Szump szivattyú telepítése vagy cseréje"
+  },
+  {
+    "id": "0f9781d6-6baa-4e16-a057-e1ede9a6fe6b",
+    "name": "Swimming Pool Cleaning, Maintenance, and Inspection",
+    "slug": "swimming-pool-cleaning-maintenance-and-inspection",
+    "category": "Pools & Spas",
+    "name_hu": "Úszómedence tisztítása, karbantartása és ellenőrzése"
+  },
+  {
+    "id": "e018a4d4-fcfa-4fb3-b0cb-9c9ad934d0a7",
+    "name": "Swimming Pool Inspection",
+    "slug": "swimming-pool-inspection",
+    "category": "Pools & Spas",
+    "name_hu": "Úszómedence ellenőrzése"
+  },
+  {
+    "id": "8fe0e7a6-c6f4-48fe-8c0b-8e149ab4a959",
+    "name": "Swimming Pool Removal",
+    "slug": "swimming-pool-removal",
+    "category": "Pools & Spas",
+    "name_hu": "Úszómedence eltávolítása"
+  },
+  {
+    "id": "dc7c91dc-32d9-437c-9acb-fb5bb56acf5f",
+    "name": "Swimming Pool Repair",
+    "slug": "swimming-pool-repair",
+    "category": "Pools & Spas",
+    "name_hu": "Úszómedence javítása"
+  },
+  {
+    "id": "b4f05a13-15e3-47b1-b20d-5ad6531fa266",
+    "name": "Switch and Outlet Installation",
+    "slug": "switch-and-outlet-installation",
+    "category": "Electrical",
+    "name_hu": "Kapcsoló és konnektor telepítése"
+  },
+  {
+    "id": "51e0e7a6-2146-424d-9863-0bf2b6464341",
+    "name": "Switch and Outlet Repair",
+    "slug": "switch-and-outlet-repair",
+    "category": "Electrical",
+    "name_hu": "Kapcsoló és konnektor javítása"
+  },
+  {
+    "id": "f43b3ca4-6276-4f20-84c7-45e1b8c13c10",
+    "name": "TV Mounting",
+    "slug": "tv-mounting",
+    "category": "Home Projects & Assembly",
+    "name_hu": "TV fali rögzítése"
+  },
+  {
+    "id": "17b4266b-a892-41f4-b65f-18c5b9a2bfe1",
+    "name": "TV Repair Services",
+    "slug": "tv-repair-services",
+    "category": "Home Projects & Assembly",
+    "name_hu": "TV javítási szolgáltatások"
+  },
+  {
+    "id": "bfd637e3-202b-4a65-8ac8-da78ac69a277",
+    "name": "Termite Control Services",
+    "slug": "termite-control-services",
+    "category": "Pest & Environmental",
+    "name_hu": "Termesziratás"
+  },
+  {
+    "id": "9a74cc59-1e17-4b36-8b2b-a8f431deccac",
+    "name": "Termite Inspection",
+    "slug": "termite-inspection",
+    "category": "Pest & Environmental",
+    "name_hu": "Termesz-ellenőrzés"
+  },
+  {
+    "id": "51a7d493-90f3-48b7-b0c2-bf970e1fd412",
+    "name": "Thermostat Installation or Repair",
+    "slug": "thermostat-installation-or-repair",
+    "category": "HVAC",
+    "name_hu": "Termosztát telepítése vagy javítása"
+  },
+  {
+    "id": "7c23b98e-26b7-4515-bac1-f268c3b2b91f",
+    "name": "Tile Installation and Replacement",
+    "slug": "tile-installation-and-replacement",
+    "category": "Flooring",
+    "name_hu": "Csempe lerakása és cseréje"
+  },
+  {
+    "id": "190d151f-255c-46e1-b6a8-6bae4c02b9a5",
+    "name": "Tile Repair",
+    "slug": "tile-repair",
+    "category": "Flooring",
+    "name_hu": "Csempe javítása"
+  },
+  {
+    "id": "937a4eba-b54d-4158-b3ba-16da75462886",
+    "name": "Tile and Grout Cleaning",
+    "slug": "tile-and-grout-cleaning",
+    "category": "Cleaning",
+    "name_hu": "Csempe- és fugatisztítás"
+  },
+  {
+    "id": "9a78a802-3c9d-4aa7-98f7-f5fd59286573",
+    "name": "Toilet Installation or Replacement",
+    "slug": "toilet-installation-or-replacement",
+    "category": "Plumbing",
+    "name_hu": "WC telepítése vagy cseréje"
+  },
+  {
+    "id": "6c4f9817-5aa3-4a62-ac13-6ec41ba1ae0e",
+    "name": "Toilet Repair",
+    "slug": "toilet-repair",
+    "category": "Plumbing",
+    "name_hu": "WC javítása"
+  },
+  {
+    "id": "842920db-7e2d-4d6a-bf6a-f5ef3191a7c2",
+    "name": "Tree Planting",
+    "slug": "tree-planting",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Faültetés"
+  },
+  {
+    "id": "8b334a31-06c4-40ea-a07d-7a8fcb3c5dfc",
+    "name": "Tree Stump Grinding and Removal",
+    "slug": "tree-stump-grinding-and-removal",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Tuskómarás és eltávolítás"
+  },
+  {
+    "id": "5879fcb0-a16a-4e08-87be-5a786cd8cbcf",
+    "name": "Tree Trimming and Removal",
+    "slug": "tree-trimming-and-removal",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Fa metszése és eltávolítása"
+  },
+  {
+    "id": "252dd4f5-5608-4e86-ac77-766c53596e11",
+    "name": "Trim or Molding Installation",
+    "slug": "trim-or-molding-installation",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Szegőléc vagy díszléc telepítése"
+  },
+  {
+    "id": "bcab5980-83a9-489c-aeb3-f4c3a802fcc4",
+    "name": "Upholstery and Furniture Cleaning",
+    "slug": "upholstery-and-furniture-cleaning",
+    "category": "Cleaning",
+    "name_hu": "Kárpit- és bútortisztítás"
+  },
+  {
+    "id": "3b466d4e-d52e-42aa-8422-694d20c059b5",
+    "name": "Wallpaper Installation or Repair",
+    "slug": "wallpaper-installation-or-repair",
+    "category": "Painting & Wall Coverings",
+    "name_hu": "Tapétázás vagy tapéta javítása"
+  },
+  {
+    "id": "b4dbe81a-0fd9-4dd8-97f1-c24f0f05421e",
+    "name": "Wallpaper Removal",
+    "slug": "wallpaper-removal",
+    "category": "Painting & Wall Coverings",
+    "name_hu": "Tapéta eltávolítása"
+  },
+  {
+    "id": "bf9bd59e-5bb9-4bda-a488-1a1d9908c348",
+    "name": "Water Damage Cleanup and Restoration",
+    "slug": "water-damage-cleanup-and-restoration",
+    "category": "Cleaning",
+    "name_hu": "Vízkár utáni takarítás és helyreállítás"
+  },
+  {
+    "id": "c88933d8-86d0-4caa-bda6-92180687a23c",
+    "name": "Water Feature Installation",
+    "slug": "water-feature-installation",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Vízjáték telepítése"
+  },
+  {
+    "id": "29ed2891-890c-470a-a721-0d4b541240ff",
+    "name": "Water Feature Repair and Maintenance",
+    "slug": "water-feature-repair-and-maintenance",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Vízjáték javítása és karbantartása"
+  },
+  {
+    "id": "f8c50096-6fac-433f-b1c8-0d684dfd6535",
+    "name": "Water Heater Installation or Replacement",
+    "slug": "water-heater-installation-or-replacement",
+    "category": "Plumbing",
+    "name_hu": "Bojler telepítése vagy cseréje"
+  },
+  {
+    "id": "aa3b8b75-a426-4399-82f3-a4bafd3d7db4",
+    "name": "Water Heater Repair or Maintenance",
+    "slug": "water-heater-repair-or-maintenance",
+    "category": "Plumbing",
+    "name_hu": "Bojler javítása vagy karbantartása"
+  },
+  {
+    "id": "e984f20e-7bc7-40bc-b5ee-13fd0294419c",
+    "name": "Water Treatment Repair or Maintenance",
+    "slug": "water-treatment-repair-or-maintenance",
+    "category": "Plumbing",
+    "name_hu": "Vízkezelő rendszer javítása vagy karbantartása"
+  },
+  {
+    "id": "c9ed76ca-4a86-490c-8e41-f1221d1abc5a",
+    "name": "Water Treatment System Installation or Replacement",
+    "slug": "water-treatment-system-installation-or-replacement",
+    "category": "Plumbing",
+    "name_hu": "Vízkezelő rendszer telepítése vagy cseréje"
+  },
+  {
+    "id": "e9f92721-d5f1-4ab9-b700-057181b7bd94",
+    "name": "Weatherization",
+    "slug": "weatherization",
+    "category": "Specialty Home Services",
+    "name_hu": "Hőszigetelés és tömítés"
+  },
+  {
+    "id": "8c850eca-957f-4a6c-8f10-74663195f28d",
+    "name": "Weeding",
+    "slug": "weeding",
+    "category": "Landscaping & Outdoor",
+    "name_hu": "Gyomlálás"
+  },
+  {
+    "id": "9c1c0cc0-6c2e-4fad-b5f1-ae2b4aba49ea",
+    "name": "Well System Work",
+    "slug": "well-system-work",
+    "category": "Plumbing",
+    "name_hu": "Kútrendszer munkálatok"
+  },
+  {
+    "id": "be5f1a36-2aa2-4ed1-8f3a-b99c6f3dd497",
+    "name": "Window Cleaning",
+    "slug": "window-cleaning",
+    "category": "Cleaning",
+    "name_hu": "Ablaktisztítás"
+  },
+  {
+    "id": "9e3e2c7a-2a54-40ea-8a01-1d83f7f6de35",
+    "name": "Window Installation",
+    "slug": "window-installation",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Ablak beépítése"
+  },
+  {
+    "id": "853e41b8-f69b-4bdf-9580-201f340215f0",
+    "name": "Window Repair",
+    "slug": "window-repair",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Ablak javítása"
+  },
+  {
+    "id": "e26bf08a-4134-40e2-9268-02b92fffe6de",
+    "name": "Window Tinting",
+    "slug": "window-tinting",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Ablakfóliázás"
+  },
+  {
+    "id": "fb53b84a-5216-4a6a-b120-2e9b0b3f69de",
+    "name": "Window Treatment Installation or Repair",
+    "slug": "window-treatment-installation-or-repair",
+    "category": "Windows, Doors & Trim",
+    "name_hu": "Árnyékoló és függöny felszerelése vagy javítása"
+  },
+  {
+    "id": "4a0ccfe6-9bb3-4a1b-96f6-519fb7c4727d",
+    "name": "Window, Wall, or Portable AC Repair or Maintenance",
+    "slug": "window-wall-or-portable-ac-repair-or-maintenance",
+    "category": "HVAC",
+    "name_hu": "Ablakos, fali vagy mobil klíma javítása vagy karbantartása"
+  },
+  {
+    "id": "f943b0e8-a91a-4fca-bde9-1ec0bde8067b",
+    "name": "Wiring Installation",
+    "slug": "wiring-installation",
+    "category": "Electrical",
+    "name_hu": "Vezetékezés telepítése"
+  }
+]

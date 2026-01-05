@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Brand font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,300..700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Brand-aligned primary (matches app: hsl(195 100% 42.5%) ≈ #00A3D9) */
+      --primary: #00a3d9;
+      --primary-dark: #008fc0;
+      --surface: #ffffff;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --bg: #f8fafc;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      font-family: "Google Sans Flex", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      color: #0f172a;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+    .wrapper {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 24px 16px 32px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+    .header {
+      background: linear-gradient(120deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      padding: 22px 28px;
+      text-align: center;
+    }
+    .logo-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+    }
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #fff;
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      font-size: 18px;
+      font-family: "Google Sans Flex", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    }
+    .logo-text {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+      font-weight: 700;
+      font-family: "Google Sans Flex", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    }
+    .body {
+      padding: 26px 28px;
+      background: #fff;
+    }
+    .body h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+    }
+    .body p {
+      margin: 0 0 12px;
+      color: #1f2937;
+    }
+    .body .muted {
+      color: var(--muted);
+    }
+    .cta {
+      display: inline-block;
+      padding: 12px 20px;
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 14px 0;
+    }
+    .footer {
+      padding: 18px 24px 22px;
+      border-top: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="header">
+        <img
+          src="https://firebasestorage.googleapis.com/v0/b/mestermind.firebasestorage.app/o/Screenshot%202025-12-15%20at%202.17.15%E2%80%AFAM.png?alt=media&token=8f7301a2-dfe0-4a3d-819f-edaedbe558a1"
+          alt="Mestermind"
+          style="max-width: 160px; height: auto; display: inline-block;"
+        />
+      </div>
+      <div class="body">
+        $content
+        $cta_block
+      </div>
+      <div class="footer">
+        <div>© $year Mestermind. All rights reserved.</div>
+        <div class="muted">You're receiving this email because you have an account with Mestermind.</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

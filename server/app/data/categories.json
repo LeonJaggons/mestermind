@@ -1,0 +1,152 @@
+[
+  {
+    "id": "c3059d71-a68b-42b0-b37a-ef66f5dd24e8",
+    "name": "Pools & Spas",
+    "name_hu": "Medencék és Szaunák",
+    "slug": "pools-and-spas"
+  },
+  {
+    "id": "685e4c62-d220-4045-ac52-e3dadf76f123",
+    "name": "Environmental Services",
+    "name_hu": "Környezeti Szolgáltatások",
+    "slug": "environmental-services"
+  },
+  {
+    "id": "d28c1941-491d-4ade-b398-a12d564c525f",
+    "name": "Other Home Services",
+    "name_hu": "Egyéb Otthoni Szolgáltatások",
+    "slug": "other-home-services"
+  },
+  {
+    "id": "4e2fd702-c826-414b-91ce-80b169d2a9e4",
+    "name": "Real Estate & Professional Services",
+    "name_hu": "Ingatlan és Szakmai Szolgáltatások",
+    "slug": "real-estate-and-professional-services"
+  },
+  {
+    "id": "8b028b56-d05e-4f1e-832c-54271b239b7e",
+    "name": "Landscaping & Outdoor",
+    "name_hu": "Kertépítés és Kültér",
+    "slug": "landscaping-and-outdoor"
+  },
+  {
+    "id": "7f4629d0-e5d4-436e-bb9e-1c0029a757b6",
+    "name": "Roofing & Exterior",
+    "name_hu": "Tetőfedés és Külső Burkolat",
+    "slug": "roofing-and-exterior"
+  },
+  {
+    "id": "1f09508f-5a4a-4a63-9404-53120699b2eb",
+    "name": "Home Remodeling & Construction",
+    "name_hu": "Lakásfelújítás és Építés",
+    "slug": "home-remodeling-and-construction"
+  },
+  {
+    "id": "6f12245c-5639-4b3c-b7f5-10a77582c33d",
+    "name": "Pest & Environmental",
+    "name_hu": "Kártevőirtás és Környezetvédelem",
+    "slug": "pest-and-environmental"
+  },
+  {
+    "id": "9c3a7c4b-9f03-4df8-a2f4-024c361bbed3",
+    "name": "Carpentry & Woodwork",
+    "name_hu": "Asztalosmunka és Faipar",
+    "slug": "carpentry-and-woodwork"
+  },
+  {
+    "id": "546c6ace-5fd9-4c05-9a1a-0af64417ebf1",
+    "name": "Painting & Wall Coverings",
+    "name_hu": "Festés és Falburkolatok",
+    "slug": "painting-and-wall-coverings"
+  },
+  {
+    "id": "c5b8a3fd-36ab-44f5-b758-09b40bbfab4e",
+    "name": "Cleaning",
+    "name_hu": "Takarítás",
+    "slug": "cleaning"
+  },
+  {
+    "id": "13c4f518-bd47-479e-87b1-e31b76ba1c72",
+    "name": "Flooring",
+    "name_hu": "Padlóburkolat",
+    "slug": "flooring"
+  },
+  {
+    "id": "1baf9778-6421-4ca9-bfc7-bfe2fb8b9f84",
+    "name": "HVAC",
+    "name_hu": "Légtechnika",
+    "slug": "hvac"
+  },
+  {
+    "id": "676f60a3-2d7b-4320-b62b-52df4e3fc73b",
+    "name": "Electrical",
+    "name_hu": "Villanyszerelés",
+    "slug": "electrical"
+  },
+  {
+    "id": "dc4e1b65-8c89-4eba-b2d0-415791ecc350",
+    "name": "Commercial Services",
+    "name_hu": "Kereskedelmi Szolgáltatások",
+    "slug": "commercial-services"
+  },
+  {
+    "id": "746e17d8-b9c0-4f3f-87e1-2f6461a51cb1",
+    "name": "General Contractors & Handymen",
+    "name_hu": "Általános Kivitelezők és Kézművesek",
+    "slug": "general-contractors-and-handymen"
+  },
+  {
+    "id": "aaa38462-e884-4a4a-a7f9-7c23a960f055",
+    "name": "Home Services & Lifestyle",
+    "name_hu": "Otthoni Szolgáltatások és Életmód",
+    "slug": "home-services-and-lifestyle"
+  },
+  {
+    "id": "6579cdbd-12fd-4eb3-a545-2a5fc96937b6",
+    "name": "Home Projects & Assembly",
+    "name_hu": "Otthoni Projektek és Összeszerelés",
+    "slug": "home-projects-and-assembly"
+  },
+  {
+    "id": "e71de632-4e41-4b8c-9f55-91b25203a37f",
+    "name": "Moving & Hauling",
+    "name_hu": "Költöztetés és Szállítás",
+    "slug": "moving-and-hauling"
+  },
+  {
+    "id": "2590c65f-685e-4a06-bebb-9f0579f3ea19",
+    "name": "Plumbing",
+    "name_hu": "Vízvezeték-szerelés",
+    "slug": "plumbing"
+  },
+  {
+    "id": "bdf7ba96-9aed-4fe1-ace1-87e0836f3d8b",
+    "name": "Windows, Doors & Trim",
+    "name_hu": "Ablakok, Ajtók és Bélés",
+    "slug": "windows-doors-and-trim"
+  },
+  {
+    "id": "c5d191c7-dd37-4b58-9c54-271c3e9fb42b",
+    "name": "Seasonal Services",
+    "name_hu": "Szezonális Szolgáltatások",
+    "slug": "seasonal-services"
+  },
+  {
+    "id": "fcc07b24-beeb-4347-884d-0f5361f13b75",
+    "name": "Security & Smart Home",
+    "name_hu": "Biztonság és Okosotthon",
+    "slug": "security-and-smart-home"
+  },
+  {
+    "id": "fd137b5c-47d3-48a9-9254-cde7b1cfd4e5",
+    "name": "Specialty Home Services",
+    "name_hu": "Speciális Otthoni Szolgáltatások",
+    "slug": "specialty-home-services"
+  },
+  {
+    "id": "d44b156f-3871-4e86-975b-69efe70b6f45",
+    "name": "Specialty Installation & Repair",
+    "name_hu": "Speciális Telepítés és Javítás",
+    "slug": "specialty-installation-and-repair"
+  }
+]
