@@ -8,8 +8,9 @@ steps:
       - '-t'
       - 'gcr.io/$PROJECT_ID/mestermind-server:latest'
       - '-f'
-      - 'server/Dockerfile'
-      - 'server'
+      - './server/Dockerfile'
+      - './server'
+    dir: '.'
 
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
