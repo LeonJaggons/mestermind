@@ -48,12 +48,11 @@ steps:
       - '--timeout'
       - '300'
       - '--add-cloudsql-instances'
-      - '$PROJECT_ID:europe-west1:mestermind-db'  # Replace with your Cloud SQL instance connection name
-      - '--set-env-vars'
-      - 'DATABASE_URL=postgresql+psycopg2://mestermind_user:$$DB_PASSWORD@/mestermind?host=/cloudsql/$PROJECT_ID:europe-west1:mestermind-db'
-      # Note: Use --set-secrets for DB_PASSWORD instead of hardcoding
+      - 'mestermind-474514:europe-west1:mestermind-postgres'
+      # Note: DATABASE_URL should be set via Secret Manager
+      # Uncomment these lines after creating the secret:
       # - '--set-secrets'
-      # - 'DATABASE_URL=DATABASE_URL:latest'
+      # - 'DATABASE_URL=database-url:latest'
 
 images:
   - 'gcr.io/$PROJECT_ID/mestermind-server:$COMMIT_SHA'
