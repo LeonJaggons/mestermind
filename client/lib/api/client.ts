@@ -11,11 +11,25 @@ export class ApiClient {
     this.baseUrl = baseUrl;
   }
 
+  private getSecureUrl(url: string): string {
+    // In browser, if page is HTTPS, ensure API URL is also HTTPS
+    if (typeof window !== 'undefined') {
+      const isHttps = window.location.protocol === 'https:';
+      if (isHttps && url.startsWith('http://')) {
+        // Convert HTTP to HTTPS to prevent mixed content errors
+        return url.replace('http://', 'https://');
+      }
+    }
+    return url;
+  }
+
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
+    let url = `${this.baseUrl}${endpoint}`;
+    // Ensure HTTPS in production (browser environment)
+    url = this.getSecureUrl(url);
     
     const config: RequestInit = {
       ...options,
