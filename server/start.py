@@ -16,18 +16,29 @@ if __name__ == "__main__":
     # Get configuration from environment or use defaults
     host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", "8000"))
-    workers = int(os.getenv("WORKERS", "4"))
+    # Use single worker for Cloud Run - Cloud Run handles scaling
+    workers = int(os.getenv("WORKERS", "1"))
     reload = os.getenv("RELOAD", "false").lower() == "true"
     
     print(f"Starting FastAPI server on {host}:{port}")
     print(f"Workers: {workers}")
     print(f"Reload: {reload}")
     
-    uvicorn.run(
-        "app.main:app",
-        host=host,
-        port=port,
-        workers=workers if not reload else 1,  # Multiple workers not supported with reload
-        reload=reload,
-        log_level="info",
-    )
+    # For Cloud Run, always use single worker (no workers parameter)
+    # Cloud Run manages scaling at container level
+    if workers == 1 or os.getenv("K_SERVICE"):  # K_SERVICE is Cloud Run indicator
+        uvicorn.run(
+            "app.main:app",
+            host=host,
+            port=port,
+            log_level="info",
+            timeout_keep_alive=30,
+        )
+    else:
+        uvicorn.run(
+            "app.main:app",
+            host=host,
+            port=port,
+            workers=workers,
+            log_level="info",
+        )
