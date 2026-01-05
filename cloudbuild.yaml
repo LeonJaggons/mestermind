@@ -49,10 +49,8 @@ steps:
       - '300'
       - '--add-cloudsql-instances'
       - 'mestermind-474514:europe-west1:mestermind-postgres'
-      # Note: DATABASE_URL should be set via Secret Manager
-      # Uncomment these lines after creating the secret:
-      # - '--set-secrets'
-      # - 'DATABASE_URL=database-url:latest'
+      - '--set-secrets'
+      - 'DATABASE_URL=database-url:latest'
 
 images:
   - 'gcr.io/$PROJECT_ID/mestermind-server:$COMMIT_SHA'
