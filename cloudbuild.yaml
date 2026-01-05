@@ -33,7 +33,7 @@ steps:
       - '--image'
       - 'gcr.io/$PROJECT_ID/mestermind-server:$COMMIT_SHA'
       - '--region'
-      - 'us-central1'  # Change to your preferred region
+      - 'europe-west1'  # Change to your preferred region (match your Cloud SQL instance)
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'  # Remove if you want authenticated access only
@@ -47,6 +47,13 @@ steps:
       - '1'
       - '--timeout'
       - '300'
+      - '--add-cloudsql-instances'
+      - '$PROJECT_ID:europe-west1:mestermind-db'  # Replace with your Cloud SQL instance connection name
+      - '--set-env-vars'
+      - 'DATABASE_URL=postgresql+psycopg2://mestermind_user:$$DB_PASSWORD@/mestermind?host=/cloudsql/$PROJECT_ID:europe-west1:mestermind-db'
+      # Note: Use --set-secrets for DB_PASSWORD instead of hardcoding
+      # - '--set-secrets'
+      # - 'DATABASE_URL=DATABASE_URL:latest'
 
 images:
   - 'gcr.io/$PROJECT_ID/mestermind-server:$COMMIT_SHA'

@@ -8,13 +8,18 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # Database
+    # For local dev: sqlite:///./app.db
+    # For Cloud SQL: postgresql+psycopg2://user:password@/dbname?host=/cloudsql/PROJECT:REGION:INSTANCE
+    # For Cloud SQL with Unix socket: postgresql+psycopg2://user:password@/dbname?host=/cloudsql/PROJECT:REGION:INSTANCE
+    # For Cloud SQL with TCP: postgresql+psycopg2://user:password@HOST:5432/dbname
     DATABASE_URL: str = "sqlite:///./app.db"
     
-    # SQLite optimizations for production
-    SQLITE_POOL_SIZE: int = 20
-    SQLITE_MAX_OVERFLOW: int = 0
-    SQLITE_POOL_TIMEOUT: int = 30
-    SQLITE_POOL_RECYCLE: int = 3600
+    # Database pool settings (for PostgreSQL)
+    DB_POOL_SIZE: int = 5
+    DB_MAX_OVERFLOW: int = 10
+    DB_POOL_TIMEOUT: int = 30
+    DB_POOL_RECYCLE: int = 3600
+    DB_POOL_PRE_PING: bool = True  # Enable connection health checks
     
     # Stripe
     STRIPE_SECRET_KEY: str = ""  # Set via environment variable
