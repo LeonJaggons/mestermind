@@ -37,39 +37,11 @@ export class ApiClient {
         'Content-Type': 'application/json',
         ...options.headers,
       },
-      // Handle redirects manually to convert HTTP redirects to HTTPS
-      redirect: 'manual' as RequestRedirect,
+      credentials: 'include',
     };
 
     try {
-      let response = await fetch(url, config);
-      
-      // Handle redirects manually (especially HTTP -> HTTPS conversion)
-      if (response.status >= 300 && response.status < 400) {
-        const redirectUrl = response.headers.get('Location');
-        if (redirectUrl) {
-          // Resolve relative URLs to absolute
-          let absoluteRedirectUrl: string;
-          if (redirectUrl.startsWith('http://') || redirectUrl.startsWith('https://')) {
-            absoluteRedirectUrl = redirectUrl;
-          } else {
-            // Relative URL - resolve against original URL
-            const baseUrlObj = new URL(url);
-            absoluteRedirectUrl = new URL(redirectUrl, baseUrlObj.origin).href;
-          }
-          
-          // Convert HTTP redirects to HTTPS
-          const secureRedirectUrl = this.getSecureUrl(absoluteRedirectUrl);
-          
-          // Follow the redirect with original method and body
-          response = await fetch(secureRedirectUrl, {
-            method: options.method || 'GET',
-            headers: config.headers,
-            body: options.body,
-            redirect: 'follow', // Allow following this redirect
-          });
-        }
-      }
+      const response = await fetch(url, config);
 
       if (!response.ok) {
         let errorMessage = `HTTP error! status: ${response.status}`;

@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import RedirectResponse
 from contextlib import asynccontextmanager
 from pathlib import Path
 from app.core.config import get_settings
@@ -32,6 +34,28 @@ app = FastAPI(
     version=settings.VERSION,
     lifespan=lifespan,
 )
+
+
+# Middleware to force HTTPS redirects
+class HTTPSRedirectMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        
+        # If this is a redirect response, ensure it uses HTTPS
+        if isinstance(response, RedirectResponse) and 300 <= response.status_code < 400:
+            location = response.headers.get("location", "")
+            # Check if we have X-Forwarded-Proto header indicating HTTPS from proxy
+            forwarded_proto = request.headers.get("x-forwarded-proto", "")
+            
+            if forwarded_proto == "https" and location.startswith("http://"):
+                # Convert HTTP redirect to HTTPS
+                response.headers["location"] = location.replace("http://", "https://", 1)
+        
+        return response
+
+
+# Add HTTPS redirect middleware first
+app.add_middleware(HTTPSRedirectMiddleware)
 
 # CORS middleware
 # Split the comma-separated origins string into a list
