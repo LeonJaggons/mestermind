@@ -63,8 +63,8 @@ steps:
           --region europe-west1 \
           --set-cloudsql-instances mestermind-474514:europe-west1:mestermind-postgres \
           --set-secrets DATABASE_URL=database-url:latest \
-          --command /bin/bash \
-          --args "-c,cd /app && alembic upgrade head" \
+          --command python \
+          --args "run_migrations.py" \
           --execute-now \
           --wait || true
         
