@@ -15,6 +15,7 @@ class ProProfileBase(BaseModel):
     zip_code: Optional[str] = None
     profile_image_url: Optional[str] = None
     business_intro: Optional[str] = None
+    profile_photos: Optional[List[str]] = None
     availability_type: Optional[str] = None
     schedule: Optional[Dict[str, Any]] = None
     lead_time_amount: Optional[int] = None
@@ -44,6 +45,7 @@ class ProProfileUpdate(BaseModel):
     zip_code: Optional[str] = None
     profile_image_url: Optional[str] = None
     business_intro: Optional[str] = None
+    profile_photos: Optional[List[str]] = None
     availability_type: Optional[str] = None
     schedule: Optional[Dict[str, Any]] = None
     lead_time_amount: Optional[int] = None

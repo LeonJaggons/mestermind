@@ -26,6 +26,7 @@ class ProProfile(Base):
     
     # Business Intro (Step 3)
     business_intro = Column(Text, nullable=True)
+    profile_photos = Column(JSON, nullable=True)  # JSON array of photo/video URLs
     
     # Availability (Step 4)
     availability_type = Column(String, nullable=True)  # 'flexible' or 'specific'

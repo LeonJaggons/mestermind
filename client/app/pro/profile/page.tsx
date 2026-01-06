@@ -22,6 +22,7 @@ interface ProProfile {
   number_of_employees: number | null;
   business_intro: string | null;
   profile_image_url: string | null;
+  profile_photos: string[] | null;
 }
 
 interface ProjectMedia {
@@ -108,6 +109,10 @@ export default function ProfilePage() {
           console.log("[PROFILE] Fetched pro profile:", data);
           console.log("[PROFILE] Pro profile ID:", data.id);
           setProProfile(data);
+          // Load profile photos from backend
+          if (data.profile_photos && Array.isArray(data.profile_photos)) {
+            setProfilePhotos(data.profile_photos);
+          }
         } else {
           const errorText = await response.text();
           console.error(
@@ -181,6 +186,37 @@ export default function ProfilePage() {
     router.push("/pro/payments");
   };
 
+  const savePhotosToBackend = async (photos: string[]) => {
+    if (!user || !proProfile) return;
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/pro-profiles/${proProfile.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            profile_photos: photos,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("[PROFILE] Failed to save photos:", response.status, errorText);
+        throw new Error("Failed to save photos to backend");
+      }
+
+      console.log("[PROFILE] Photos saved to backend successfully");
+    } catch (error) {
+      console.error("[PROFILE] Error saving photos:", error);
+      throw error;
+    }
+  };
+
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0 || !user) return;
@@ -219,8 +255,18 @@ export default function ProfilePage() {
           alert(t("pro.profile.uploadFailed") || "Failed to upload file");
           setUploadingPhoto(false);
         },
-        (downloadURL) => {
-          setProfilePhotos([...profilePhotos, downloadURL]);
+        async (downloadURL) => {
+          const updatedPhotos = [...profilePhotos, downloadURL];
+          setProfilePhotos(updatedPhotos);
+          
+          // Save to backend
+          try {
+            await savePhotosToBackend(updatedPhotos);
+          } catch (error) {
+            console.error("Failed to save photo to backend:", error);
+            alert(t("pro.profile.saveFailed") || "Photo uploaded but failed to save. Please try again.");
+          }
+          
           setUploadingPhoto(false);
           setUploadProgress(0);
           // Reset file input
@@ -246,7 +292,16 @@ export default function ProfilePage() {
       await deleteFile(path);
       
       // Remove from state
-      setProfilePhotos(profilePhotos.filter((_, i) => i !== index));
+      const updatedPhotos = profilePhotos.filter((_, i) => i !== index);
+      setProfilePhotos(updatedPhotos);
+      
+      // Save to backend
+      try {
+        await savePhotosToBackend(updatedPhotos);
+      } catch (error) {
+        console.error("Failed to save after delete:", error);
+        alert(t("pro.profile.saveFailed") || "Photo deleted but failed to save changes. Please refresh the page.");
+      }
     } catch (error) {
       console.error("Delete error:", error);
       alert(t("pro.profile.deleteFailed") || "Failed to delete photo");
