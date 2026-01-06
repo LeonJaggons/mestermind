@@ -125,9 +125,14 @@ def update_pro_profile_by_user(user_identifier: str, profile_update: ProProfileU
     
     db_profile = db.query(ProProfile).filter(ProProfile.user_id == user.id).first()
     
-    # If profile doesn't exist, create it
+    # If profile doesn't exist, create it with placeholder values for required fields
     if db_profile is None:
-        db_profile = ProProfile(user_id=user.id)
+        db_profile = ProProfile(
+            user_id=user.id,
+            street_address="",  # Required field - placeholder
+            city="",  # Required field - placeholder
+            zip_code=""  # Required field - placeholder
+        )
         db.add(db_profile)
     
     # Update only the fields that are provided
@@ -139,11 +144,11 @@ def update_pro_profile_by_user(user_identifier: str, profile_update: ProProfileU
         db.commit()
         db.refresh(db_profile)
         return db_profile
-    except IntegrityError:
+    except IntegrityError as e:
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Error updating pro profile"
+            detail=f"Error updating pro profile: {str(e.orig)}"
         )
 
 
