@@ -728,6 +728,11 @@ const translations = {
   "pro.profile.uploadFailed": "Nem sikerült feltölteni a képet",
   "pro.profile.imageRequirements": "JPG, PNG vagy WebP. Maximum 5MB.",
   "pro.profile.save": "Mentés",
+  "pro.profile.invalidMediaType": "Kérjük, tölts fel érvényes képet (JPG, PNG, WebP) vagy videót (MP4, MOV, WebM)",
+  "pro.profile.mediaTooLarge": "A fájl túl nagy",
+  "pro.profile.confirmDeletePhoto": "Biztosan törölni szeretnéd ezt a fotót?",
+  "pro.profile.deleteFailed": "Nem sikerült törölni a fotót",
+  "pro.profile.mediaRequirements": "Képek: JPG, PNG, WebP (max 20MB). Videók: MP4, MOV, WebM (max 100MB).",
 
   // Results Page
   "results.calculateEstimate": "Számítsd ki a becslésed",

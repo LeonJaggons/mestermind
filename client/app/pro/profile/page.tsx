@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/contexts/I18nContext";
 import { API_BASE_URL } from "@/lib/api/config";
+import { uploadFileWithProgress, generateFilePath, validateFileType, validateFileSize, deleteFile } from "@/lib/firebase/storage";
 
 interface ProProfile {
   id: number;
@@ -87,6 +88,11 @@ export default function ProfilePage() {
   const [projectDescription, setProjectDescription] = useState("");
   const [projectMediaUrls, setProjectMediaUrls] = useState<Array<{ url: string; type: string; caption: string }>>([]);
   const [savingProject, setSavingProject] = useState(false);
+  
+  // Photos and videos state
+  const [profilePhotos, setProfilePhotos] = useState<string[]>([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -173,6 +179,78 @@ export default function ProfilePage() {
 
   const handleSetupDirectDeposit = () => {
     router.push("/pro/payments");
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !user) return;
+
+    const file = files[0];
+
+    // Validate file type (images and videos)
+    const validTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg", "video/mp4", "video/quicktime", "video/webm"];
+    if (!validateFileType(file, validTypes)) {
+      alert(t("pro.profile.invalidMediaType") || "Please upload a valid image (JPG, PNG, WebP) or video (MP4, MOV, WebM)");
+      return;
+    }
+
+    // Validate file size (20MB for photos, 100MB for videos)
+    const maxSize = file.type.startsWith("video/") ? 100 : 20;
+    if (!validateFileSize(file, maxSize)) {
+      alert(t("pro.profile.mediaTooLarge") || `File must be less than ${maxSize}MB`);
+      return;
+    }
+
+    setUploadingPhoto(true);
+    setUploadProgress(0);
+
+    try {
+      const path = generateFilePath("profile-photos", file.name, user.uid);
+      
+      uploadFileWithProgress(
+        path,
+        file,
+        { contentType: file.type },
+        (progress) => {
+          setUploadProgress(Math.round(progress));
+        },
+        (error) => {
+          console.error("Upload error:", error);
+          alert(t("pro.profile.uploadFailed") || "Failed to upload file");
+          setUploadingPhoto(false);
+        },
+        (downloadURL) => {
+          setProfilePhotos([...profilePhotos, downloadURL]);
+          setUploadingPhoto(false);
+          setUploadProgress(0);
+          // Reset file input
+          e.target.value = "";
+        }
+      );
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert(t("pro.profile.uploadFailed") || "Failed to upload file");
+      setUploadingPhoto(false);
+    }
+  };
+
+  const handleDeletePhoto = async (photoUrl: string, index: number) => {
+    if (!confirm(t("pro.profile.confirmDeletePhoto") || "Are you sure you want to delete this photo?")) {
+      return;
+    }
+
+    try {
+      // Extract path from URL and delete from Firebase
+      const urlObj = new URL(photoUrl);
+      const path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
+      await deleteFile(path);
+      
+      // Remove from state
+      setProfilePhotos(profilePhotos.filter((_, i) => i !== index));
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert(t("pro.profile.deleteFailed") || "Failed to delete photo");
+    }
   };
 
   const handleEditPhotos = () => {
@@ -1089,14 +1167,47 @@ export default function ProfilePage() {
           </header>
           <div className="px-8 py-6">
             <div className="pt-6 pb-8">
-              <div className="flex gap-4 overflow-x-auto">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="shrink-0 w-32 h-24 bg-gray-200 rounded flex items-center justify-center">
-                    <svg className="text-gray-400" width="40" height="28" viewBox="0 0 40 28">
-                      <path d="M0 28L11.7 6.44l10.34 15.4 7.348-10.64L40 28H0zM24.218 8.4c-2.255 0-4.082-1.88-4.082-4.2 0-2.32 1.827-4.2 4.082-4.2 2.254 0 4.081 1.88 4.081 4.2 0 2.32-1.827 4.2-4.081 4.2z" fillRule="evenodd" fill="currentColor"></path>
-                    </svg>
+              <div className="flex gap-4 overflow-x-auto pb-2">
+                {profilePhotos.map((photoUrl, index) => (
+                  <div key={index} className="relative shrink-0 w-32 h-24 bg-gray-200 rounded overflow-hidden group">
+                    {photoUrl.includes('video') || photoUrl.match(/\.(mp4|mov|webm)/) ? (
+                      <video src={photoUrl} className="w-full h-full object-cover" />
+                    ) : (
+                      <img src={photoUrl} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" />
+                    )}
+                    <button
+                      onClick={() => handleDeletePhoto(photoUrl, index)}
+                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 4l8 8m0-8l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                    </button>
                   </div>
                 ))}
+                
+                {/* Upload button */}
+                <label className="shrink-0 w-32 h-24 bg-gray-100 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/jpg,video/mp4,video/quicktime,video/webm"
+                    onChange={handlePhotoUpload}
+                    disabled={uploadingPhoto}
+                    className="hidden"
+                  />
+                  {uploadingPhoto ? (
+                    <div className="text-center">
+                      <div className="text-xs text-gray-600">{uploadProgress}%</div>
+                    </div>
+                  ) : (
+                    <>
+                      <svg className="text-gray-400 mb-1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      <span className="text-xs text-gray-600">{t("pro.profile.addMedia")}</span>
+                    </>
+                  )}
+                </label>
               </div>
             </div>
             <div className="border border-gray-200 rounded p-6 flex flex-col sm:flex-row sm:items-start sm:justify-between">
@@ -1105,15 +1216,7 @@ export default function ProfilePage() {
                   <p className="text-lg">{t("pro.profile.showOffBusiness")}</p>
                 </div>
                 <p className="text-sm text-gray-600">{t("pro.profile.showOffBusinessDescription")}</p>
-              </div>
-              <div className="mt-6 sm:mt-0 sm:ml-6">
-                <button
-                  type="button"
-                  onClick={handleEditPhotos}
-                  className="px-4 py-2 border border-gray-200 rounded hover:bg-gray-50 text-sm"
-                >
-                  {t("pro.profile.addPhotos")}
-                </button>
+                <p className="text-xs text-gray-500 mt-2">{t("pro.profile.mediaRequirements") || "Images: JPG, PNG, WebP (max 20MB). Videos: MP4, MOV, WebM (max 100MB)."}</p>
               </div>
             </div>
           </div>

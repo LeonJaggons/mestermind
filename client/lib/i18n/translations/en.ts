@@ -728,6 +728,11 @@ const translations = {
   "pro.profile.uploadFailed": "Failed to upload image",
   "pro.profile.imageRequirements": "JPG, PNG or WebP. Max 5MB.",
   "pro.profile.save": "Save",
+  "pro.profile.invalidMediaType": "Please upload a valid image (JPG, PNG, WebP) or video (MP4, MOV, WebM)",
+  "pro.profile.mediaTooLarge": "File is too large",
+  "pro.profile.confirmDeletePhoto": "Are you sure you want to delete this photo?",
+  "pro.profile.deleteFailed": "Failed to delete photo",
+  "pro.profile.mediaRequirements": "Images: JPG, PNG, WebP (max 20MB). Videos: MP4, MOV, WebM (max 100MB).",
 
   // Results Page
   "results.calculateEstimate": "Calculate your estimate",
