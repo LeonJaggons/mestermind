@@ -235,11 +235,7 @@ export default function Header() {
         {/* Right Side Icons */}
         <div className="flex items-center gap-2">
           <LanguageChooser />
-          {user && (
-            <div className="hidden md:block">
-              <NotificationDropdown />
-            </div>
-          )}
+          {user && <NotificationDropdown />}
           
           {loading ? (
             <div className="hidden md:flex items-center text-xs px-3">{t("common.loading")}</div>
