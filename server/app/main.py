@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.trustedhost import ProxyHeadersMiddleware
 from starlette.responses import RedirectResponse
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -33,28 +34,37 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     lifespan=lifespan,
+    root_path="",  # Ensure proper URL generation behind proxy
 )
 
 
-# Middleware to force HTTPS redirects
+# Add ProxyHeadersMiddleware to trust X-Forwarded-* headers from Cloud Run
+# This ensures FastAPI builds URLs with the correct scheme (https) when behind a proxy
+app.add_middleware(
+    ProxyHeadersMiddleware,
+    trusted_hosts=["*"],  # Trust all hosts since Cloud Run manages this
+)
+
+
+# Middleware to force HTTPS redirects as a fallback
 class HTTPSRedirectMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         response = await call_next(request)
         
-        # If this is a redirect response, ensure it uses HTTPS
-        if isinstance(response, RedirectResponse) and 300 <= response.status_code < 400:
+        # If this is a redirect response (3xx status code), ensure it uses HTTPS
+        if 300 <= response.status_code < 400:
             location = response.headers.get("location", "")
             # Check if we have X-Forwarded-Proto header indicating HTTPS from proxy
             forwarded_proto = request.headers.get("x-forwarded-proto", "")
             
-            if forwarded_proto == "https" and location.startswith("http://"):
+            if location and forwarded_proto == "https" and location.startswith("http://"):
                 # Convert HTTP redirect to HTTPS
                 response.headers["location"] = location.replace("http://", "https://", 1)
         
         return response
 
 
-# Add HTTPS redirect middleware first
+# Add HTTPS redirect middleware as fallback
 app.add_middleware(HTTPSRedirectMiddleware)
 
 # CORS middleware
