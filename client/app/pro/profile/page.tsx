@@ -19,7 +19,7 @@ interface ProProfile {
   zip_code: string;
   year_founded: number | null;
   number_of_employees: number | null;
-  bio: string | null;
+  business_intro: string | null;
   profile_image_url: string | null;
 }
 
@@ -719,7 +719,7 @@ export default function ProfilePage() {
             <h1 className="text-xl font-bold">{t("pro.profile.yourIntroduction")}</h1>
           </header>
           <div className="px-8 py-6">
-            <p className="text-gray-700">{proProfile?.bio || t("pro.profile.tellCustomersAboutBusiness")}</p>
+            <p className="text-gray-700">{proProfile?.business_intro || t("pro.profile.tellCustomersAboutBusiness")}</p>
           </div>
           <div className="flex flex-col sm:flex-row px-8 pt-6 w-full">
             <div className="flex-1 mr-4">
