@@ -9,7 +9,17 @@ import { ArrowLeft, Wallet } from "lucide-react";
 import Link from "next/link";
 import { API_BASE_URL } from "@/lib/api/config";
 
-const stripePromise = loadStripe("pk_test_51SBNvKRPSjKnsDN9ODHK59X8mroIr87XxN3dIONbdNHOSSNV3HbDsfy46P6fy6MPKRUQD2CvBLzWobZKA1bWCrCZ00PWCDVKKh");
+// Initialize Stripe - fetch publishable key from backend
+let stripePromise: Promise<any> | null = null;
+
+const getStripe = async () => {
+  if (!stripePromise) {
+    stripePromise = fetch(`${API_BASE_URL}/api/v1/stripe/config`)
+      .then(res => res.json())
+      .then(data => loadStripe(data.publishable_key));
+  }
+  return stripePromise;
+};
 
 function AddFundsForm({ proProfileId, amountHuf }: { proProfileId: number; amountHuf: number }) {
   const stripe = useStripe();
@@ -392,7 +402,7 @@ export default function AddBalancePage() {
         {/* Payment Form */}
         {clientSecret && proProfileId && (
           <Elements
-            stripe={stripePromise}
+            stripe={getStripe()}
             options={{
               clientSecret,
               appearance: {

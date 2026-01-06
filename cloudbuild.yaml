@@ -50,7 +50,7 @@ steps:
       - '--add-cloudsql-instances'
       - 'mestermind-474514:europe-west1:mestermind-postgres'
       - '--set-secrets'
-      - 'DATABASE_URL=database-url:latest'
+      - 'DATABASE_URL=database-url:latest,STRIPE_SECRET_KEY=stripe-secret-key:latest,STRIPE_PUBLISHABLE_KEY=stripe-publishable-key:latest'
   
   # Run database migrations using Cloud Run Jobs
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -62,7 +62,7 @@ steps:
           --image gcr.io/$PROJECT_ID/mestermind-server:$COMMIT_SHA \
           --region europe-west1 \
           --set-cloudsql-instances mestermind-474514:europe-west1:mestermind-postgres \
-          --set-secrets DATABASE_URL=database-url:latest \
+          --set-secrets DATABASE_URL=database-url:latest,STRIPE_SECRET_KEY=stripe-secret-key:latest,STRIPE_PUBLISHABLE_KEY=stripe-publishable-key:latest \
           --command python \
           --args "run_migrations.py" \
           --execute-now \

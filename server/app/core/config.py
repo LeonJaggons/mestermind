@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     
     # Stripe
     STRIPE_SECRET_KEY: str = ""  # Set via environment variable
+    STRIPE_PUBLISHABLE_KEY: str = ""  # Set via environment variable (public key for frontend)
     STRIPE_WEBHOOK_SECRET: str = ""  # Will be set after creating webhook in Stripe dashboard
     
     # Frontend URL (for redirects, emails, etc.)

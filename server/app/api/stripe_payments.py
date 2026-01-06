@@ -21,6 +21,17 @@ settings = get_settings()
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
+@router.get("/config")
+async def get_stripe_config():
+    """
+    Returns the Stripe publishable key for frontend use.
+    This is a public key and safe to expose.
+    """
+    return {
+        "publishable_key": settings.STRIPE_PUBLISHABLE_KEY
+    }
+
+
 class CreateCheckoutSessionRequest(BaseModel):
     pro_profile_id: int
     job_id: int

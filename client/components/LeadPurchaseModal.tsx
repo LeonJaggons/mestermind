@@ -6,8 +6,17 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { API_BASE_URL } from "@/lib/api/config";
 
-// Initialize Stripe
-const stripePromise = loadStripe("pk_test_51SBNvKRPSjKnsDN9ODHK59X8mroIr87XxN3dIONbdNHOSSNV3HbDsfy46P6fy6MPKRUQD2CvBLzWobZKA1bWCrCZ00PWCDVKKh");
+// Initialize Stripe - fetch publishable key from backend
+let stripePromise: Promise<any> | null = null;
+
+const getStripe = async () => {
+  if (!stripePromise) {
+    stripePromise = fetch(`${API_BASE_URL}/api/v1/stripe/config`)
+      .then(res => res.json())
+      .then(data => loadStripe(data.publishable_key));
+  }
+  return stripePromise;
+};
 
 interface LeadPriceBreakdown {
   baseBandId: string;
@@ -688,7 +697,7 @@ export default function LeadPurchaseModal({
 
               {step === "payment-form" && clientSecret && (
                 <div>
-                  <Elements stripe={stripePromise} options={{ clientSecret }}>
+                  <Elements stripe={getStripe()} options={{ clientSecret }}>
                     <PaymentFormStep 
                       onSuccess={handlePaymentSuccess} 
                       onError={handlePaymentError}
