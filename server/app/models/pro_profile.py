@@ -14,6 +14,8 @@ class ProProfile(Base):
     business_name = Column(String, nullable=True)
     
     # Business Info (Step 2)
+    phone = Column(String, nullable=True)
+    website = Column(String, nullable=True)
     year_founded = Column(Integer, nullable=True)
     number_of_employees = Column(Integer, nullable=True)
     street_address = Column(String, nullable=False)

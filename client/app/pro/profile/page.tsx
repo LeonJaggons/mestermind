@@ -11,7 +11,7 @@ interface ProProfile {
   id: number;
   user_id: number;
   business_name: string;
-  phone: string;
+  phone: string | null;
   website: string | null;
   street_address: string | null;
   city: string;

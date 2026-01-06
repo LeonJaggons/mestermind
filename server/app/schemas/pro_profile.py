@@ -5,6 +5,8 @@ from typing import Optional, Dict, Any, List
 
 class ProProfileBase(BaseModel):
     business_name: Optional[str] = None
+    phone: Optional[str] = None
+    website: Optional[str] = None
     year_founded: Optional[int] = None
     number_of_employees: Optional[int] = None
     street_address: Optional[str] = None
@@ -32,6 +34,8 @@ class ProProfileCreate(ProProfileBase):
 
 class ProProfileUpdate(BaseModel):
     business_name: Optional[str] = None
+    phone: Optional[str] = None
+    website: Optional[str] = None
     year_founded: Optional[int] = None
     number_of_employees: Optional[int] = None
     street_address: Optional[str] = None

@@ -10,6 +10,8 @@ interface BackendProProfile {
   id: number;
   user_id: number;
   business_name: string | null;
+  phone: string | null;
+  website: string | null;
   year_founded: number | null;
   number_of_employees: number | null;
   street_address: string | null;
@@ -54,8 +56,8 @@ export default function EditProProfilePage() {
           const backend: BackendProProfile = await res.json();
 
           setBusinessName(backend.business_name ?? "");
-          // phone / website / state are not stored on pro_profiles table;
-          // leave them editable in the UI only for now.
+          setPhone(backend.phone ?? "");
+          setWebsite(backend.website ?? "");
           setStreetAddress(backend.street_address ?? "");
           setCity(backend.city ?? "");
           setZipCode(backend.zip_code ?? "");
@@ -89,6 +91,8 @@ export default function EditProProfilePage() {
       // Update backend pro profile by Firebase UID (creates if missing)
       const updatePayload: Partial<BackendProProfile> = {
         business_name: businessName || null,
+        phone: phone || null,
+        website: website || null,
         year_founded: yearFounded ? Number(yearFounded) : null,
         number_of_employees: numberOfEmployees
           ? Number(numberOfEmployees)
