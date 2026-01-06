@@ -188,9 +188,10 @@ export default function EditProProfilePage() {
                 {t("pro.profile.website") || "Website"}
               </label>
               <input
-                type="url"
+                type="text"
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
+                placeholder="https://example.com"
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
               />
             </div>
@@ -264,9 +265,10 @@ export default function EditProProfilePage() {
               {t("pro.profile.profileImageUrl") || "Profile image URL"}
             </label>
             <input
-              type="url"
+              type="text"
               value={profileImageUrl}
               onChange={(e) => setProfileImageUrl(e.target.value)}
+              placeholder="https://example.com/image.jpg"
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
             />
           </div>
