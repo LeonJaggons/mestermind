@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { useI18n } from "@/lib/contexts/I18nContext";
 import { API_BASE_URL } from "@/lib/api/config";
+import { uploadFileWithProgress, generateFilePath, validateFileType, validateFileSize } from "@/lib/firebase/storage";
 
 interface BackendProProfile {
   id: number;
@@ -29,6 +30,8 @@ export default function EditProProfilePage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const [businessName, setBusinessName] = useState("");
   const [phone, setPhone] = useState("");
@@ -81,6 +84,53 @@ export default function EditProProfilePage() {
 
     loadProfile();
   }, [user]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    // Validate file type
+    if (!validateFileType(file, ["image/jpeg", "image/png", "image/webp", "image/jpg"])) {
+      alert(t("pro.profile.invalidFileType") || "Please upload a valid image file (JPG, PNG, or WebP)");
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (!validateFileSize(file, 5)) {
+      alert(t("pro.profile.fileTooLarge") || "Image must be less than 5MB");
+      return;
+    }
+
+    setUploadingImage(true);
+    setUploadProgress(0);
+
+    try {
+      const path = generateFilePath("profile-images", file.name, user.uid);
+      
+      uploadFileWithProgress(
+        path,
+        file,
+        { contentType: file.type },
+        (progress) => {
+          setUploadProgress(Math.round(progress));
+        },
+        (error) => {
+          console.error("Upload error:", error);
+          alert(t("pro.profile.uploadFailed") || "Failed to upload image");
+          setUploadingImage(false);
+        },
+        (downloadURL) => {
+          setProfileImageUrl(downloadURL);
+          setUploadingImage(false);
+          setUploadProgress(0);
+        }
+      );
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert(t("pro.profile.uploadFailed") || "Failed to upload image");
+      setUploadingImage(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,18 +313,51 @@ export default function EditProProfilePage() {
             </div>
           </div>
 
-          {/* Profile image URL */}
+          {/* Profile image upload */}
           <div>
             <label className="block text-sm font-semibold mb-1">
-              {t("pro.profile.profileImageUrl") || "Profile image URL"}
+              {t("pro.profile.profileImage") || "Profile image"}
             </label>
-            <input
-              type="text"
-              value={profileImageUrl}
-              onChange={(e) => setProfileImageUrl(e.target.value)}
-              placeholder="https://example.com/image.jpg"
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]"
-            />
+            
+            {profileImageUrl && (
+              <div className="mb-3">
+                <img 
+                  src={profileImageUrl} 
+                  alt="Profile preview" 
+                  className="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
+                />
+              </div>
+            )}
+            
+            <div className="flex items-center gap-3">
+              <label className="cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/jpg"
+                  onChange={handleImageUpload}
+                  disabled={uploadingImage}
+                  className="hidden"
+                />
+                <div className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm inline-block">
+                  {uploadingImage 
+                    ? `${t("pro.profile.uploading") || "Uploading"}... ${uploadProgress}%`
+                    : t("pro.profile.chooseImage") || "Choose image"
+                  }
+                </div>
+              </label>
+              {profileImageUrl && !uploadingImage && (
+                <button
+                  type="button"
+                  onClick={() => setProfileImageUrl("")}
+                  className="text-sm text-red-600 hover:underline"
+                >
+                  {t("pro.profile.remove") || "Remove"}
+                </button>
+              )}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              {t("pro.profile.imageRequirements") || "JPG, PNG or WebP. Max 5MB."}
+            </p>
           </div>
 
           {/* Bio */}
