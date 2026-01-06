@@ -51,6 +51,25 @@ steps:
       - 'mestermind-474514:europe-west1:mestermind-postgres'
       - '--set-secrets'
       - 'DATABASE_URL=database-url:latest'
+  
+  # Run database migrations using Cloud Run Jobs
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        gcloud run jobs create mestermind-migrate-$SHORT_SHA \
+          --image gcr.io/$PROJECT_ID/mestermind-server:$COMMIT_SHA \
+          --region europe-west1 \
+          --set-cloudsql-instances mestermind-474514:europe-west1:mestermind-postgres \
+          --set-secrets DATABASE_URL=database-url:latest \
+          --command /bin/bash \
+          --args "-c,cd /app && alembic upgrade head" \
+          --execute-now \
+          --wait || true
+        
+        # Clean up the job after execution
+        gcloud run jobs delete mestermind-migrate-$SHORT_SHA --region europe-west1 --quiet || true
 
 images:
   - 'gcr.io/$PROJECT_ID/mestermind-server:$COMMIT_SHA'
