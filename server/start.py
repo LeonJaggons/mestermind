@@ -12,6 +12,30 @@ os.chdir(server_dir)
 
 if __name__ == "__main__":
     import uvicorn
+    import subprocess
+    
+    # Run database migrations before starting the server
+    print("Running database migrations...")
+    try:
+        result = subprocess.run(
+            ["alembic", "upgrade", "head"],
+            cwd=server_dir,
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        print("✓ Database migrations completed successfully")
+        if result.stdout:
+            print(result.stdout)
+    except subprocess.CalledProcessError as e:
+        print(f"⚠ Warning: Database migration failed: {e}")
+        if e.stdout:
+            print(e.stdout)
+        if e.stderr:
+            print(e.stderr)
+        # Continue anyway - server might still work if schema is already up to date
+    except FileNotFoundError:
+        print("⚠ Warning: Alembic not found, skipping migrations")
     
     # Get configuration from environment or use defaults
     host = os.getenv("HOST", "0.0.0.0")
